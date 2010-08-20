@@ -11,7 +11,7 @@ function searchBoxCreateTextField(id, cssClass) {
 	e = document.createElement('input');
 	e.setAttribute('id', id);
 	e.setAttribute('type', 'text');
-	e.setAttribute('class', cssClass)
+	e.setAttribute('class', cssClass);
 	e.setAttribute('value', value == null ? '' : value);
 	return e;
 }
@@ -20,7 +20,7 @@ function searchBoxCreateButton(id, label, cssClass) {
 	e = document.createElement('button');
 	e.setAttribute('type', 'button');
 	e.setAttribute('id', id);
-	e.setAttribute('class', cssClass)
+	e.setAttribute('class', cssClass);
 	e.innerHTML = label;
 	return e;
 }
@@ -123,4 +123,4 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 	}
 	search();
 
-}
+};
