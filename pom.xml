@@ -36,6 +36,12 @@
 			<email>cencarnacion@kitsd.com</email>
 		</developer>
 	</developers>
+  
+  <modules>
+    <module>changedetector</module>
+    <module>searchbox</module>
+    <module>webtest</module>
+  </modules>
 
 	<issueManagement>
 		<system>Google Code</system>
@@ -43,14 +49,14 @@
 	</issueManagement>
 
 	<properties>
-		<junit.version>4.7</junit.version>
-		<wicket.version>1.4-rc7</wicket.version>
+		<junit.version>4.8.1</junit.version>
+		<wicket.version>1.4.10</wicket.version>
 	</properties>
 
 	<scm>
-		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/common/parent</connection>
-    <developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/common/parent</developerConnection>
-    <url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/common/parent</url>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</connection>
+    <developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</developerConnection>
+    <url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk</url>
 	</scm>
 	
   <repositories>

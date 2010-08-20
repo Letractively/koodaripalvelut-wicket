@@ -13,8 +13,8 @@
 	<parent>
 	 <groupId>com.koodaripalvelut.wicket.common</groupId>
 	 <artifactId>parent</artifactId>
-	 <version>1.0</version>
-	 <relativePath>../parent</relativePath>
+	 <version>1.1-SNAPSHOT</version>
+	 <relativePath>..</relativePath>
 	</parent>
 
 	<developers>
@@ -31,9 +31,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/common/wicket-searchbox</connection>
-		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/common/wicket-searchbox</developerConnection>
-		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/common/wicket-searchbox</url>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/searchbox</connection>
+		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/searchbox</developerConnection>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk/searchbox</url>
 	</scm>
 
 </project>
