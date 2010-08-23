@@ -2,14 +2,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
-	<artifactId>wicket-changedetector</artifactId>
+	<artifactId>changedetector</artifactId>
 	<version>1.1-SNAPSHOT</version>
 
 	<name>Koodari Palvelut Wicket Additions - ChangeDetector</name>
 	<description>Koodari Palvelut Wicket Additions - ChangeDetector</description>
-	<inceptionYear>2010</inceptionYear>
-	<url>http://code.google.com/p/koodaripalvelut-wicket/</url>
-	
+		
 	<parent>
 	 <groupId>com.koodaripalvelut.wicket.common</groupId>
 	 <artifactId>parent</artifactId>

@@ -3,18 +3,18 @@
   <modelVersion>4.0.0</modelVersion>
   
   <groupId>com.koodaripalvelut.wicket.common</groupId>
-  <artifactId>wicket-components</artifactId>
+  <artifactId>components</artifactId>
   <version>1.1-SNAPSHOT</version>
   
   <parent>
-    <artifactId>parent</artifactId>
     <groupId>com.koodaripalvelut.wicket.common</groupId>
+    <artifactId>parent</artifactId>
     <version>1.1-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   
-  <name>Koodari Palveut Wicket Components</name>
-  <description>Agregate modules containing all components and behaviors</description>
+  <name>Koodari Palvelut Wicket Component Aggregate</name>
+  <description>Agregate module containing all supplied components and behaviors</description>
   <packaging>jar</packaging>
 
   <build>
@@ -59,13 +59,19 @@
   <dependencies>
     <dependency>
       <groupId>com.koodaripalvelut.wicket.common</groupId>
-      <artifactId>wicket-changedetector</artifactId>
+      <artifactId>changedetector</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>com.koodaripalvelut.wicket.common</groupId>
-      <artifactId>wicket-searchbox</artifactId>
+      <artifactId>searchbox</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.koodaripalvelut.wicket.common</groupId>
+      <artifactId>fullcalendar</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
