@@ -45,14 +45,9 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.koodaripalvelut.wicket.common</groupId>
-      <artifactId>wicket-searchbox</artifactId>
+      <artifactId>wicket-components</artifactId>
       <version>${project.version}</version>
 		</dependency>
-		<dependency>
-      <groupId>com.koodaripalvelut.wicket.common</groupId>
-      <artifactId>wicket-changedetector</artifactId>
-      <version>${project.version}</version>
-    </dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>

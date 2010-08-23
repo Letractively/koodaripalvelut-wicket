@@ -41,6 +41,7 @@
     <module>changedetector</module>
     <module>searchbox</module>
     <module>webtest</module>
+    <module>wicket-components</module>
   </modules>
 
 	<issueManagement>
