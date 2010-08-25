@@ -13,4 +13,12 @@
   
   <name>Koodari Palvelut Wicket Additions - Full Calendar</name>
   <description>Full Calendar AJAX Component</description>
+  
+  <dependencies>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>1.4</version>
+    </dependency>
+  </dependencies>
 </project>
