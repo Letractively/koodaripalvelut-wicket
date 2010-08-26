@@ -1,5 +1,6 @@
-$(document).ready(function() {
-	$('#${calendar-id}').fullCalendar({
-		editable: true
-	});
+$('#${calendar-id}').fullCalendar({
+	editable: ${editable}
+   ,weekends: ${weekends}
+   ,events: "${eventFeedURL}"
+   ${customOptions}
 });

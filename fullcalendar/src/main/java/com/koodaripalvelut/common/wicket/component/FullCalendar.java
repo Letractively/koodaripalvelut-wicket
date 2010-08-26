@@ -1,18 +1,23 @@
 package com.koodaripalvelut.common.wicket.component;
 
-import static java.util.Collections.singletonMap;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
-import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
-import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.behavior.AbstractAjaxBehavior;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.request.target.basic.StringRequestTarget;
 import org.apache.wicket.util.template.PackagedTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
+
+import com.google.gson.Gson;
 
 /**
  * @author rhansen@kitsd.com
@@ -29,39 +34,53 @@ public class FullCalendar extends Component
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.min.js");
   private static ResourceReference JS_FULLCAL_DBG =
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.js");
-  private static TextTemplate JS_FULLCAL_INIT =
+  private static TextTemplate FULLCAL_INI =
     new PackagedTextTemplate(FullCalendar.class, "calendar-init.js");
-  private static ResourceReference CSS_FULLCAL =
+  private static ResourceReference FULLCAL_CSS =
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.css");
 
-  private class CalendarEvent extends AbstractDefaultAjaxBehavior {
+  private static final Gson converter = new Gson();
+
+  private class CalendarFeedEvent extends AbstractAjaxBehavior {
     private static final long serialVersionUID = 1L;
 
     @Override
-    protected void respond(final AjaxRequestTarget target) {
-      //TODO Working on it.
+    public void onRequest() {
+      final StringRequestTarget calendarRequestTarget =
+        new StringRequestTarget(converter.toJson(getDefaultModelObject()));
+      RequestCycle.get().setRequestTarget(calendarRequestTarget);
     }
 
   }
+
+  private boolean editable = true;
+  private final CalendarFeedEvent eventFeed = new CalendarFeedEvent();
 
   public FullCalendar(final String id) {
     this(id, null);
   }
 
-  public FullCalendar(final String id, final IModel<?> model) {
+  public FullCalendar(final String id,
+      final IModel<? extends Collection<? extends Event>> model) {
+
     super(id, model);
     init();
   }
 
-  private void init() {
-    setOutputMarkupId(true);
+  public boolean isEditable() {
+    return editable;
+  }
+  public FullCalendar setEditable(final boolean editable) {
+    this.editable = editable;
+    return this;
   }
 
   @Override
   public void renderHead(final HtmlHeaderContainer container) {
     final IHeaderResponse headerResponse = container.getHeaderResponse();
-    final String calendarInit = JS_FULLCAL_INIT.asString(
-      singletonMap("calendar-id", (Object) getMarkupId()));
+    final Map<String, Object> initParams = new HashMap<String, Object>();
+
+    setOptions(initParams);
 
     if (includeJQuery()) {
       headerResponse.renderJavascriptReference(JS_JQUERY);
@@ -75,8 +94,8 @@ public class FullCalendar extends Component
       headerResponse.renderJavascriptReference(JS_FULLCAL);
     }
 
-    headerResponse.renderCSSReference(CSS_FULLCAL);
-    headerResponse.renderJavascript(calendarInit, "cal-init-" + getMarkupId());
+    headerResponse.renderCSSReference(FULLCAL_CSS);
+    headerResponse.renderOnDomReadyJavascript(FULLCAL_INI.asString(initParams));
 
     super.renderHead(container);
   }
@@ -86,12 +105,25 @@ public class FullCalendar extends Component
     renderComponent(markupStream);
   }
 
+  protected void setOptions(final Map<String, Object> params) {
+    params.put("calendar-id", getMarkupId());
+    params.put("editable", isEditable());
+    params.put("weekends", true);
+    params.put("customOptions", "");
+    params.put("eventFeedURL", eventFeed.getCallbackUrl());
+  }
+
   protected boolean includeJQuery() {
     return true;
   }
 
   protected boolean includeJQueryUI() {
     return true;
+  }
+
+  private void init() {
+    setOutputMarkupId(true);
+    add(eventFeed);
   }
 
 }
