@@ -11,6 +11,7 @@
 
 package com.koodaripalvelut.common.wicket.webtest;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -18,15 +19,16 @@ import java.util.List;
 
 import org.apache.wicket.model.Model;
 
-import com.koodaripalvelut.common.wicket.component.Event;
-import com.koodaripalvelut.common.wicket.component.FullCalendar;
+import com.koodaripalvelut.common.wicket.component.fullcalendar.Event;
+import com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar;
 
 /** FullCalendarPage is responsible of
  * @author rhansen@kitsd.com
  */
 public class FullCalendarPage extends BasePage {
 
-  private static class E implements Event {
+  private static class E implements Event, Serializable {
+    private static final long serialVersionUID = 1L;
 
     private Date end;
     private Date start;

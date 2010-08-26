@@ -68,7 +68,7 @@
 			<plugin>
 				<groupId>net.kindleit</groupId>
 				<artifactId>maven-gae-plugin</artifactId>
-				<version>0.6.0</version>
+				<version>0.7.0</version>
 				<configuration>
 					<scanIntervalSeconds>10</scanIntervalSeconds>
 				</configuration>
@@ -82,6 +82,14 @@
 						<inherited>false</inherited>
 					</execution>
 				</executions>
+				<dependencies>
+			   <dependency>
+			      <groupId>net.kindleit</groupId>
+			      <artifactId>gae-runtime</artifactId>
+			      <version>${gae.version}</version>
+			      <type>pom</type>
+			    </dependency>
+        </dependencies>
 			</plugin>
 			<plugin>
 				<groupId>org.mortbay.jetty</groupId>

@@ -1,0 +1,21 @@
+<html>
+<head><script type="text/javascript" src="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/jquery/jquery.js"></script>
+<script type="text/javascript" src="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/jquery/jquery-ui-custom.js"></script>
+<script type="text/javascript" src="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/fullcalendar.js"></script>
+<link rel="stylesheet" type="text/css" href="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/fullcalendar.css" />
+<script type="text/javascript" src="resources/org.apache.wicket.markup.html.WicketEventReference/wicket-event.js"></script>
+<script type="text/javascript" ><!--/*--><![CDATA[/*><!--*/
+Wicket.Event.add(window, "domready", function(event) { $('#calendar1').fullCalendar({
+  editable: true
+ ,defaultView: "month"
+ ,header: {"left":"title","center":"","right":"month,basicWeek,basicDay prev,next"}
+ ,weekends: true
+ ,events: "?wicket:interface=:0:calendar::IActivePageBehaviorListener:0:&wicket:ignoreIfNotActive=true"
+ 
+});
+;});
+/*-->]]>*/</script>
+
+</head>
+<body><div wicket:id="calendar" id="calendar1"></div></body>
+</html>

@@ -1,4 +1,4 @@
-package com.koodaripalvelut.common.wicket.component;
+package com.koodaripalvelut.common.wicket.component.fullcalendar;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -18,6 +18,8 @@ import org.apache.wicket.util.template.PackagedTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * @author rhansen@kitsd.com
@@ -39,7 +41,10 @@ public class FullCalendar extends Component
   private static ResourceReference FULLCAL_CSS =
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.css");
 
-  private static final Gson converter = new Gson();
+  private static final Gson GSON = new GsonBuilder()
+    .registerTypeAdapter(Event.class, Event.SERIALIZER)
+    .registerTypeAdapter(Header.class, Header.SERIALIZER)
+    .create();
 
   private class CalendarFeedEvent extends AbstractAjaxBehavior {
     private static final long serialVersionUID = 1L;
@@ -47,7 +52,9 @@ public class FullCalendar extends Component
     @Override
     public void onRequest() {
       final StringRequestTarget calendarRequestTarget =
-        new StringRequestTarget(converter.toJson(getDefaultModelObject()));
+        new StringRequestTarget(GSON.toJson(getDefaultModelObject(),
+            new TypeToken<Collection<Event>>(){}.getType()));
+
       RequestCycle.get().setRequestTarget(calendarRequestTarget);
     }
 
@@ -109,8 +116,14 @@ public class FullCalendar extends Component
     params.put("calendar-id", getMarkupId());
     params.put("editable", isEditable());
     params.put("weekends", true);
+    params.put("defaultView", getDefaultView());
+    params.put("header", GSON.toJson(getHeader(), Header.class));
     params.put("customOptions", "");
     params.put("eventFeedURL", eventFeed.getCallbackUrl());
+  }
+
+  protected Views getDefaultView() {
+    return Views.MONTH;
   }
 
   protected boolean includeJQuery() {
@@ -119,6 +132,26 @@ public class FullCalendar extends Component
 
   protected boolean includeJQueryUI() {
     return true;
+  }
+
+  protected Header getHeader() {
+    return new Header() {
+      @Override
+      public String getLeft() {
+        return TITLE;
+      }
+
+      @Override
+      public String getCenter() {
+        return "";
+      }
+
+      @Override
+      public String getRight() {
+        return Views.MONTH + ADJ + Views.WEEK + ADJ + Views.DAY
+                + GAP + PREV_BTN + ADJ + NEXT_BTN;
+      }
+    };
   }
 
   private void init() {
