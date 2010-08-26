@@ -7,6 +7,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
+/** FullCalendar Header description.
+ * @see <a href="http://arshaw.com/fullcalendar/docs/display/header/">fullcalendar head</a>
+ *
+ * @author rhansen@kindleit.net
+ */
 public interface Header {
   String TITLE = "title";
   String PREV_BTN = "prev";
@@ -32,5 +37,5 @@ public interface Header {
       return jsonHeader;
     }
   };
-}
 
+}

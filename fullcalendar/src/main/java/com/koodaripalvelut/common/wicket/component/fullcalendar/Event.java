@@ -8,7 +8,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-/** The Event Interface
+/** FullCalendar Event description.
+ * @see <a href="http://arshaw.com/fullcalendar/docs/event_data/Event_Object/">fullcalendar event</a>
+ *
  * @author rhansen@kitsd.com
  */
 public interface Event {
@@ -37,4 +39,5 @@ public interface Event {
       return jsonHeader;
     }
   };
+
 }

@@ -1,5 +1,10 @@
 package com.koodaripalvelut.common.wicket.component.fullcalendar;
 
+/** FullCalendar Views
+ * @see http://arshaw.com/fullcalendar/docs/views/
+ *
+ * @author rhansen@kindleit.net
+ */
 public enum Views {
   MONTH {
     @Override
@@ -35,4 +40,5 @@ public enum Views {
       return "agendaDay";
     }
   };
+
 }

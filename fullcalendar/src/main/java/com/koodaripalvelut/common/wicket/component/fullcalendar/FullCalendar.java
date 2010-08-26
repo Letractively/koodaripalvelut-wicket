@@ -301,11 +301,18 @@ public class FullCalendar extends Component
     super.renderHead(container);
   }
 
+  /** This component's markup is generated on the client side via the fullcalendar jquery plugin.
+   * @see org.apache.wicket.Component#onRender(MarkupStream)
+   */
   @Override
   protected void onRender(final MarkupStream markupStream) {
     renderComponent(markupStream);
   }
 
+  /** Override this method to set your own options for the fullcalendar construction
+   * @see <a href="http://arshaw.com/fullcalendar/docs/usage/">fullcalendar usage</a>
+   * @param params
+   */
   protected void setOptions(final Map<String, Object> params) {
     params.put("calendar-id", getMarkupId());
     params.put("editable", isEditable());
@@ -318,18 +325,18 @@ public class FullCalendar extends Component
     params.put("customOptions", "");
   }
 
+  /** Override to specify an alternate defaultView.
+   * @see Views
+   * @return the defaultView
+   */
   protected Views getDefaultView() {
     return Views.MONTH;
   }
 
-  protected boolean includeJQuery() {
-    return true;
-  }
-
-  protected boolean includeJQueryUI() {
-    return true;
-  }
-
+  /** Override to specify an alternate calendar header.
+   * @see Header
+   * @return the calendar header
+   */
   protected Header getHeader() {
     return new Header() {
       @Override
@@ -345,9 +352,22 @@ public class FullCalendar extends Component
       @Override
       public String getRight() {
         return Views.MONTH + ADJ + Views.WEEK + ADJ + Views.DAY
-                + GAP + PREV_BTN + ADJ + NEXT_BTN;
+        + GAP + PREV_BTN + ADJ + NEXT_BTN;
       }
     };
+  }
+
+  /** Override to not include the jquery.js javascript reference.
+   * @return true to include the jquery reference in {@link #renderHead(HtmlHeaderContainer)}.
+   */
+  protected boolean includeJQuery() {
+    return true;
+  }
+  /** Override to not include the jquery-ui-custom.js javascript reference.
+   * @return true to include the jquery ui reference in {@link #renderHead(HtmlHeaderContainer)}.
+   */
+  protected boolean includeJQueryUI() {
+    return true;
   }
 
   private void init() {
