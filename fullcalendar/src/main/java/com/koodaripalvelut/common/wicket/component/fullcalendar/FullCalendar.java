@@ -3,6 +3,7 @@ package com.koodaripalvelut.common.wicket.component.fullcalendar;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
+import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -24,6 +25,7 @@ import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.util.template.PackagedTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
 import org.slf4j.Logger;
@@ -82,25 +84,29 @@ public class FullCalendar extends Component
     @Override
     protected void respond(final AjaxRequestTarget target) {
       LOG.debug("event recieved");
+      JsonElement req;
       try {
-        final JsonElement req =
+        req =
             PARSER.parse(((WebRequest) RequestCycle.get().getRequest())
                 .getHttpServletRequest().getReader());
-        LOG.debug("parsed: " + req);
-        if (!req.isJsonObject()) {
-          throw new WicketRuntimeException("json request was not a json object");
-        }
-        final AjaxFeedBack feedback = new AjaxFeedBack((JsonObject) req);
-        if (!feedback.has("feedbackFor")) {
-          throw new WicketRuntimeException("json request has no feedbackFor");
-        }
-        onEvent(target, feedback);
+        LOG.debug("parsed: {}", req);
       } catch (final JsonParseException e) {
         LOG.error("Could not parse json request", e);
         throw new WicketRuntimeException(e);
       } catch (final IOException e) {
         LOG.error("IOException parsing json request", e);
         throw new WicketRuntimeException(e);
+      }
+      if (!req.isJsonObject()) {
+        throw new WicketRuntimeException("json request was not a json object");
+      }
+      final AjaxFeedBack feedback = new AjaxFeedBack((JsonObject) req);
+      if (!feedback.has("feedbackFor")) {
+        throw new WicketRuntimeException("json request has no feedbackFor");
+      }
+      if (!onEvent(target, feedback)) {
+        ((WebResponse) RequestCycle.get().getResponse())
+        .getHttpServletResponse().setStatus(SC_CONFLICT);
       }
     }
 
@@ -139,7 +145,8 @@ public class FullCalendar extends Component
   }
 
   /** Override this method to catch events recieved from the Ajax component */
-  public void onEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
+  public boolean onEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
+    return true;
   }
 
   /** Renders the {@link FullCalendar} via ajax.
