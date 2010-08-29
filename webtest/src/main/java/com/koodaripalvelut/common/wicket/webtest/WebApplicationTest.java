@@ -16,6 +16,7 @@ public class WebApplicationTest extends WebApplication {
   protected void init() {
     super.init();
     getResourceSettings().setResourcePollFrequency(null);
+    getResourceSettings().setDefaultCacheDuration(3);
     mount(new IndexedParamUrlCodingStrategy("searchBox", SearchBoxPage.class));
     mount(new IndexedParamUrlCodingStrategy("changeDetector", ChangeDetectorPage.class));
     mount(new IndexedParamUrlCodingStrategy("calendar", FullCalendarPage.class));

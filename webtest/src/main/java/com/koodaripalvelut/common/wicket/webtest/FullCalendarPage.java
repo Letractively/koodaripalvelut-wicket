@@ -17,10 +17,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.model.Model;
 
 import com.koodaripalvelut.common.wicket.component.fullcalendar.Event;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar;
+import com.koodaripalvelut.common.wicket.component.fullcalendar.Views;
 
 /** FullCalendarPage is responsible of
  * @author rhansen@kitsd.com
@@ -30,6 +33,7 @@ public class FullCalendarPage extends BasePage {
   private static class E implements Event, Serializable {
     private static final long serialVersionUID = 1L;
 
+    private final Double id = Math.random();
     private Date end;
     private Date start;
     private String title;
@@ -41,7 +45,7 @@ public class FullCalendarPage extends BasePage {
 
     @Override
     public String getCalId() {
-      return "";
+      return id.toString();
     }
 
     @Override
@@ -76,7 +80,44 @@ public class FullCalendarPage extends BasePage {
 
   }
 
+
+  private final FullCalendar fullCalendar;
+
+
   public FullCalendarPage() {
+    fullCalendar = new FullCalendar("calendar", Model.ofList(generateEvents()));
+    add(fullCalendar);
+
+    add(new AjaxLink<Void>("addEvents") {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(final AjaxRequestTarget target) {
+        fullCalendar.addEventSource(target, generateEvents());
+      }
+    });
+
+    add(new AjaxLink<Void>("changeView") {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(final AjaxRequestTarget target) {
+        fullCalendar.changeView(target, Views.values()[(int) (Math.random() * Views.values().length)] );
+      }
+    });
+
+    add(new AjaxLink<Void>("changeDate") {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(final AjaxRequestTarget target) {
+        fullCalendar.gotoDate(target, new Date((long) (Math.random() * 25000000000000l)));
+      }
+    });
+  }
+
+
+  private List<E> generateEvents() {
     final Calendar c = Calendar.getInstance();
     final List<E> events = new ArrayList<E>(4);
     for (int i = 0; i < 4; i++) {
@@ -89,7 +130,7 @@ public class FullCalendarPage extends BasePage {
       e.end = c.getTime();
       events.add(e);
     }
-    add(new FullCalendar("calendar", Model.ofList(events)));
+    return events;
   }
 
 }

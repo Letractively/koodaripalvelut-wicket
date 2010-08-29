@@ -68,9 +68,9 @@
 			<plugin>
 				<groupId>net.kindleit</groupId>
 				<artifactId>maven-gae-plugin</artifactId>
-				<version>0.7.0</version>
+				<version>0.7.1-SNAPSHOT</version>
 				<configuration>
-					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<scanIntervalSeconds>0</scanIntervalSeconds>
 				</configuration>
 				<executions>
 					<execution>
@@ -119,4 +119,36 @@
 			<url>http://maven-gae-plugin.googlecode.com/svn/repository/</url>
 		</pluginRepository>
 	</pluginRepositories>
+	
+  <profiles>
+	<profile>
+    <id>jrebel-generate</id>
+    <activation>
+      <property>
+        <name>jrebel</name>
+      </property>
+    </activation>    
+    <build>
+      <plugins>
+        <plugin>
+          <groupId>org.zeroturnaround</groupId>
+          <artifactId>javarebel-maven-plugin</artifactId>
+          <configuration>
+            <relativePath>./</relativePath>
+            <rootPath>${rebel.root}</rootPath>
+          </configuration>
+          <executions>
+            <execution>
+              <id>generate-rebel-xml</id>
+              <phase>process-resources</phase>
+              <goals>
+                <goal>generate</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+    </build>
+  </profile>
+  </profiles>
 </project>
