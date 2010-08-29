@@ -4,6 +4,7 @@ import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Calendar;
 import java.util.Collection;
@@ -12,7 +13,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.RequestCycle;
 import org.apache.wicket.ResourceReference;
+import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.MarkupStream;
@@ -20,11 +23,18 @@ import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
 import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.util.template.PackagedTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 /** Full Calendar Component that integrates the
@@ -35,9 +45,12 @@ import com.google.gson.reflect.TypeToken;
 public class FullCalendar extends Component
 {
   private static final long serialVersionUID = 1L;
+  private static final Logger LOG = LoggerFactory.getLogger(FullCalendar.class);
 
   private static ResourceReference JS_JQUERY =
     new CompressedResourceReference(FullCalendar.class, "jquery/jquery.js");
+  private static ResourceReference JS_JQUERY_JSON =
+    new CompressedResourceReference(FullCalendar.class, "jquery/jquery-json.js");
   private static ResourceReference JS_JQUERY_UI =
     new CompressedResourceReference(FullCalendar.class, "jquery/jquery-ui-custom.js");
   private static ResourceReference JS_FULLCAL =
@@ -53,6 +66,7 @@ public class FullCalendar extends Component
     .registerTypeAdapter(Event.class, Event.SERIALIZER)
     .registerTypeAdapter(Header.class, Header.SERIALIZER)
     .create();
+  static final JsonParser PARSER = new JsonParser();
 
   static final Type EVENT_COLLECTION_TYPE =
     new TypeToken<Collection<Event>>(){}.getType();
@@ -67,6 +81,27 @@ public class FullCalendar extends Component
 
     @Override
     protected void respond(final AjaxRequestTarget target) {
+      LOG.debug("event recieved");
+      try {
+        final JsonElement req =
+            PARSER.parse(((WebRequest) RequestCycle.get().getRequest())
+                .getHttpServletRequest().getReader());
+        LOG.debug("parsed: " + req);
+        if (!req.isJsonObject()) {
+          throw new WicketRuntimeException("json request was not a json object");
+        }
+        final AjaxFeedBack feedback = new AjaxFeedBack((JsonObject) req);
+        if (!feedback.has("feedbackFor")) {
+          throw new WicketRuntimeException("json request has no feedbackFor");
+        }
+        onEvent(target, feedback);
+      } catch (final JsonParseException e) {
+        LOG.error("Could not parse json request", e);
+        throw new WicketRuntimeException(e);
+      } catch (final IOException e) {
+        LOG.error("IOException parsing json request", e);
+        throw new WicketRuntimeException(e);
+      }
     }
 
   }
@@ -101,6 +136,10 @@ public class FullCalendar extends Component
   public FullCalendar setEditable(final boolean editable) {
     this.editable = editable;
     return this;
+  }
+
+  /** Override this method to catch events recieved from the Ajax component */
+  public void onEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
   }
 
   /** Renders the {@link FullCalendar} via ajax.
@@ -286,6 +325,9 @@ public class FullCalendar extends Component
     if (includeJQuery()) {
       headerResponse.renderJavascriptReference(JS_JQUERY);
     }
+    if (includeJQueryJSON()) {
+      headerResponse.renderJavascriptReference(JS_JQUERY_JSON);
+    }
     if (includeJQueryUI()) {
       headerResponse.renderJavascriptReference(JS_JQUERY_UI);
     }
@@ -363,11 +405,74 @@ public class FullCalendar extends Component
   protected boolean includeJQuery() {
     return true;
   }
+
+  /** Override to not include the jquery-json.js javascript reference.
+   * @return true to include the jquery-json reference in {@link #renderHead(HtmlHeaderContainer)}.
+   */
+  protected boolean includeJQueryJSON() {
+    return true;
+  }
+
   /** Override to not include the jquery-ui-custom.js javascript reference.
    * @return true to include the jquery ui reference in {@link #renderHead(HtmlHeaderContainer)}.
    */
   protected boolean includeJQueryUI() {
     return true;
+  }
+
+  /** Override to disable or conditionally set the AJAX callback for the dayClick event.
+   * @return true to enable AJAX callback.
+   * @see <a href="http://arshaw.com/fullcalendar/docs/mouse/dayClick/">dayClick</a>
+   */
+  protected boolean trackDayClick() {
+    return true;
+  }
+  /** Override to disable or conditionally set the AJAX callback for the eventClick event.
+   * @return true to enable AJAX callback.
+   * @see <a href="http://arshaw.com/fullcalendar/docs/mouse/eventClick/">eventClick</a>
+   */
+  protected boolean trackEventClick() {
+    return true;
+  }
+
+  /** Override to disable or conditionally set the AJAX callback for the eventDrop event.
+   * @return true to enable AJAX callback.
+   * @see <a href="http://arshaw.com/fullcalendar/docs/event_ui/eventDrop/">eventDrop</a>
+   */
+  protected boolean trackEventDrop() {
+    return true;
+  }
+
+  /** Override to disable or conditionally set the AJAX callback for the eventResize event.
+   * @return true to enable AJAX callback.
+   * @see <a href="http://arshaw.com/fullcalendar/docs/event_ui/eventResize/">eventResize</a>
+   */
+  protected boolean trackEventResize() {
+    return true;
+  }
+
+  /** Override to disable or conditionally set the AJAX callback for the select event.
+   * @return true to enable AJAX callback.
+   * @see <a href="http://arshaw.com/fullcalendar/docs/selection/select_callback/">select</a>
+   */
+  protected boolean trackSelect() {
+    return false;
+  }
+
+  /** Override to disable or conditionally set the AJAX callback for the unselect event.
+   * @return true to enable AJAX callback.
+   * @see <a href="http://arshaw.com/fullcalendar/docs/selection/unselect_callback/">unselect</a>
+   */
+  protected boolean trackUnselect() {
+    return false;
+  }
+
+  /** Override to disable or conditionally set the AJAX callback for the viewDisplay event.
+   * @return true to enable AJAX callback.
+   * @see <a href="http://arshaw.com/fullcalendar/docs/display/viewDisplay/">viewDisplay</a>
+   */
+  protected boolean trackViewDisplay() {
+    return false;
   }
 
   private void init() {
@@ -377,10 +482,29 @@ public class FullCalendar extends Component
   }
 
   private String getAjaxFeedHandler() {
-    return ",dayClick: Feedback.forDayClick " +
-        ",eventClick : Feedback.forEvent('eventClick')  " +
-        ",eventMouseOver : Feedback.forEvent('mouseOver') " +
-        ",eventMouseOut : Feedback.forEvent('mouseOut')";
+    final StringBuilder sb = new StringBuilder();
+    if (trackDayClick()) {
+      sb.append(",dayClick: Feedback.forDayClick");
+    }
+    if (trackEventClick()) {
+      sb.append(",eventClick : Feedback.forEvent('eventClick')");
+    }
+    if (trackEventDrop()) {
+      sb.append(",eventDrop: Feedback.forEventAlter('eventDrop')");
+    }
+    if (trackEventResize()) {
+      sb.append(",eventResize: Feedback.forEventAlter('eventResize')");
+    }
+    if (trackSelect()) {
+      sb.append(",select: Feedback.forSelect");
+    }
+    if (trackUnselect()) {
+      sb.append(",unselect: Feedback.forUnselect");
+    }
+    if (trackViewDisplay()) {
+      sb.append(",viewDisplay: Feedback.forSelect");
+    }
+    return sb.toString();
   }
 
   private String strWrap(final Object end) {

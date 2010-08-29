@@ -1,5 +1,6 @@
 <html>
 <head><script type="text/javascript" src="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/jquery/jquery.js"></script>
+<script type="text/javascript" src="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/jquery/jquery-json.js"></script>
 <script type="text/javascript" src="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/jquery/jquery-ui-custom.js"></script>
 <script type="text/javascript" src="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/fullcalendar.js"></script>
 <link rel="stylesheet" type="text/css" href="resources/com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar/fullcalendar.css" />
@@ -19,30 +20,30 @@ Wicket.Event.add(window, "domready", function(event) { var Feedback = new (funct
   function call(data, revertFunc) {
     $.ajax({
       url : "?wicket:interface=:0:calendar::IActivePageBehaviorListener:1:&wicket:ignoreIfNotActive=true", type: 'POST', contentType: 'application/json;charset=UTF-8'
-     ,dataType: (($.browser.msie) ? "text" : "xml"), data : data 
+     ,dataType: (($.browser.msie) ? "text" : "xml"), data : $.toJSON(data)
      ,success : success, error : revertFunc
     });
   };
   
   this.forSelect = function(startDate, endDate, allDay, jsEvent, view) {
     call({"feedbackFor" : "select", "startDate" : startDate, "endDate" : endDate, 
-      "allDay" : allDay, "jsEvent" : jsEvent, "view" : view}, null);
+      "allDay" : allDay}, null);
   };
   
-  this.forUnSelect = function(view, jsEvent) {
-    call({"feedbackFor" : "unselect", "jsEvent" : jsEvent, "view" : view}, null);
+  this.forUnselect = function(view, jsEvent) {
+    call({"feedbackFor" : "unselect"}, null);
   };
   
   this.forDayClick = function(date, allDay, jsEvent, view) {
-    call({"feedbackFor" : "dayClick", "date" : date, "allDay" : allDay, "jsEvent" : jsEvent, "view" : view}, null);
+    call({"feedbackFor" : "dayClick", "date" : date, "allDay" : allDay}, null);
   };
   
   this.forEvent = function (eventName) {
     return function(event, jsEvent, ui, view) {
       if (arguments.length == 3)
-        call({"feedbackFor" : eventName, "event" : event, "jsEvent" : jsEvent, "view" : ui}, null);
+        call({"feedbackFor" : eventName, "event" : event}, null);
       else
-        call({"feedbackFor" : eventName, "event" : event, "jsEvent" : jsEvent, "ui" : ui, "view" : view}, null);
+        call({"feedbackFor" : eventName, "event" : event, "ui" : ui}, null);
     };
   };
   
@@ -51,11 +52,10 @@ Wicket.Event.add(window, "domready", function(event) { var Feedback = new (funct
       if (arguments.length == 8)
         call({"feedbackFor" : eventName, "event" : event, 
           "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, "allDay" : allDay, 
-          "jsEvent" : jsEvent, "ui" : ui, "view" : view}, revertFunc);
+          "ui" : ui}, revertFunc);
       else
         call({"feedbackFor" : eventName, "event" : event, 
-          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, 
-          "jsEvent" : revertFunc, "ui" : jsEvent, "view" : ui}, allDay);
+          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, "ui" : jsEvent}, allDay);
     };
   };
 });
@@ -66,7 +66,7 @@ $('#calendar1').fullCalendar({
  ,header: {"left":"title","center":"","right":"month,basicWeek,basicDay prev,next"}
  ,weekends: true
  ,events: "?wicket:interface=:0:calendar::IActivePageBehaviorListener:0:&wicket:ignoreIfNotActive=true"
- ,dayClick: Feedback.forDayClick ,eventClick : Feedback.forEvent('eventClick')  ,eventMouseOver : Feedback.forEvent('mouseOver') ,eventMouseOut : Feedback.forEvent('mouseOut')
+ ,dayClick: Feedback.forDayClick,eventClick : Feedback.forEvent('eventClick'),eventDrop: Feedback.forEventAlter('eventDrop'),eventResize: Feedback.forEventAlter('eventResize')
  
 });
 ;});

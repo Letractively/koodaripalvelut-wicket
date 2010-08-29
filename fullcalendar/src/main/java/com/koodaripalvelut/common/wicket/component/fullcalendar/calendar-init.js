@@ -12,30 +12,30 @@ var Feedback = new (function() {
   function call(data, revertFunc) {
     $.ajax({
       url : "${feedbackURL}", type: 'POST', contentType: 'application/json;charset=UTF-8'
-     ,dataType: (($.browser.msie) ? "text" : "xml"), data : data 
+     ,dataType: (($.browser.msie) ? "text" : "xml"), data : $.toJSON(data)
      ,success : success, error : revertFunc
     });
   };
   
   this.forSelect = function(startDate, endDate, allDay, jsEvent, view) {
     call({"feedbackFor" : "select", "startDate" : startDate, "endDate" : endDate, 
-      "allDay" : allDay, "jsEvent" : jsEvent, "view" : view}, null);
+      "allDay" : allDay}, null);
   };
   
-  this.forUnSelect = function(view, jsEvent) {
-    call({"feedbackFor" : "unselect", "jsEvent" : jsEvent, "view" : view}, null);
+  this.forUnselect = function(view, jsEvent) {
+    call({"feedbackFor" : "unselect"}, null);
   };
   
   this.forDayClick = function(date, allDay, jsEvent, view) {
-    call({"feedbackFor" : "dayClick", "date" : date, "allDay" : allDay, "jsEvent" : jsEvent, "view" : view}, null);
+    call({"feedbackFor" : "dayClick", "date" : date, "allDay" : allDay}, null);
   };
   
   this.forEvent = function (eventName) {
     return function(event, jsEvent, ui, view) {
       if (arguments.length == 3)
-        call({"feedbackFor" : eventName, "event" : event, "jsEvent" : jsEvent, "view" : ui}, null);
+        call({"feedbackFor" : eventName, "event" : event}, null);
       else
-        call({"feedbackFor" : eventName, "event" : event, "jsEvent" : jsEvent, "ui" : ui, "view" : view}, null);
+        call({"feedbackFor" : eventName, "event" : event, "ui" : ui}, null);
     };
   };
   
@@ -44,11 +44,10 @@ var Feedback = new (function() {
       if (arguments.length == 8)
         call({"feedbackFor" : eventName, "event" : event, 
           "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, "allDay" : allDay, 
-          "jsEvent" : jsEvent, "ui" : ui, "view" : view}, revertFunc);
+          "ui" : ui}, revertFunc);
       else
         call({"feedbackFor" : eventName, "event" : event, 
-          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, 
-          "jsEvent" : revertFunc, "ui" : jsEvent, "view" : ui}, allDay);
+          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, "ui" : jsEvent}, allDay);
     };
   };
 });
