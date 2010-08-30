@@ -55,6 +55,7 @@ var Feedback = new (function() {
 $('#${calendar-id}').fullCalendar({
   editable: ${editable}
  ,defaultView: "${defaultView}"
+ ,year: ${year}, month: ${month}, date: ${day}
  ,header: ${header}
  ,weekends: ${weekends}
  ,events: "${eventFeedURL}"

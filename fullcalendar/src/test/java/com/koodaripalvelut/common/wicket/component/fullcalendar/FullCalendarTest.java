@@ -14,7 +14,7 @@ public class FullCalendarTest {
   public void testRenderHeadHtmlHeaderContainer() throws Exception {
     final WicketTester wt = new WicketTester();
     wt.startPage(TestPage.class);
-    wt.assertResultPage(FullCalendarTest.class, "ExpectedCalendar.html");
+    wt.assertRenderedPage(TestPage.class);
   }
 
 }

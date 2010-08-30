@@ -23,21 +23,31 @@ public interface Event {
   String getCSSClass();
   boolean isLocked();
 
-  JsonSerializer<Event> SERIALIZER = new JsonSerializer<Event>() {
+
+  /** JsonSerializer in charge of generated an json string for the
+   * {@link Event} interface. */
+  public static JsonSerializer<Event> SERIALIZER = new JsonSerializer<Event>() {
+
     @Override
     public JsonElement serialize(final Event src, final Type typeOfSrc,
         final JsonSerializationContext context) {
+      if (src == null) {
+        return null;
+      }
       final JsonObject jsonHeader = new JsonObject();
       jsonHeader.addProperty("id", src.getCalId());
       jsonHeader.addProperty("title", src.getTitle());
       jsonHeader.addProperty("allDay", src.isAllDay());
-      jsonHeader.add("start", context.serialize(src.getStart()));
-      jsonHeader.add("end", context.serialize(src.getEnd()));
+      jsonHeader.addProperty("start", src.getStart().getTime() / 1000);
+      if (src.getEnd() != null) {
+        jsonHeader.addProperty("end", src.getEnd().getTime() / 1000);
+      }
       jsonHeader.addProperty("url", src.getURL());
       jsonHeader.addProperty("className", src.getCSSClass());
       jsonHeader.addProperty("editable", !src.isLocked());
       return jsonHeader;
     }
+
   };
 
 }

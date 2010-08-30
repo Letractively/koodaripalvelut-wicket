@@ -371,7 +371,27 @@ public class FullCalendar extends Component
     params.put("eventFeedURL", eventFeed.getCallbackUrl());
     params.put("feedbackURL", feedbackHandler .getCallbackUrl());
     params.put("feedbackHandlers", getAjaxFeedHandler());
-    params.put("customOptions", "");
+    final Calendar viewDate = Calendar.getInstance();
+    viewDate.setTime(getViewDate());
+    params.put("year", viewDate.get(YEAR));
+    params.put("month", viewDate.get(MONTH));
+    params.put("day", viewDate.get(DAY_OF_MONTH));
+    params.put("customOptions", getCustomOptions());
+  }
+
+  /** Override to specify additional custom options.
+   * @return a String that must be either empty "", or start with a comma ","
+   */
+  protected String getCustomOptions() {
+    return "";
+  }
+
+  /** Get the default start date for the full calendar view.
+   * Defaults to new Date();
+   * @return the date to present in the view.
+   */
+  protected Date getViewDate() {
+    return new Date();
   }
 
   /** Override to specify an alternate defaultView.
