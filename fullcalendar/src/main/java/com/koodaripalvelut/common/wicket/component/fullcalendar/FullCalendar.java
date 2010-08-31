@@ -27,7 +27,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequest;
 import org.apache.wicket.protocol.http.WebResponse;
 import org.apache.wicket.util.template.PackagedTextTemplate;
-import org.apache.wicket.util.template.TextTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,8 +58,6 @@ public class FullCalendar extends Component
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.min.js");
   private static ResourceReference JS_FULLCAL_DBG =
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.js");
-  private static TextTemplate FULLCAL_INI =
-    new PackagedTextTemplate(FullCalendar.class, "calendar-init.js");
   private static ResourceReference FULLCAL_CSS =
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.css");
 
@@ -345,7 +342,8 @@ public class FullCalendar extends Component
     }
 
     headerResponse.renderCSSReference(FULLCAL_CSS);
-    headerResponse.renderOnDomReadyJavascript(FULLCAL_INI.asString(initParams));
+    headerResponse.renderOnDomReadyJavascript(
+        new PackagedTextTemplate(FullCalendar.class, "calendar-init.js").asString(initParams));
 
     super.renderHead(container);
   }
