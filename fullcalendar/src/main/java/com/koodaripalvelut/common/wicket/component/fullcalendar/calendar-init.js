@@ -32,10 +32,7 @@ var Feedback = new (function() {
   
   this.forEvent = function (eventName) {
     return function(event, jsEvent, ui, view) {
-      if (arguments.length == 3)
-        call({"feedbackFor" : eventName, "event" : event}, null);
-      else
-        call({"feedbackFor" : eventName, "event" : event, "ui" : ui}, null);
+      call({"feedbackFor" : eventName, "event" : event}, null);
     };
   };
   
@@ -43,11 +40,10 @@ var Feedback = new (function() {
     return function(event, dayDelta, minuteDelta, allDay, revertFunc, jsEvent, ui, view) {
       if (arguments.length == 8)
         call({"feedbackFor" : eventName, "event" : event, 
-          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, "allDay" : allDay, 
-          "ui" : ui}, revertFunc);
+          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, "allDay" : allDay}, revertFunc);
       else
         call({"feedbackFor" : eventName, "event" : event, 
-          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta, "ui" : jsEvent}, allDay);
+          "dayDelta" : dayDelta, "minuteDelta" : minuteDelta}, allDay);
     };
   };
 });
