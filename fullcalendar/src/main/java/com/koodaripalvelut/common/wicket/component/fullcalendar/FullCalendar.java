@@ -7,6 +7,7 @@ import static javax.servlet.http.HttpServletResponse.SC_CONFLICT;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -32,6 +33,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
@@ -61,9 +64,37 @@ public class FullCalendar extends Component
   private static ResourceReference FULLCAL_CSS =
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.css");
 
+  private static final String[] DATE_FORMATS =
+    new String[] {"yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss",
+                  "EEE, d MMM yyyy HH:mm:ss z", "EEE, d MMM yyyy HH:mm:ss"};
+
+  private static final JsonDeserializer<Date> DATE_DESERIALIZER =
+    new JsonDeserializer<Date>() {
+
+    @Override
+    public Date deserialize(final JsonElement json, final Type typeOfT,
+        final JsonDeserializationContext context) throws JsonParseException {
+      final SimpleDateFormat format = new SimpleDateFormat();
+      for (final String pattern : DATE_FORMATS) {
+        try {
+          format.applyPattern(pattern);
+          return format.parse(json.getAsString());
+        } catch (final Exception e1) {
+          LOG.debug("Date parsing error", e1);
+        }
+      }
+      try {
+        return new Date(json.getAsLong() * 1000);
+      } catch (final Exception ef) {
+        throw new ClassCastException("Date Parsing options exhausted");
+      }
+    }
+  };
+
   static final Gson GSON = new GsonBuilder()
     .registerTypeAdapter(Event.class, Event.SERIALIZER)
     .registerTypeAdapter(Header.class, Header.SERIALIZER)
+    .registerTypeAdapter(Date.class, DATE_DESERIALIZER)
     .create();
   static final JsonParser PARSER = new JsonParser();
 
@@ -141,12 +172,14 @@ public class FullCalendar extends Component
     return this;
   }
 
-  /** Override this method to catch events recieved from the Ajax component */
+  /** Override this method to catch events received from the AJAX component.
+   * @return true if the event should be processed successfully;
+   *         false otherwise. */
   public boolean onEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
     return true;
   }
 
-  /** Renders the {@link FullCalendar} via ajax.
+  /** Renders the {@link FullCalendar} via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/display/render/">render</a>
    * @return this.
    */
@@ -154,7 +187,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'render'");
   }
 
-  /** Changes the display's View via ajax.
+  /** Changes the display's View via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/views/changeView/">changeView</a>
    * @return this.
    */
@@ -162,7 +195,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'changeView'", strWrap(view));
   }
 
-  /** Moves the calendar one step back (either by a month, week, or day) via ajax.
+  /** Moves the calendar one step back (either by a month, week, or day) via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/current_date/prev/">prev</a>
    * @return this.
    */
@@ -170,7 +203,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'prev'");
   }
 
-  /** Moves the calendar one step forward (either by a month, week, or day) via ajax.
+  /** Moves the calendar one step forward (either by a month, week, or day) via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/current_date/next/">next</a>
    * @return this.
    */
@@ -178,7 +211,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'next'");
   }
 
-  /** Moves the calendar to the current date via ajax.
+  /** Moves the calendar to the current date via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/current_date/today/">today</a>
    * @return this.
    */
@@ -186,7 +219,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'today'");
   }
 
-  /** Moves the calendar to an arbitrary year/month/date via ajax.
+  /** Moves the calendar to an arbitrary year/month/date via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/current_date/gotoDate/">gotoDate</a>
    * @return this.
    */
@@ -196,7 +229,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'gotoDate'", c.get(YEAR), c.get(MONTH), c.get(DAY_OF_MONTH));
   }
 
-  /** Select a period of time via ajax.
+  /** Select a period of time via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/selection/select_method/">select_method</a>
    * @return this.
    */
@@ -205,7 +238,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'select'", strWrap(start), strWrap(end), allDay);
   }
 
-  /** UnSelect a period of time via ajax.
+  /** UnSelect a period of time via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/selection/unselect_method/">unselect_method</a>
    * @return this.
    */
@@ -213,7 +246,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'unselect'");
   }
 
-  /** Removes events from the calendar via ajax.
+  /** Removes events from the calendar via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/event_data/removeEvents/">removeEvents</a>
    * @return this.
    */
@@ -221,7 +254,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'removeEvents'", idOrFilter);
   }
 
-  /** Refetches events from all sources and rerenders them on the screen via ajax.
+  /** Refetches events from all sources and re-renders them on the screen via AJAX.
    * @see <a href="http://arshaw.com/fullcalendar/docs/event_data/refetchEvents/">refetchEvents</a>
    * @return this.
    */
@@ -229,7 +262,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'refetchEvents'");
   }
 
-  /** Renders a new event on the calendar via ajax.
+  /** Renders a new event on the calendar via AJAX.
    * <b>Note</b> <i>Adding an event source will not modify the underlying Model for the
    * {@link FullCalendar}; i.e. getDefaultModelObject()} is not modified in any way.</i>
    * @see <a href="http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/">renderEvent</a>
@@ -240,7 +273,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'addEventSource'", GSON.toJson(event, EVENT_TYPE), stick);
   }
 
-  /** Dynamically adds an event source via ajax.
+  /** Dynamically adds an event source via AJAX.
    * <b>Note</b> <i>Adding an event source will not modify the underlying Model for the
    * {@link FullCalendar}; i.e. getDefaultModelObject()} is not modified in any way.</i>
    * @see <a href="http://arshaw.com/fullcalendar/docs/event_data/addEventSource/">addEventSource</a>
@@ -250,7 +283,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'addEventSource'", directParam);
   }
 
-  /** Dynamically adds an event source via ajax.
+  /** Dynamically adds an event source via AJAX.
    * @see #addEventSource(AjaxRequestTarget, String)
    * @return this.
    */
@@ -259,7 +292,7 @@ public class FullCalendar extends Component
     return addEventSource(target, GSON.toJson(events, EVENT_COLLECTION_TYPE));
   }
 
-  /** Dynamically adds an event source via ajax.
+  /** Dynamically adds an event source via AJAX.
    * @see #addEventSource(AjaxRequestTarget, String)
    * @return a created CalendatFeedEvent.
    */
@@ -271,7 +304,7 @@ public class FullCalendar extends Component
     return eventFeed;
   }
 
-  /** Dynamically removes an event source via ajax.
+  /** Dynamically removes an event source via AJAX.
    * <b>Note</b> <i>Removing an event source will not modify the underlying Model for the
    * {@link FullCalendar}; i.e. getDefaultModelObject()} is not modified in any way.</i>
    * @see <a href="http://arshaw.com/fullcalendar/docs/event_data/removeEventSource/">removeEventSource</a>
@@ -281,7 +314,7 @@ public class FullCalendar extends Component
     return callMethod(target, "'removeEventSource'", directParam);
   }
 
-  /** Dynamically removes an event source via ajax.
+  /** Dynamically removes an event source via AJAX.
    * @see #removeEventSource(AjaxRequestTarget, String)
    * @return this.
    */
@@ -290,7 +323,7 @@ public class FullCalendar extends Component
     return removeEventSource(target, GSON.toJson(events, EVENT_COLLECTION_TYPE));
   }
 
-  /** Dynamically adds an event source via ajax.
+  /** Dynamically adds an event source via AJAX.
    * @see #removeEventSource(AjaxRequestTarget, String)
    * @return this.
    */
@@ -378,6 +411,17 @@ public class FullCalendar extends Component
   }
 
   /** Override to specify additional custom options.
+   *
+   * <p>To change the firstDay of the calendar to monday, you may return: <br/>
+   * <code>return ", firstDay : 1";</code>
+   *
+   * <p>To change the timeFormat of the calendar display, you may return: <br/>
+   * <code>return ", timeFormat : { '' : 'h:mm{ - h:mm}' }";</code>
+   *
+   * <p>It is also possible to combine any amount of custom options for example:
+   * <br/><code>return ", firstDay:1, dayNames:['Domingo', 'Lunes', 'Martes',
+   * 'Miercoles', 'Jueves', 'Viernes', 'Sábado']";
+   *
    * @return a String that must be either empty "", or start with a comma ","
    */
   protected String getCustomOptions() {
