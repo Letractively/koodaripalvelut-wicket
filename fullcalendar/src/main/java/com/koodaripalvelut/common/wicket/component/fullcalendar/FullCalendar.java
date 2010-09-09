@@ -44,6 +44,21 @@ import com.google.gson.reflect.TypeToken;
 /** Full Calendar Component that integrates the
  * <a href="http://arshaw.com/fullcalendar/">JQuery FullCalendar Plugin</a> with Wicket
  *
+ * <p>This is a elegant/simple (holds very little state) implementation of the
+ * above jquery plugin. You are invited to extend the default functionality by
+ * overriding the list of protected methods such as {@link #trackViewDisplay()}
+ * or {@link #includeJQuery()} to extend this base functionality with your more
+ * specific requirements</p>
+ *
+ * <p> For example, if you override the trackViewDisplay method:</p>
+ *
+ * <code>
+ * &#064;Overide<br/>
+ * protected boolean trackViewDisplay() { return true; }
+ * </code>
+ *
+ * <p>It will make your calendar report these types of events.</p>
+ *
  * @author rhansen@kitsd.com
  */
 public class FullCalendar extends Component
@@ -571,7 +586,7 @@ public class FullCalendar extends Component
       sb.append(",unselect: Feedback.forUnselect");
     }
     if (trackViewDisplay()) {
-      sb.append(",viewDisplay: Feedback.forSelect");
+      sb.append(",viewDisplay: Feedback.forViewDisplay");
     }
     return sb.toString();
   }

@@ -1,4 +1,11 @@
 var Feedback = new (function() {
+  function setupSend(xhr) {
+    xhr.setRequestHeader("Wicket-Ajax", "true");
+    if (typeof(Wicket.Focus.lastFocusId) != "undefined" && Wicket.Focus.lastFocusId != "" && Wicket.Focus.lastFocusId != null)
+        xhr.setRequestHeader("Wicket-FocusedElementId", Wicket.Focus.lastFocusId);                
+    xhr.setRequestHeader("Accept", "text/xml");
+  };
+  
   function success(data) {
     var xml = data;
     if (typeof xml == "string") {
@@ -13,7 +20,7 @@ var Feedback = new (function() {
     $.ajax({
       url : "${feedbackURL}", type: 'POST', contentType: 'application/json;charset=UTF-8'
      ,dataType: (($.browser.msie) ? "text" : "xml"), data : $.toJSON(data)
-     ,success : success, error : revertFunc
+     ,beforeSend : setupSend ,success : success, error : revertFunc
     });
   };
   
@@ -24,6 +31,10 @@ var Feedback = new (function() {
   
   this.forUnselect = function(view, jsEvent) {
     call({"feedbackFor" : "unselect"}, null);
+  };
+  
+  this.forViewDisplay = function(view) {
+    call({"feedbackFor" : "viewDisplay"}, null);
   };
   
   this.forDayClick = function(date, allDay, jsEvent, view) {

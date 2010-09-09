@@ -19,8 +19,10 @@ import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.extensions.ajax.markup.html.modal.ModalWindow;
 import org.apache.wicket.model.Model;
 
+import com.koodaripalvelut.common.wicket.component.fullcalendar.AjaxFeedBack;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.Event;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.Views;
@@ -40,7 +42,17 @@ public class FullCalendarPage extends BasePage {
 
     @Override
     public String getCSSClass() {
-      return "event";
+      String slot = "A";
+      if (id > .25) {
+        slot = "B";
+      }
+      if (id > .5) {
+        slot = "C";
+      }
+      if (id > .75) {
+        slot = "D";
+      }
+      return "event" + slot;
     }
 
     @Override
@@ -82,11 +94,28 @@ public class FullCalendarPage extends BasePage {
 
 
   private final FullCalendar fullCalendar;
+  private final ModalWindow window;
+  private final Model<AjaxFeedBack> feedbackModel = new Model<AjaxFeedBack>();
 
 
   public FullCalendarPage() {
-    fullCalendar = new FullCalendar("calendar", Model.ofList(generateEvents()));
+    fullCalendar = new FullCalendar("calendar", Model.ofList(generateEvents())) {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public boolean onEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
+        return ajaxEvent(target, feedback);
+      };
+
+      @Override
+      protected boolean trackViewDisplay() {
+        return true;
+      };
+    };
     add(fullCalendar);
+    window = new ModalWindow("window");
+    window.setContent(new DayClickEventPanel(window.getContentId(), feedbackModel));
+    add(window);
 
     add(new AjaxLink<Void>("addEvents") {
       private static final long serialVersionUID = 1L;
@@ -114,6 +143,22 @@ public class FullCalendarPage extends BasePage {
         fullCalendar.gotoDate(target, new Date((long) (Math.random() * 25000000000000l)));
       }
     });
+  }
+
+
+  protected boolean ajaxEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
+    feedbackModel.setObject(feedback);
+    if (feedback.getFeedbackFor().equals("dayClick")) {
+      Date date = feedback.getDate();
+      if (date == null) {
+        date = new Date();
+      }
+      final DayClickEventPanel dcep = new DayClickEventPanel(window.getContentId(), feedbackModel);
+      window.setContent(dcep);
+      dcep.setVisible(true);
+      window.show(target);
+    }
+    return true;
   }
 
 

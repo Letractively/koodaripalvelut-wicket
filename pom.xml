@@ -68,7 +68,13 @@
         <url>http://koodaripalvelut-wicket.googlecode.com/svn/repository/</url>
         <releases><enabled>true</enabled></releases>
         <snapshots><enabled>true</enabled></snapshots>
-      </repository>   
+      </repository>
+      <repository>
+	      <id>gson</id>
+	      <url>http://google-gson.googlecode.com/svn/mavenrepo</url>
+	      <releases><enabled>true</enabled></releases>
+	      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
   </repositories>
 
   <distributionManagement>

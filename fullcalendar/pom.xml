@@ -18,7 +18,8 @@
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>1.4</version>
+      <version>1.5</version>
     </dependency>
   </dependencies>
+  
 </project>

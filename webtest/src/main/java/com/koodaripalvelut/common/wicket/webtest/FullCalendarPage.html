@@ -3,7 +3,24 @@
   xmlns:wicket="http://wicket.apache.org/">
 <body>
 <wicket:extend>
+  <style type="text/css">
+<!--
+  .eventA, .eventA a {
+    background-color: white;
+  }
+  .eventB, .eventB a {
+    background-color: red;
+  }
+  .eventC, .eventC a {
+    background-color: blue;
+  }
+  .eventD, .eventD a {
+    background-color: green;
+  } 
+-->
+  </style>
   <div wicket:id="calendar" style="width: 700px; margin-left: 120px;" />
+  <div wicket:id="window"/>
   <a wicket:id="addEvents">Add Events</a>
   <a wicket:id="changeView">Set Random View</a>
   <a wicket:id="changeDate">Goto Random Day</a>  

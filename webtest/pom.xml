@@ -43,6 +43,11 @@
 	</scm>
 
 	<dependencies>
+	  <dependency>
+      <groupId>org.apache.wicket</groupId>
+      <artifactId>wicket-extensions</artifactId>
+      <version>${wicket.version}</version>
+    </dependency>
 		<dependency>
 			<groupId>com.koodaripalvelut.wicket.common</groupId>
       <artifactId>components</artifactId>
