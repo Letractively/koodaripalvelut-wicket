@@ -16,10 +16,17 @@ import java.util.Date;
 
 import org.apache.wicket.model.IModel;
 
-/** IEventFeedModel is responsible of
+/** IEventFeedModel is used by {@link CalendarFeedEvent} to know about models
+ * that can use the shown interval to filter out what events to return.
+ *
+ * Models implementing this will be about to show only events visible inside
+ * the selected view.
+ *
  * @author rhansen@kitsd.com
+ * @since 1.1
  */
 public interface IEventFeedModel extends IModel<Collection<? extends Event>> {
-  void setStartFilter(Date start);
-  void setEndFilter(Date end);
+
+  void setIntervalFilter(Date start, Date end);
+
 }

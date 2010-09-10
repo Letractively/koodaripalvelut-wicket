@@ -2,9 +2,9 @@ package com.koodaripalvelut.common.wicket.component.fullcalendar;
 
 import static com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar.EVENT_COLLECTION_TYPE;
 import static com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar.GSON;
+import static com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar.fromJavascriptTimestamp;
 
 import java.util.Collection;
-import java.util.Date;
 
 import org.apache.wicket.Request;
 import org.apache.wicket.RequestCycle;
@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
  * @author rhansen@kindleit.net
  */
 public class CalendarFeedEvent extends AbstractAjaxBehavior {
+  public static final String START_DATE = "start";
+  public static final String END_DATE = "end";
+
   private static final long serialVersionUID = 1L;
   private static final Logger LOG =
     LoggerFactory.getLogger(CalendarFeedEvent.class);
@@ -35,10 +38,10 @@ public class CalendarFeedEvent extends AbstractAjaxBehavior {
     try {
       if (eventModel instanceof IEventFeedModel) {
         final Request request = RequestCycle.get().getRequest();
-        final Long start = Long.parseLong(request.getParameter("start"));
-        final Long end = Long.parseLong(request.getParameter("end"));
-        ((IEventFeedModel) eventModel).setStartFilter(new Date(start*1000));
-        ((IEventFeedModel) eventModel).setEndFilter(new Date(end*1000));
+        final Long start = Long.parseLong(request.getParameter(START_DATE));
+        final Long end = Long.parseLong(request.getParameter(END_DATE));
+        ((IEventFeedModel) eventModel).setIntervalFilter(
+            fromJavascriptTimestamp(start), fromJavascriptTimestamp(end));
       }
     } catch (final NumberFormatException nfe) {
       LOG.error("error parsing event filter dates", nfe);

@@ -1,5 +1,6 @@
 package com.koodaripalvelut.common.wicket.component.fullcalendar;
 
+import static com.koodaripalvelut.common.wicket.component.fullcalendar.AjaxFeedBack.FEEDBACK_FOR;
 import static java.util.Calendar.DAY_OF_MONTH;
 import static java.util.Calendar.MONTH;
 import static java.util.Calendar.YEAR;
@@ -13,6 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.RequestCycle;
@@ -79,9 +81,24 @@ public class FullCalendar extends Component
   private static ResourceReference FULLCAL_CSS =
     new CompressedResourceReference(FullCalendar.class, "fullcalendar.css");
 
+  // AJAX methods
+  private static final String AJAX_REMOVE_EVENT_SOURCE_METHOD = "'removeEventSource'";
+  private static final String AJAX_ADD_EVENT_SOURCE_METHOD = "'addEventSource'";
+  private static final String AJAX_REFETCH_EVENTS_METHOD = "'refetchEvents'";
+  private static final String AJAX_REMOVE_EVENTS_EMTOD = "'removeEvents'";
+  private static final String AJAX_UNSELECT_METHOD = "'unselect'";
+  private static final String AJAX_SELECT_METHOD = "'select'";
+  private static final String AJAX_CHANGE_VIEW_METHOD = "'changeView'";
+  private static final String AJAX_RENDER_METHOD = "'render'";
+  private static final String AJAX_GOTO_DATE_METHOD = "'gotoDate'";
+  private static final String AJAX_TODAY_METHOD = "'today'";
+  private static final String AJAX_PREV_METHOD = "'prev'";
+  private static final String AJAX_NEXT_METHOD = "'next'";
+
   private static final String[] DATE_FORMATS =
-    new String[] {"yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd'T'HH:mm:ss",
-                  "EEE, d MMM yyyy HH:mm:ss z", "EEE, d MMM yyyy HH:mm:ss"};
+    new String[] {"yyyy-MM-dd'T'HH:mm:ss.S'Z'", "yyyy-MM-dd'T'HH:mm:ss",
+                  "EEE, d MMM yyyy HH:mm:ss Z", "EEE, d MMM yyyy HH:mm:ss"};
+  private static final int JS_TS_ADJUST = 1000;
 
   private static final JsonDeserializer<Date> DATE_DESERIALIZER =
     new JsonDeserializer<Date>() {
@@ -89,21 +106,32 @@ public class FullCalendar extends Component
     @Override
     public Date deserialize(final JsonElement json, final Type typeOfT,
         final JsonDeserializationContext context) throws JsonParseException {
-      final SimpleDateFormat format = new SimpleDateFormat();
-      for (final String pattern : DATE_FORMATS) {
+      final SimpleDateFormat parser = new SimpleDateFormat();
+      for (int i = 0; i < DATE_FORMATS.length; i++) {
         try {
-          format.applyPattern(pattern);
-          return format.parse(json.getAsString());
+          setupParser(parser, i);
+          return parser.parse(json.getAsString());
         } catch (final Exception e1) {
           LOG.debug("Date parsing error", e1);
         }
       }
       try {
-        return new Date(json.getAsLong() * 1000);
+        return fromJavascriptTimestamp(json.getAsLong());
       } catch (final Exception ef) {
         throw new ClassCastException("Date Parsing options exhausted");
       }
     }
+
+    public void setupParser(final SimpleDateFormat parser, final int format) {
+      parser.applyPattern(DATE_FORMATS[format]);
+      //Special treatment for the java unsupported Zulu time zone.
+      if (format == 0) {
+        parser.setTimeZone(TimeZone.getTimeZone("Zulu"));
+      } else {
+        parser.setTimeZone(TimeZone.getDefault());
+      }
+    }
+
   };
 
   static final Gson GSON = new GsonBuilder()
@@ -117,6 +145,14 @@ public class FullCalendar extends Component
     new TypeToken<Collection<Event>>(){}.getType();
   static final Type EVENT_TYPE =
     new TypeToken<Event>(){}.getType();
+
+  static long toJavascriptTimestamp(final Date date) {
+    return date.getTime() / JS_TS_ADJUST;
+  }
+
+  static Date fromJavascriptTimestamp(final long timestamp) {
+    return new Date(timestamp * JS_TS_ADJUST);
+  }
 
   /** AjaxEvent processes incoming clicking and hovering events from the fullcalendar script.
    * @author rhansen@kindleit.net
@@ -144,7 +180,7 @@ public class FullCalendar extends Component
         throw new WicketRuntimeException("json request was not a json object");
       }
       final AjaxFeedBack feedback = new AjaxFeedBack((JsonObject) req);
-      if (!feedback.has("feedbackFor")) {
+      if (!feedback.has(FEEDBACK_FOR)) {
         throw new WicketRuntimeException("json request has no feedbackFor");
       }
       if (!onEvent(target, feedback)) {
@@ -199,7 +235,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar render(final AjaxRequestTarget target) {
-    return callMethod(target, "'render'");
+    return callMethod(target, AJAX_RENDER_METHOD);
   }
 
   /** Changes the display's View via AJAX.
@@ -207,7 +243,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar changeView(final AjaxRequestTarget target, final Views view) {
-    return callMethod(target, "'changeView'", strWrap(view));
+    return callMethod(target, AJAX_CHANGE_VIEW_METHOD, strWrap(view));
   }
 
   /** Moves the calendar one step back (either by a month, week, or day) via AJAX.
@@ -215,7 +251,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar prev(final AjaxRequestTarget target) {
-    return callMethod(target, "'prev'");
+    return callMethod(target, AJAX_PREV_METHOD);
   }
 
   /** Moves the calendar one step forward (either by a month, week, or day) via AJAX.
@@ -223,7 +259,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar next(final AjaxRequestTarget target) {
-    return callMethod(target, "'next'");
+    return callMethod(target, AJAX_NEXT_METHOD);
   }
 
   /** Moves the calendar to the current date via AJAX.
@@ -231,7 +267,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar today(final AjaxRequestTarget target) {
-    return callMethod(target, "'today'");
+    return callMethod(target, AJAX_TODAY_METHOD);
   }
 
   /** Moves the calendar to an arbitrary year/month/date via AJAX.
@@ -241,7 +277,7 @@ public class FullCalendar extends Component
   public FullCalendar gotoDate(final AjaxRequestTarget target, final Date date) {
     final Calendar c = Calendar.getInstance();
     c.setTime(date);
-    return callMethod(target, "'gotoDate'", c.get(YEAR), c.get(MONTH), c.get(DAY_OF_MONTH));
+    return callMethod(target, AJAX_GOTO_DATE_METHOD, c.get(YEAR), c.get(MONTH), c.get(DAY_OF_MONTH));
   }
 
   /** Select a period of time via AJAX.
@@ -250,7 +286,7 @@ public class FullCalendar extends Component
    */
   public FullCalendar select(final AjaxRequestTarget target, final Date start, final Date end,
       final boolean allDay) {
-    return callMethod(target, "'select'", strWrap(start), strWrap(end), allDay);
+    return callMethod(target, AJAX_SELECT_METHOD, strWrap(start), strWrap(end), allDay);
   }
 
   /** UnSelect a period of time via AJAX.
@@ -258,7 +294,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar unselect(final AjaxRequestTarget target) {
-    return callMethod(target, "'unselect'");
+    return callMethod(target, AJAX_UNSELECT_METHOD);
   }
 
   /** Removes events from the calendar via AJAX.
@@ -266,7 +302,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar removeEvents(final AjaxRequestTarget target, final String idOrFilter) {
-    return callMethod(target, "'removeEvents'", idOrFilter);
+    return callMethod(target, AJAX_REMOVE_EVENTS_EMTOD, idOrFilter);
   }
 
   /** Refetches events from all sources and re-renders them on the screen via AJAX.
@@ -274,7 +310,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar refetchEvents(final AjaxRequestTarget target) {
-    return callMethod(target, "'refetchEvents'");
+    return callMethod(target, AJAX_REFETCH_EVENTS_METHOD);
   }
 
   /** Renders a new event on the calendar via AJAX.
@@ -285,7 +321,7 @@ public class FullCalendar extends Component
    */
   public FullCalendar renderEvent(final AjaxRequestTarget target, final Event event,
       final boolean stick) {
-    return callMethod(target, "'addEventSource'", GSON.toJson(event, EVENT_TYPE), stick);
+    return callMethod(target, AJAX_ADD_EVENT_SOURCE_METHOD, GSON.toJson(event, EVENT_TYPE), stick);
   }
 
   /** Dynamically adds an event source via AJAX.
@@ -295,7 +331,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar addEventSource(final AjaxRequestTarget target, final String directParam) {
-    return callMethod(target, "'addEventSource'", directParam);
+    return callMethod(target, AJAX_ADD_EVENT_SOURCE_METHOD, directParam);
   }
 
   /** Dynamically adds an event source via AJAX.
@@ -326,7 +362,7 @@ public class FullCalendar extends Component
    * @return this.
    */
   public FullCalendar removeEventSource(final AjaxRequestTarget target, final String directParam) {
-    return callMethod(target, "'removeEventSource'", directParam);
+    return callMethod(target, AJAX_REMOVE_EVENT_SOURCE_METHOD, directParam);
   }
 
   /** Dynamically removes an event source via AJAX.

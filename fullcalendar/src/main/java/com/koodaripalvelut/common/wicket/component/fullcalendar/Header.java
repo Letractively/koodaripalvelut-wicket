@@ -13,6 +13,12 @@ import com.google.gson.JsonSerializer;
  * @author rhansen@kindleit.net
  */
 public interface Header {
+  // Key constants
+  String JSON_RIGHT = "right";
+  String JSON_CENTER = "center";
+  String JSON_LEFT = "left";
+
+  // Value constantss
   String TITLE = "title";
   String PREV_BTN = "prev";
   String NEXT_BTN = "next";
@@ -31,9 +37,9 @@ public interface Header {
     public JsonElement serialize(final Header src, final Type typeOfSrc,
         final JsonSerializationContext context) {
       final JsonObject jsonHeader = new JsonObject();
-      jsonHeader.addProperty("left", src.getLeft());
-      jsonHeader.addProperty("center", src.getCenter());
-      jsonHeader.addProperty("right", src.getRight());
+      jsonHeader.addProperty(JSON_LEFT, src.getLeft());
+      jsonHeader.addProperty(JSON_CENTER, src.getCenter());
+      jsonHeader.addProperty(JSON_RIGHT, src.getRight());
       return jsonHeader;
     }
   };

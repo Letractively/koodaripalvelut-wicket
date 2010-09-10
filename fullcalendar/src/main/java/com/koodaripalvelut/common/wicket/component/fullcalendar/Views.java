@@ -4,6 +4,8 @@ package com.koodaripalvelut.common.wicket.component.fullcalendar;
  * @see http://arshaw.com/fullcalendar/docs/views/
  *
  * @author rhansen@kindleit.net
+ *
+ * @since 1.1
  */
 public enum Views {
   MONTH {

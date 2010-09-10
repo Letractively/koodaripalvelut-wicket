@@ -24,8 +24,18 @@ import com.google.gson.JsonObject;
 
 /** AjaxFeedBack is responsible of
  * @author rhansen@kitsd.com
+ * @since 1.1
  */
 public class AjaxFeedBack implements IClusterable {
+
+  /* Important entry keys */
+  public static final String FEEDBACK_FOR = "feedbackFor";
+  public static final String EVENT = "event";
+  public static final String ALL_DAY = "allDay";
+  public static final String DATE = "date";
+  public static final String START_DATE = "startDate";
+  public static final String END_DATE = "endDate";
+
   private static final long serialVersionUID = 1L;
 
   JsonObject feedback;
@@ -47,42 +57,42 @@ public class AjaxFeedBack implements IClusterable {
   }
 
   public String getFeedbackFor() {
-    return feedback.get("feedbackFor").getAsString();
+    return feedback.get(FEEDBACK_FOR).getAsString();
   }
 
   public Date getDate() {
-    if (!has("date")) {
+    if (!has(DATE)) {
       return null;
     }
-    return GSON.fromJson(feedback.get("date"), Date.class);
+    return GSON.fromJson(feedback.get(DATE), Date.class);
   }
 
   public Date getStartDate() {
-    if (!has("startDate")) {
+    if (!has(START_DATE)) {
       return null;
     }
-    return GSON.fromJson(feedback.get("startDate"), Date.class);
+    return GSON.fromJson(feedback.get(START_DATE), Date.class);
   }
 
   public Date getEndDate() {
-    if (!has("endDate")) {
+    if (!has(END_DATE)) {
       return null;
     }
-    return GSON.fromJson(feedback.get("endDate"), Date.class);
+    return GSON.fromJson(feedback.get(END_DATE), Date.class);
   }
 
   public Boolean isAllDay() {
-    if (!has("allDay")) {
+    if (!has(ALL_DAY)) {
       return null;
     }
-    return feedback.get("allDay").getAsBoolean();
+    return feedback.get(ALL_DAY).getAsBoolean();
   }
 
   public Event getEvent() {
-    if (!has("event")) {
+    if (!has(EVENT)) {
       return null;
     }
-    return GSON.fromJson(feedback.get("event"), Event.class);
+    return GSON.fromJson(feedback.get(EVENT), Event.class);
   }
 }
 
