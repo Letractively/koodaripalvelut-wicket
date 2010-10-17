@@ -117,6 +117,16 @@ public class FullCalendarPage extends BasePage {
     window.setContent(new DayClickEventPanel(window.getContentId(), feedbackModel));
     add(window);
 
+    add(new AjaxLink<Void>("refreshCalendar") {
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      public void onClick(final AjaxRequestTarget target) {
+        fullCalendar.render(target);
+      }
+
+    });
+
     add(new AjaxLink<Void>("addEvents") {
       private static final long serialVersionUID = 1L;
 
