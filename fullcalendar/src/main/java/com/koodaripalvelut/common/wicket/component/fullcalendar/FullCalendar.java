@@ -411,18 +411,18 @@ public class FullCalendar extends Component
     setOptions(initParams);
 
     if (includeJQuery()) {
-      headerResponse.renderJavascriptReference(JS_JQUERY);
+      headerResponse.renderJavascriptReference(JS_JQUERY, "jquery");
     }
     if (includeJQueryJSON()) {
-      headerResponse.renderJavascriptReference(JS_JQUERY_JSON);
+      headerResponse.renderJavascriptReference(JS_JQUERY_JSON, "jquery.json");
     }
     if (includeJQueryUI()) {
-      headerResponse.renderJavascriptReference(JS_JQUERY_UI);
+      headerResponse.renderJavascriptReference(JS_JQUERY_UI, "jquery.ui");
     }
     if (getApplication().getDebugSettings().isAjaxDebugModeEnabled()) {
-      headerResponse.renderJavascriptReference(JS_FULLCAL_DBG);
+      headerResponse.renderJavascriptReference(JS_FULLCAL_DBG, "fullcalendar");
     } else {
-      headerResponse.renderJavascriptReference(JS_FULLCAL);
+      headerResponse.renderJavascriptReference(JS_FULLCAL, "fullcalendar");
     }
 
     headerResponse.renderCSSReference(FULLCAL_CSS);
