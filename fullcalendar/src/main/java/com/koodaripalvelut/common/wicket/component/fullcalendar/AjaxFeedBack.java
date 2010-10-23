@@ -73,7 +73,7 @@ public class AjaxFeedBack implements IClusterable {
 
   AjaxFeedBack setFeedback(final JsonObject feedback) {
     this.feedback = feedback;
-    feedbackStr = feedback.getAsString();
+    feedbackStr = feedback.toString();
     return this;
   }
 
