@@ -4,7 +4,7 @@
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.1-SNAPSHOT</version>
 
 	<name>Koodari Palvelut Parent POM</name>
 	<description>Koodari Palvelut Parent POM</description>
