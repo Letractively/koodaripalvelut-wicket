@@ -42,7 +42,7 @@ public class AjaxFeedBack implements IClusterable {
   public static final String END_DATE = "endDate";
   /** Display mode entry key. */
   public static final String VIEW = "view";
-  
+
   /** Day click event. */
   public static final String DAY_CLICK = "dayClick";
   /** Event drop event. */
@@ -54,20 +54,35 @@ public class AjaxFeedBack implements IClusterable {
 
   private static final long serialVersionUID = 1L;
 
-  JsonObject feedback;
+  private String feedbackStr;
+  private transient JsonObject feedback;
 
   /**
    * @param obj JsonObject for feedback.
    */
   public AjaxFeedBack(final JsonObject obj) {
-    feedback = obj;
+    setFeedback(obj);
   }
+
+  JsonObject getFeedback() {
+    if (feedback == null) {
+      feedback = (JsonObject) FullCalendar.PARSER.parse(feedbackStr);
+    }
+    return feedback;
+  }
+
+  AjaxFeedBack setFeedback(final JsonObject feedback) {
+    this.feedback = feedback;
+    feedbackStr = feedback.getAsString();
+    return this;
+  }
+
 
   /**
    * @return Set<Map.Entry<String, JsonElement>> All feedback entries.
    */
   public Set<Map.Entry<String, JsonElement>> entrySet() {
-    return feedback.entrySet();
+    return getFeedback().entrySet();
   }
 
   /** Test whether a specific entry was given in feedback.
@@ -75,7 +90,7 @@ public class AjaxFeedBack implements IClusterable {
    * @return boolean true if the entry was found.
    */
   public boolean has(final String key) {
-    return feedback.has(key);
+    return getFeedback().has(key);
   }
 
   /**
@@ -83,15 +98,15 @@ public class AjaxFeedBack implements IClusterable {
    * @return JsonElement Entry for given key.
    */
   public JsonElement get(final String key) {
-    return feedback.get(key);
+    return getFeedback().get(key);
   }
 
-  /** Returns the type of feedback, it identifies the javascript 
+  /** Returns the type of feedback, it identifies the javascript
     event that triggered this feedback.
    * @return String FEEDBACK_FOR entry value.
    */
   public String getFeedbackFor() {
-    return feedback.get(FEEDBACK_FOR).getAsString();
+    return getFeedback().get(FEEDBACK_FOR).getAsString();
   }
 
   /**
@@ -101,7 +116,7 @@ public class AjaxFeedBack implements IClusterable {
     if (!has(DATE)) {
       return null;
     }
-    return GSON.fromJson(feedback.get(DATE), Date.class);
+    return GSON.fromJson(getFeedback().get(DATE), Date.class);
   }
 
   /**
@@ -111,7 +126,7 @@ public class AjaxFeedBack implements IClusterable {
     if (!has(START_DATE)) {
       return null;
     }
-    return GSON.fromJson(feedback.get(START_DATE), Date.class);
+    return GSON.fromJson(getFeedback().get(START_DATE), Date.class);
   }
 
   /**
@@ -121,7 +136,7 @@ public class AjaxFeedBack implements IClusterable {
     if (!has(END_DATE)) {
       return null;
     }
-    return GSON.fromJson(feedback.get(END_DATE), Date.class);
+    return GSON.fromJson(getFeedback().get(END_DATE), Date.class);
   }
 
   /**
@@ -131,7 +146,7 @@ public class AjaxFeedBack implements IClusterable {
     if (!has(ALL_DAY)) {
       return null;
     }
-    return feedback.get(ALL_DAY).getAsBoolean();
+    return getFeedback().get(ALL_DAY).getAsBoolean();
   }
 
   /**
@@ -141,15 +156,15 @@ public class AjaxFeedBack implements IClusterable {
     if (!has(EVENT)) {
       return null;
     }
-    return GSON.fromJson(feedback.get(EVENT), Event.class);
+    return GSON.fromJson(getFeedback().get(EVENT), Event.class);
   }
 
   /**
    * @return String The DISPLAY_MODE entry value.
    */
   public String getDisplayMode() {
-    JsonElement jsonElement = feedback.get(VIEW);
-    return (jsonElement != null) ? jsonElement.getAsString() : null; 
+    final JsonElement jsonElement = getFeedback().get(VIEW);
+    return jsonElement != null ? jsonElement.getAsString() : null;
   }
 }
 

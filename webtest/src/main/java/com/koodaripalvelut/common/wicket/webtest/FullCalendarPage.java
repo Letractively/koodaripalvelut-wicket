@@ -145,7 +145,7 @@ public class FullCalendarPage extends BasePage {
 
       @Override
       public void onClick(final AjaxRequestTarget target) {
-        fullCalendar.render(target);
+        fullCalendar.refetchEvents(target);
       }
 
     });
