@@ -1,0 +1,189 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.koodaripalvelut.wicket.common</groupId>
+	<artifactId>parent</artifactId>
+	<packaging>pom</packaging>
+	<version>1.1</version>
+
+	<name>Koodari Palvelut Parent POM</name>
+	<description>Koodari Palvelut Parent POM</description>
+	<inceptionYear>2010</inceptionYear>
+	<url>http://code.google.com/p/koodaripalvelut-wicket/</url>
+
+	<licenses>
+		<license>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<name>Apache 2.0</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Koodari Palvelut</name>
+		<url>http://www.koodaripalvelut.com/</url>
+	</organization>
+
+	<developers>
+		<developer>
+			<id>rhansen</id>
+			<name>Rodolfo Hansen</name>
+			<email>rhansen@kitsd.com</email>
+		</developer>
+		<developer>
+			<id>cencarnacion</id>
+			<name>Carlos Encarnación</name>
+			<email>cencarnacion@kitsd.com</email>
+		</developer>
+	</developers>
+  
+  <modules>
+    <module>changedetector</module>
+    <module>searchbox</module>
+    <module>webtest</module>
+    <module>components</module>
+    <module>fullcalendar</module>
+  </modules>
+
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/issues/list</url>
+	</issueManagement>
+
+	<properties>
+		<junit.version>4.8.1</junit.version>
+		<wicket.version>1.4.11</wicket.version>
+	</properties>
+
+	<scm>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/1.1</connection>
+    <developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/1.1</developerConnection>
+    <url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/tags/1.1</url>
+	</scm>
+	
+  <repositories>
+      <repository>
+        <id>koodaripalvelut-wicket-repo</id>
+        <name>Koodaripalvelut Wicket Repository</name>
+        <url>http://koodaripalvelut-wicket.googlecode.com/svn/repository/</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+      </repository>
+      <repository>
+	      <id>gson</id>
+	      <url>http://google-gson.googlecode.com/svn/mavenrepo</url>
+	      <releases><enabled>true</enabled></releases>
+	      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <downloadUrl>http://code.google.com/p/koodaripalvelut-wicket/downloads/list</downloadUrl>
+    <repository>
+      <id>koodaripalvelut-wicket-deploy</id>
+      <uniqueVersion>false</uniqueVersion>
+      <url>svn:https://koodaripalvelut-wicket.googlecode.com/svn/repository</url>
+    </repository>
+  </distributionManagement>
+
+	<dependencies>
+
+		<!-- Wicket -->
+		<dependency>
+			<groupId>org.apache.wicket</groupId>
+			<artifactId>wicket</artifactId>
+			<version>${wicket.version}</version>
+		</dependency>
+
+    <!-- Provided -->
+		<dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <version>2.5</version>
+      <scope>provided</scope>
+    </dependency>
+    
+		<!-- Testing -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+    <dependency>
+	    <groupId>ch.qos.logback</groupId>
+	    <artifactId>logback-classic</artifactId>
+	    <version>0.9.18</version>
+	    <scope>test</scope>
+    </dependency>
+
+	</dependencies>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+			</resource>
+			<resource>
+				<directory>src/main/java</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<testResources>
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>false</filtering>
+			</testResource>
+			<testResource>
+				<directory>src/test/java</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**</include>
+				</includes>
+				<excludes>
+					<exclude>**/*.java</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.1</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.5</version>
+      </plugin>
+			<plugin>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.0</version>
+        <configuration>
+          <releaseProfiles>release</releaseProfiles>
+          <goals>deploy</goals>
+          <tagBase>https://koodaripalvelut-wicket.googlecode.com/svn/tags</tagBase>
+        </configuration>
+      </plugin>
+		</plugins>
+		<extensions>
+      <extension>
+        <groupId>org.jvnet.wagon-svn</groupId>
+        <artifactId>wagon-svn</artifactId>
+        <version>1.9</version>
+      </extension>
+    </extensions>
+	</build>
+
+</project>
