@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>webtest</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 	<packaging>war</packaging>
 
 	<name>Koodari Palvelut Wicket Web Tests</name>
@@ -18,7 +18,7 @@
 	<parent>
 		<groupId>com.koodaripalvelut.wicket.common</groupId>
 		<artifactId>parent</artifactId>
-		<version>1.1</version>
+		<version>1.2-SNAPSHOT</version>
 		<relativePath>..</relativePath>
 	</parent>
 
@@ -36,9 +36,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.1/webtest</connection>
-		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.1/webtest</developerConnection>
-		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/tags/parent-1.1/webtest</url>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/webtest</connection>
+		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/webtest</developerConnection>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk/webtest</url>
 	</scm>
 
 	<dependencies>

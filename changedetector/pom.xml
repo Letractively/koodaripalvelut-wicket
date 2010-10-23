@@ -3,7 +3,7 @@
 
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>changedetector</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 
 	<name>Koodari Palvelut Wicket Additions - ChangeDetector</name>
 	<description>Koodari Palvelut Wicket Additions - ChangeDetector</description>
@@ -11,7 +11,7 @@
 	<parent>
 	 <groupId>com.koodaripalvelut.wicket.common</groupId>
 	 <artifactId>parent</artifactId>
-	 <version>1.1</version>
+	 <version>1.2-SNAPSHOT</version>
 	 <relativePath>..</relativePath>
 	</parent>
 
@@ -29,9 +29,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.1/changedetector</connection>
-		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.1/changedetector</developerConnection>
-		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/tags/parent-1.1/changedetector</url>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/changedetector</connection>
+		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/changedetector</developerConnection>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk/changedetector</url>
 	</scm>
 
 </project>

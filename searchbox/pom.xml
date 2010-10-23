@@ -3,7 +3,7 @@
 
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>searchbox</artifactId>
-	<version>1.1</version>
+	<version>1.2-SNAPSHOT</version>
 
 	<name>Koodari Palvelut Wicket Additions - SearchBox</name>
 	<description>Koodari Palvelut Wicket Additions - SearchBox</description>
@@ -13,7 +13,7 @@
 	<parent>
 	 <groupId>com.koodaripalvelut.wicket.common</groupId>
 	 <artifactId>parent</artifactId>
-	 <version>1.1</version>
+	 <version>1.2-SNAPSHOT</version>
 	 <relativePath>..</relativePath>
 	</parent>
 
@@ -31,9 +31,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.1/searchbox</connection>
-		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.1/searchbox</developerConnection>
-		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/tags/parent-1.1/searchbox</url>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/searchbox</connection>
+		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/searchbox</developerConnection>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk/searchbox</url>
 	</scm>
 
 </project>
