@@ -27,6 +27,9 @@ public class CalendarFeedEvent extends AbstractAjaxBehavior {
 
   private final IModel<? extends Collection<? extends Event>> eventModel;
 
+  /**
+   * @param eventModel EventModel for the feed.
+   */
   public CalendarFeedEvent(final IModel<? extends Collection<? extends Event>> eventModel) {
     this.eventModel = eventModel;
   }

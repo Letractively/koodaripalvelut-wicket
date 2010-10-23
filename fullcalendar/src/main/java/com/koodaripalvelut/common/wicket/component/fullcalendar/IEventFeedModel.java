@@ -8,7 +8,6 @@
  * of the license agreement you entered into with Kindleit.
  */
 
-
 package com.koodaripalvelut.common.wicket.component.fullcalendar;
 
 import java.util.Collection;

@@ -20,6 +20,7 @@ public interface Header {
 
   // Value constantss
   String TITLE = "title";
+  String TODAY_BTN = "today";
   String PREV_BTN = "prev";
   String NEXT_BTN = "next";
   String PREV_YEAR_BTN = "prevYear";

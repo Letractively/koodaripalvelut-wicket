@@ -25,6 +25,7 @@ import org.apache.wicket.model.Model;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.AjaxFeedBack;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.Event;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar;
+import com.koodaripalvelut.common.wicket.component.fullcalendar.Header;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.Views;
 
 /** FullCalendarPage is responsible of
@@ -105,6 +106,28 @@ public class FullCalendarPage extends BasePage {
       @Override
       public boolean onEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
         return ajaxEvent(target, feedback);
+      };
+
+
+      @Override
+      protected Header getHeader() {
+        return new Header() {
+          @Override
+          public String getLeft() {
+            return TITLE;
+          }
+
+          @Override
+          public String getCenter() {
+            return "";
+          }
+
+          @Override
+          public String getRight() {
+            return Views.MONTH + ADJ + Views.WEEK + ADJ + Views.DAY
+            + GAP + "today" + GAP + PREV_BTN + ADJ + NEXT_BTN;
+          }
+        };
       };
 
       @Override

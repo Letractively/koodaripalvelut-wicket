@@ -154,7 +154,10 @@ public class FullCalendar extends Component
     return new Date(timestamp * JS_TS_ADJUST);
   }
 
-  /** AjaxEvent processes incoming clicking and hovering events from the fullcalendar script.
+  /**
+   * AjaxEvent processes incoming clicking and hovering events from the
+   * fullcalendar script.
+   *
    * @author rhansen@kindleit.net
    */
   private class AjaxEvent extends AbstractDefaultAjaxBehavior {
@@ -198,12 +201,18 @@ public class FullCalendar extends Component
   private boolean editable = true;
 
 
+  /**
+   * @param id wicket:id.
+   */
   public FullCalendar(final String id) {
     this(id, null);
   }
 
-  public FullCalendar(final String id,
-      final IModel<? extends Collection<? extends Event>> model) {
+  /**
+   * @param id wicket:id.
+   * @param model component model.
+   */
+  public FullCalendar(final String id, final IModel<? extends Collection<? extends Event>> model) {
     super(id, model);
     eventFeed = new CalendarFeedEvent(model);
     init();

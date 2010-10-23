@@ -24,6 +24,7 @@ public interface Event {
   public static final String JSON_ALL_DAY = "allDay";
   public static final String JSON_TITLE = "title";
   public static final String JSON_ID = "id";
+  public static final String CAL_ID = "calId";
 
 
   String getCalId();
