@@ -16,6 +16,8 @@ public class Navigation extends Border {
         ChangeDetectorPage.class));
     add(new BookmarkablePageLink<FullCalendarPage>("full-calendar-link",
         FullCalendarPage.class));
+    add(new BookmarkablePageLink<DoubleModalTestPage>("double-modal-link",
+        DoubleModalTestPage.class));
   }
 
 }
