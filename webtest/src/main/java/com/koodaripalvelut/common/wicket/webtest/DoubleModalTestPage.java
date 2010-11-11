@@ -92,8 +92,8 @@ public class DoubleModalTestPage extends BasePage {
     }
   };
 
-  private final ModalWindow windowA = new SafeModalWindow("windowA");
-  private final ModalWindow windowB = new SafeModalWindow("windowB");
+  private final ModalWindow windowA = new ModalWindow("windowA");
+  private final ModalWindow windowB = new ModalWindow("windowB");
 
   public DoubleModalTestPage() {
     windowA.setPageCreator(windowACreator);
