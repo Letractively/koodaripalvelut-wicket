@@ -43,6 +43,7 @@
     <module>webtest</module>
     <module>components</module>
     <module>fullcalendar</module>
+    <module>openid</module>
   </modules>
 
 	<issueManagement>

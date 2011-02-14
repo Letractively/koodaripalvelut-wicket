@@ -3,6 +3,8 @@ package com.koodaripalvelut.common.wicket.webtest;
 import org.apache.wicket.markup.html.border.Border;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 
+import com.koodaripalvelut.common.wicket.webtest.openid.InfoPage;
+
 public class Navigation extends Border {
 
   private static final long serialVersionUID = 1L;
@@ -18,6 +20,8 @@ public class Navigation extends Border {
         FullCalendarPage.class));
     add(new BookmarkablePageLink<DoubleModalTestPage>("double-modal-link",
         DoubleModalTestPage.class));
+    add(new BookmarkablePageLink<InfoPage>("wicket-openid",
+        InfoPage.class));
   }
 
 }
