@@ -1,18 +1,16 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  
-  <artifactId>components</artifactId>
-  
+
   <parent>
     <groupId>com.koodaripalvelut.wicket.common</groupId>
     <artifactId>parent</artifactId>
     <version>1.2-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
-  
+
+  <artifactId>components</artifactId>
   <name>Koodari Palvelut Wicket Component Aggregate</name>
   <description>Agregate module containing all supplied components and behaviors</description>
-  <packaging>jar</packaging>
 
   <build>
     <plugins>
@@ -53,6 +51,14 @@
                   <overWrite>false</overWrite>
                   <outputDirectory>${project.build.outputDirectory}</outputDirectory>
                 </artifactItem>
+                <artifactItem>
+                  <groupId>${project.groupId}</groupId>
+                  <artifactId>dropable</artifactId>
+                  <version>${project.version}</version>
+                  <type>jar</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.outputDirectory}</outputDirectory>
+                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
@@ -60,11 +66,17 @@
       </plugin>
     </plugins>
   </build>
-  
+
   <dependencies>
     <dependency>
       <groupId>${project.groupId}</groupId>
       <artifactId>changedetector</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>dropable</artifactId>
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -80,11 +92,11 @@
       <version>${project.version}</version>
       <scope>provided</scope>
     </dependency>
+
     <!-- Manually added transitive dependencies from components -->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
-      <version>1.6</version>
     </dependency>
   </dependencies>
 </project>

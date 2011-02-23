@@ -15,8 +15,8 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequest;
 
+import com.koodaripalvelut.common.wicket.openid.info.Info;
 import com.koodaripalvelut.common.wicket.webtest.WebSessionTest;
-import com.tustor.wicket.openid.info.Info;
 
 /**
  * ResultPage is responsible of

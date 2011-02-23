@@ -2,165 +2,25 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<artifactId>openid</artifactId>
+	<parent>
+		<groupId>com.koodaripalvelut.wicket.common</groupId>
+		<artifactId>parent</artifactId>
+		<version>1.2-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
 
+	<artifactId>openid</artifactId>
 	<name>Koodari Palvelut Wicket Additions - OpenID</name>
 	<description>Wicket application and openid integraded.</description>
 
-	<parent>
-	 <groupId>com.koodaripalvelut.wicket.common</groupId>
-	 <artifactId>parent</artifactId>
-	 <version>1.2-SNAPSHOT</version>
-	 <relativePath>..</relativePath>
-	</parent>
-
-	<developers>
-		<developer>
-			<id>rhansen</id>
-			<name>Rodolfo Hansen</name>
-			<email>rhansen@kitsd.com</email>
-		</developer>
-		<developer>
-			<id>fbencosme</id>
-			<name>Fausto Bencosme</name>
-			<email>fbencosme@kitsd.com</email>
-		</developer>
-		<developer>
-			<id>eferreira</id>
-			<name>Edwin Ferreira</name>
-			<email>eferreira@kitsd.com</email>
-		</developer>
-	</developers>
-
-	<organization>
-		<name>kitsd.com</name>
-		<url>www.kitsd.com</url>
-	</organization>
-
 	<properties>
-		<wicket.version>1.4.9</wicket.version>
-		<jetty.version>6.1.18</jetty.version>
 		<jodatime.version>1.6</jodatime.version>
 		<openid4java.version>0.9.5</openid4java.version>
-		<wicket.configuration>development</wicket.configuration>
 	</properties>
 
-	<build>
-		<resources>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/resources</directory>
-			</resource>
-			<resource>
-				<filtering>false</filtering>
-				<directory>src/main/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<testResources>
-			<testResource>
-				<filtering>false</filtering>
-				<directory>src/test/java</directory>
-				<includes>
-					<include>**</include>
-				</includes>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</testResource>
-		</testResources>
-		<plugins>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>maven-jetty-plugin</artifactId>
-				<version>${jetty.version}</version>
-				<configuration>
-					<systemProperties>
-						<systemProperty>
-							<name>logback.configurationFile</name>
-							<value>${basedir}/src/main/resources/logback.xml</value>
-						</systemProperty>
-						<systemProperty>
-							<name>log.path</name>
-							<value>${basedir}/target/logs</value>
-						</systemProperty>
-						<systemProperty>
-							<name>wicket.configuration</name>
-							<value>${wicket.configuration}</value>
-						</systemProperty>
-					</systemProperties>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-					<encoding>utf8</encoding>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
 	<dependencies>
-		<!-- WICKET DEPENDENCIES -->
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket</artifactId>
-			<version>${wicket.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.wicket</groupId>
-			<artifactId>wicket-extensions</artifactId>
-			<version>${wicket.version}</version>
-		</dependency>
 
-		<!-- LOGGING DEPENDENCIES - LOG4J -->
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.4.2</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.14</version>
-		</dependency>
-
-		<!-- JUNIT DEPENDENCY FOR TESTING -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.2</version>
-			<scope>test</scope>
-		</dependency>
-
-		<!-- JETTY DEPENDENCIES FOR TESTING -->
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty</artifactId>
-			<version>${jetty.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<version>${jetty.version}</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mortbay.jetty</groupId>
-			<artifactId>jetty-management</artifactId>
-			<version>${jetty.version}</version>
-			<scope>provided</scope>
-		</dependency>
-
-    <!-- OpenID java libraries -->
+		<!-- OpenID java libraries -->
 		<dependency>
 			<groupId>org.openid4java</groupId>
 			<artifactId>openid4java-consumer</artifactId>
@@ -169,17 +29,17 @@
 
 		<!-- Facebook Rest java libraries -->
 		<dependency>
-		  <groupId>com.restfb</groupId>
-		  <artifactId>restfb</artifactId>
-		  <version>1.6.2</version>
+			<groupId>com.restfb</groupId>
+			<artifactId>restfb</artifactId>
+			<version>1.6.2</version>
 		</dependency>
 
 		<!-- OAuth java libraries -->
 		<dependency>
-	    <groupId>net.smartam.leeloo</groupId>
-	    <artifactId>oauth2-client</artifactId>
-	    <version>0.1</version>
-    </dependency>
+			<groupId>net.smartam.leeloo</groupId>
+			<artifactId>oauth2-client</artifactId>
+			<version>0.1</version>
+		</dependency>
 
 		<dependency>
 			<groupId>joda-time</groupId>
@@ -197,13 +57,13 @@
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
 			<version>1.1</version>
-		</dependency> 
-		
-        <dependency>
-            <groupId>com.visural</groupId>
-            <artifactId>visural-common</artifactId>
-            <version>0.4.3</version>
-        </dependency>
+		</dependency>
+
+		<dependency>
+			<groupId>com.visural</groupId>
+			<artifactId>visural-common</artifactId>
+			<version>0.4.3</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.scribe</groupId>
@@ -211,4 +71,5 @@
 			<version>1.0.6</version>
 		</dependency>
 	</dependencies>
+
 </project>

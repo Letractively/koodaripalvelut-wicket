@@ -122,22 +122,49 @@ public class FullCalendar extends Component
       }
     }
 
-    public void setupParser(final SimpleDateFormat parser, final int format) {
-      parser.applyPattern(DATE_FORMATS[format]);
-      //Special treatment for the java unsupported Zulu time zone.
-      if (format == 0) {
-        parser.setTimeZone(TimeZone.getTimeZone("Zulu"));
-      } else {
-        parser.setTimeZone(TimeZone.getDefault());
-      }
-    }
 
   };
+
+  private static void setupParser(final SimpleDateFormat parser, final int format) {
+    parser.applyPattern(DATE_FORMATS[format]);
+    //Special treatment for the java unsupported Zulu time zone.
+    if (format == 0) {
+      parser.setTimeZone(TimeZone.getTimeZone("Zulu"));
+    } else {
+      parser.setTimeZone(TimeZone.getDefault());
+    }
+  }
+
+  private static final JsonDeserializer<java.sql.Date> SQL_DATE_DESERIALIZER =
+    new JsonDeserializer<java.sql.Date>() {
+
+      @Override
+      public java.sql.Date deserialize(final JsonElement json, final Type typeOfT,
+          final JsonDeserializationContext context) throws JsonParseException {
+        final SimpleDateFormat parser = new SimpleDateFormat();
+        Date dt;
+        for (int i = 0; i < DATE_FORMATS.length; i++) {
+          try {
+            setupParser(parser, i);
+            dt =  parser.parse(json.getAsString());
+          } catch (final Exception e1) {
+            LOG.debug("Date parsing error", e1);
+          }
+        }
+        try {
+          dt = fromJavascriptTimestamp(json.getAsLong());
+        } catch (final Exception ef) {
+          throw new ClassCastException("Date Parsing options exhausted");
+        }
+        return new java.sql.Date(dt.getTime());
+      }
+    };
 
   static final Gson GSON = new GsonBuilder()
     .registerTypeAdapter(Event.class, Event.SERIALIZER)
     .registerTypeAdapter(Header.class, Header.SERIALIZER)
     .registerTypeAdapter(Date.class, DATE_DESERIALIZER)
+    .registerTypeAdapter(java.sql.Date.class, SQL_DATE_DESERIALIZER)
     .create();
   static final JsonParser PARSER = new JsonParser();
 

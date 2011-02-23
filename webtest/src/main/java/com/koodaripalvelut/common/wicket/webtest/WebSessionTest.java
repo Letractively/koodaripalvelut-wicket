@@ -4,8 +4,8 @@ import org.apache.wicket.Request;
 import org.apache.wicket.Session;
 import org.apache.wicket.protocol.http.WebSession;
 
-import com.tustor.wicket.openid.AuthenticationProvider;
-import com.tustor.wicket.openid.AuthenticationSession;
+import com.koodaripalvelut.common.wicket.openid.AuthenticationProvider;
+import com.koodaripalvelut.common.wicket.openid.AuthenticationSession;
 
 public class WebSessionTest extends WebSession implements AuthenticationSession {
 

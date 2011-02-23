@@ -1,15 +1,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.koodaripalvelut.wicket.common</groupId>
-	<artifactId>searchbox</artifactId>
-	<version>1.2-SNAPSHOT</version>
-
-	<name>Koodari Palvelut Wicket Additions - SearchBox</name>
-	<description>Koodari Palvelut Wicket Additions - SearchBox</description>
-	<inceptionYear>2010</inceptionYear>
-	<url>http://code.google.com/p/koodaripalvelut-wicket/</url>
-	
 	<parent>
 	 <groupId>com.koodaripalvelut.wicket.common</groupId>
 	 <artifactId>parent</artifactId>
@@ -17,23 +8,8 @@
 	 <relativePath>..</relativePath>
 	</parent>
 
-	<developers>
-		<developer>
-			<id>rhansen</id>
-			<name>Rodolfo Hansen</name>
-			<email>rhansen@kitsd.com</email>
-		</developer>
-		<developer>
-			<id>cencarnacion</id>
-			<name>Carlos Encarnación</name>
-			<email>cencarnacion@kitsd.com</email>
-		</developer>
-	</developers>
-
-	<scm>
-		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/searchbox</connection>
-		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk/searchbox</developerConnection>
-		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk/searchbox</url>
-	</scm>
+	<artifactId>searchbox</artifactId>
+	<name>Koodari Palvelut Wicket Additions - SearchBox</name>
+	<description>Koodari Palvelut Wicket Additions - SearchBox</description>
 
 </project>

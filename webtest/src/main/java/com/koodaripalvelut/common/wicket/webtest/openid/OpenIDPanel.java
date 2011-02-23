@@ -1,10 +1,10 @@
 package com.koodaripalvelut.common.wicket.webtest.openid;
 
-import static com.tustor.wicket.openid.info.Info.EMAIL;
-import static com.tustor.wicket.openid.info.Info.FIRST_NAME;
-import static com.tustor.wicket.openid.info.Info.FULL_NAME;
-import static com.tustor.wicket.openid.info.Info.GENDEER;
-import static com.tustor.wicket.openid.info.Info.LAST_NAME;
+import static com.koodaripalvelut.common.wicket.openid.info.Info.EMAIL;
+import static com.koodaripalvelut.common.wicket.openid.info.Info.FIRST_NAME;
+import static com.koodaripalvelut.common.wicket.openid.info.Info.FULL_NAME;
+import static com.koodaripalvelut.common.wicket.openid.info.Info.GENDEER;
+import static com.koodaripalvelut.common.wicket.openid.info.Info.LAST_NAME;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,12 +23,12 @@ import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.RequestUtils;
 
+import com.koodaripalvelut.common.wicket.openid.AuthenticationProvider;
+import com.koodaripalvelut.common.wicket.openid.info.Info;
+import com.koodaripalvelut.common.wicket.openid.provider.oauth1.OAuth1Provider;
+import com.koodaripalvelut.common.wicket.openid.provider.oauth2.OAuth2Provider;
+import com.koodaripalvelut.common.wicket.openid.provider.openid.OpenIDProvider;
 import com.koodaripalvelut.common.wicket.webtest.WebApplicationTest;
-import com.tustor.wicket.openid.AuthenticationProvider;
-import com.tustor.wicket.openid.info.Info;
-import com.tustor.wicket.openid.provider.oauth1.OAuth1Provider;
-import com.tustor.wicket.openid.provider.oauth2.OAuth2Provider;
-import com.tustor.wicket.openid.provider.openid.OpenIDProvider;
 
 /**
  * @author fbencosme

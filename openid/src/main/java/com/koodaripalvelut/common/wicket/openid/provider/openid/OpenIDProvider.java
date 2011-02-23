@@ -12,7 +12,6 @@ package com.koodaripalvelut.common.wicket.openid.provider.openid;
 import java.util.List;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
 import org.apache.wicket.PageParameters;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
@@ -37,6 +36,8 @@ import org.openid4java.message.ax.FetchResponse;
 import org.openid4java.message.sreg.SRegMessage;
 import org.openid4java.message.sreg.SRegResponse;
 import org.openid4java.server.RealmVerifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.koodaripalvelut.common.wicket.openid.AuthenticationProvider;
 import com.koodaripalvelut.common.wicket.openid.AuthenticationService;
@@ -59,7 +60,7 @@ public class OpenIDProvider extends AbstractProvider<OpenIDProvider> {
 
   public static ConsumerManager consumerManager;
 
-  private static final Logger LOG = Logger.getLogger(OpenIDProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OpenIDProvider.class);
 
   private static final String DISCOVERY_ERROR_MESSAGE = "Discovery error";
 

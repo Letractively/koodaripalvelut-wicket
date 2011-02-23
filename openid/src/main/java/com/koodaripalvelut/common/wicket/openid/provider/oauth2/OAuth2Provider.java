@@ -25,13 +25,14 @@ import net.smartam.leeloo.common.exception.OAuthProblemException;
 import net.smartam.leeloo.common.exception.OAuthSystemException;
 import net.smartam.leeloo.common.message.types.GrantType;
 
-import org.apache.log4j.Logger;
 import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
 import org.apache.wicket.request.target.basic.RedirectRequestTarget;
 import org.apache.wicket.util.lang.PropertyResolver;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.koodaripalvelut.common.wicket.openid.AuthenticationService;
 import com.koodaripalvelut.common.wicket.openid.AuthenticationSession;
@@ -53,7 +54,7 @@ public class OAuth2Provider extends AbstractOAuthProvider<OAuth2Provider> {
 
   private String returnUrl;
 
-  private static final Logger LOG = Logger.getLogger(OpenIDProvider.class);
+  private static final Logger LOG = LoggerFactory.getLogger(OpenIDProvider.class);
 
   private static final String CREATING_ENDPOINT_MESSAGE =
     "Exception occurred while creating endpoint url";

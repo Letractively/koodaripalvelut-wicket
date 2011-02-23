@@ -4,7 +4,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.model.IModel;
 
-import com.tustor.wicket.openid.provider.openid.OpenIDProvider;
+import com.koodaripalvelut.common.wicket.openid.provider.openid.OpenIDProvider;
 
 /**
  * Represents the logo of a {@link OpenIDProvider}.

@@ -14,7 +14,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
 
-import com.tustor.wicket.openid.info.Info;
+import com.koodaripalvelut.common.wicket.openid.info.Info;
 
 
 /** The info panel shows the information as held in a RegistrationModel.
