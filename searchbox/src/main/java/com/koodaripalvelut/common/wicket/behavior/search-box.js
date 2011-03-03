@@ -4,9 +4,9 @@ function searchBoxCloneObject(source) {
    for (var i = 0; i < source.length; i++ )
        objA[i] = source[i];
    return objA;
-}	
-	
-function searchBoxCreateTextField(id, cssClass) { 
+}
+
+function searchBoxCreateTextField(id, cssClass) {
 	var value = searchBoxInit['searchText' + id];
 	e = document.createElement('input');
 	e.setAttribute('id', id);
@@ -16,7 +16,7 @@ function searchBoxCreateTextField(id, cssClass) {
 	return e;
 }
 
-function searchBoxCreateButton(id, label, cssClass) { 
+function searchBoxCreateButton(id, label, cssClass) {
 	e = document.createElement('button');
 	e.setAttribute('type', 'button');
 	e.setAttribute('id', id);
@@ -25,37 +25,32 @@ function searchBoxCreateButton(id, label, cssClass) {
 	return e;
 }
 
-function searchBoxCreateFix(html) { 
+function searchBoxCreateFix(html) {
 	e = document.createElement('span');
 	e.innerHTML = html;
 	return e;
 }
 
-function searchBoxGetSelectedElement(select) {
-	var i = select.selectedIndex;
-	return i < 0 ? null : select.options[i].text;
-}
-
-searchBoxInit = function(selectId, regexFlags, autoremove, position, mode, 
+searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 		classPrefix, searchLabel, clearLabel, prefix, suffix) {
 
 	var select = document.getElementById(selectId);
 	var allValues = searchBoxCloneObject(select.options);
-	
-	var searchFieldId  = selectId + '-search-field'; 
+
+	var searchFieldId  = selectId + '-search-field';
 	var searchButtonId = selectId + '-search';
 	var clearButtonId  = selectId + '-clear';
-	
+
 	var searchField  = document.getElementById(searchFieldId);
 	var searchButton = document.getElementById(searchButtonId);
 	var clearButton  = document.getElementById(clearButtonId);
-	
-	
+
+
 	function search() {
 		searchBoxInit['searchText' + searchFieldId] = searchField.value;
 		var re = new RegExp(searchField.value, regexFlags);
 		var i = 0;
-		var prevSelected = searchBoxGetSelectedElement(select);
+		var prevSelected = select.selectedIndex;
 		select.options.length = 0;
 		for (var j = 0; j < allValues.length; j++) {
 			if (re.test(allValues[j].text)) {
@@ -64,14 +59,14 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 				allValues[j].selected = false;
 			}
 		}
-		
-		var selected = searchBoxGetSelectedElement(select);
-		if (prevSelected != selected) {
+
+		var selected = select.selectedIndex;
+		if (prevSelected != selected && autoremove !== 'true') {
 			if (select.onchange)
-				select.onchange();
+				select.value = select.options[selected].value;
 		}
 	}
-	
+
 	function clear() {
 		searchField.value = "";
 		select.options.length = 0;
@@ -79,7 +74,7 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 			select.options[i] = allValues[i];
 		}
 	}
-	
+
 	function setupFieldSearch() {
 		if (searchField == null) {
 			searchField = searchBoxCreateTextField(searchFieldId, classPrefix + '-field');
@@ -89,7 +84,7 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 		    }
 		}
 	}
-	
+
 	function setupSearchButton() {
 		if (searchButton == null) {
 			searchButton = searchBoxCreateButton(searchButtonId, searchLabel, classPrefix + '-search');
@@ -99,14 +94,14 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 		    }
 		}
 	}
-	
+
 	function setupClearButton() {
 		if (clearButton == null) {
 			clearButton = searchBoxCreateButton(clearButtonId, clearLabel, classPrefix + '-clear');
 			searchField.parentNode.insertBefore(clearButton, searchField.nextSibling);
 		}
 	}
-	
+
 	setupFieldSearch();
 	switch (mode) {
 	case "FULL":

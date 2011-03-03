@@ -6,6 +6,8 @@ import java.util.Map;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListChoice;
@@ -58,7 +60,7 @@ public class SearchBoxPage extends BasePage {
         .add(new ChoiceSearchBoxBehavior()));
     add(new ListChoice<String>("ddc2", LIST).add(new ChoiceSearchBoxBehavior() {
       @Override
-      protected void setOptions(Map<String, Object> params) {
+      protected void setOptions(final Map<String, Object> params) {
         super.setOptions(params);
         params.put(PARAM_MODE, Mode.SEARCH_BUTTON);
         params.put(PARAM_SEARCH_LABEL, "onclick + case sensitive");
@@ -66,10 +68,10 @@ public class SearchBoxPage extends BasePage {
       }
     }));
 
-    Form<Void> form = new Form<Void>("form");
+    final Form<Void> form = new Form<Void>("form");
     add(form);
 
-    MakesModels makesModels = new MakesModels();
+    final MakesModels makesModels = new MakesModels();
 
     final DropDownChoice<String> makes =
         new DropDownChoice<String>("makes", new PropertyModel<String>(
@@ -80,7 +82,7 @@ public class SearchBoxPage extends BasePage {
             .getModelChoices());
     models.add(new ChoiceSearchBoxBehavior() {
       @Override
-      protected void setOptions(Map<String, Object> params) {
+      protected void setOptions(final Map<String, Object> params) {
         super.setOptions(params);
         params.put(PARAM_POSITION, Position.BEFORE);
         params.put(PARAM_MODE, Mode.FIELD_ONLY);
@@ -97,7 +99,7 @@ public class SearchBoxPage extends BasePage {
       private static final long serialVersionUID = 1L;
 
       @Override
-      protected void onUpdate(AjaxRequestTarget target) {
+      protected void onUpdate(final AjaxRequestTarget target) {
         target.addComponent(modelsPanel);
       }
     });
@@ -105,13 +107,30 @@ public class SearchBoxPage extends BasePage {
     add(new DropDownChoice<String>("ddc3", LIST)
         .add(new ChoiceSearchBoxBehavior() {
           @Override
-          protected void setOptions(Map<String, Object> params) {
+          protected void setOptions(final Map<String, Object> params) {
             super.setOptions(params);
             params.put(PARAM_PREFIX, "Prefix");
             params.put(PARAM_SUFFIX, "Suffix");
           }
         }));
 
+    final WebMarkupContainer nestingParent =
+      new WebMarkupContainer("nestingParent");
+    final ListChoice<String> nestingChild =
+      new ListChoice<String>("nestingChild", Model.of("Ape"), LIST);
+
+    nestingParent.setOutputMarkupPlaceholderTag(true);
+    nestingChild.add(new ChoiceSearchBoxBehavior());
+    nestingChild.add(new OnChangeAjaxBehavior() {
+
+      @Override
+      protected void onUpdate(final AjaxRequestTarget target) {
+        target.addComponent(nestingParent);
+      }
+
+    });
+
+    add(nestingParent.add(nestingChild));
   }
 
 }
