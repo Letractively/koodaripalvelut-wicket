@@ -16,13 +16,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebRequest;
 
 import com.koodaripalvelut.common.wicket.openid.info.Info;
+import com.koodaripalvelut.common.wicket.webtest.BasePage;
 import com.koodaripalvelut.common.wicket.webtest.WebSessionTest;
 
 /**
  * ResultPage is responsible of
  * @author rhansen@kitsd.com
  */
-public class ResultPage extends WebPage {
+public class ResultPage extends BasePage {
 
   private static final String INFO_PANEL_ID = "infoPanel";
 

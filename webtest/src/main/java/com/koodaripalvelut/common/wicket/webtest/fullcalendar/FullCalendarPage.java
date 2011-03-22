@@ -9,7 +9,7 @@
  */
 
 
-package com.koodaripalvelut.common.wicket.webtest;
+package com.koodaripalvelut.common.wicket.webtest.fullcalendar;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,11 +27,14 @@ import com.koodaripalvelut.common.wicket.component.fullcalendar.Event;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalendar;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.Header;
 import com.koodaripalvelut.common.wicket.component.fullcalendar.Views;
+import com.koodaripalvelut.common.wicket.webtest.BasePage;
 
 /** FullCalendarPage is responsible of
  * @author rhansen@kitsd.com
  */
 public class FullCalendarPage extends BasePage {
+  
+  private static final long serialVersionUID = 1L;
 
   private static class E implements Event, Serializable {
     private static final long serialVersionUID = 1L;
@@ -92,13 +95,11 @@ public class FullCalendarPage extends BasePage {
     }
 
   }
-
-
+  
   private final FullCalendar fullCalendar;
   private final ModalWindow window;
   private final Model<AjaxFeedBack> feedbackModel = new Model<AjaxFeedBack>();
-
-
+  
   public FullCalendarPage() {
     fullCalendar = new FullCalendar("calendar", Model.ofList(generateEvents())) {
       private static final long serialVersionUID = 1L;
@@ -177,8 +178,7 @@ public class FullCalendarPage extends BasePage {
       }
     });
   }
-
-
+  
   protected boolean ajaxEvent(final AjaxRequestTarget target, final AjaxFeedBack feedback) {
     feedbackModel.setObject(feedback);
     if (feedback.getFeedbackFor().equals("dayClick")) {

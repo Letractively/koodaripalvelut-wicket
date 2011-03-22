@@ -9,7 +9,10 @@ import org.apache.wicket.request.target.coding.IndexedParamUrlCodingStrategy;
 import org.apache.wicket.session.ISessionStore;
 import org.apache.wicket.util.lang.PackageName;
 
+import com.koodaripalvelut.common.wicket.webtest.changedetector.ChangeDetectorPage;
+import com.koodaripalvelut.common.wicket.webtest.fullcalendar.FullCalendarPage;
 import com.koodaripalvelut.common.wicket.webtest.openid.ResultPage;
+import com.koodaripalvelut.common.wicket.webtest.searchbox.SearchBoxPage;
 
 public class WebApplicationTest extends WebApplication {
 

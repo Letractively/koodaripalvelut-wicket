@@ -1,0 +1,165 @@
+@CHARSET "UTF-8";
+body{
+	background-color: #044984;
+	font-family: arial,sans-serif;
+}
+
+#content{
+	width: 800px;
+	background-color: #FFFFFF;
+	margin-right: auto;
+	margin-left: auto;
+	border: 7px solid #36648B;
+}
+
+#content p{
+    font-size: 0.9em;
+}
+
+
+
+/* Header */
+#header{
+	width: 800px;
+    background-color: #044984; 
+    margin-right: auto;
+    margin-left: auto;
+	margin-top: 40px;
+}
+
+#header a{
+   color: #FFFFFF;
+   text-decoration: none;
+}
+
+#header #title{
+   font-size: 3em;
+   font-weight: bold;
+}
+
+
+/* Menu */
+#menu{
+    padding: 5px;
+    padding-left: 8px;
+    margin: 0;
+    width:55em;
+}
+
+#menu a{
+    display:inline-table;
+    background-color: #044984;
+    border: 1px solid #EEE;
+    font-weight: bold;
+    padding: 8px 23px;
+    text-decoration: none;
+    float: left;
+    border-color: #7A8B8B #68838B #68838B;
+    color: #FFFFFF;
+}
+
+#menu a:HOVER {
+    background-color: #009ACD;  
+}
+
+
+
+/* main */
+#main{
+	margin: 0 20px;
+	padding: 15px;
+	min-height: 500px;
+}
+
+
+
+/* Footer */
+#footer{
+	width: 800px;
+	background-color: #044984;
+    padding:8px 20px;
+    height: 20px;
+    text-align: center;
+    font-size: 0.7em;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+#footer a{
+    color: #F0F8FF;
+}
+
+#footer a:HOVER{
+    color: #777777;
+}
+
+
+h2{
+    color: #044984;
+}
+h3{
+    background: white url('../image/title-line.png') bottom left;
+    background-repeat:no-repeat;
+    color: #191970;
+}
+h4{
+    color: #191970;
+}
+
+.box{
+	border-bottom: 1px solid #999;
+	background-image: url('../image/box-background.png');
+	padding: 20px;
+	margin: 0;
+	width: auto;
+}
+
+#calendar{
+    width: 700px;
+    margin-left: 120px;
+}
+
+
+/* Wicket OpenID */
+.openid-form{
+     width: 200px;
+     padding: 5px;
+}
+
+.openid-link{
+    width: 130px;
+}
+
+.openid-link img{
+	border: 0;
+}
+
+/* code */
+.code{
+    font: 1em/1.5 "Courier News", monospace;
+    color: #666666;
+}
+
+.block-code{
+    padding: 10px 15px;
+    margin: 5px 0 15px;
+    border-left: 5px solid #666666;
+    background: #222222;
+    font: 1em/1.5 "Courier News", monospace;
+    color: #bbbbbb;
+    overflow : auto;
+}
+
+
+.wicket-aa-container{
+    background-color: white;
+    border: 1px solid #C1C1C1;
+    border-left-color: #7A7A7A;
+}
+
+.wicket-aa-container ul li{
+    cursor: pointer;
+    cursor: hand;
+}

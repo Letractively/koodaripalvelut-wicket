@@ -1,4 +1,4 @@
-package com.koodaripalvelut.common.wicket.webtest;
+package com.koodaripalvelut.common.wicket.webtest.changedetector;
 
 import java.io.Serializable;
 
@@ -14,8 +14,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
 import com.koodaripalvelut.common.wicket.behavior.UnsavedChangeDetectorBehavior;
+import com.koodaripalvelut.common.wicket.webtest.BasePage;
+import com.koodaripalvelut.common.wicket.webtest.MakesModels;
+import com.koodaripalvelut.common.wicket.webtest.ModelsPanel;
 
 public class ChangeDetectorPage extends BasePage {
+
+  private static final long serialVersionUID = 1L;
 
   @SuppressWarnings("unused")
   private static class FormModel implements Serializable {
@@ -35,7 +40,6 @@ public class ChangeDetectorPage extends BasePage {
   }
 
   public ChangeDetectorPage() {
-
     final ExternalLink googleLink =
         new ExternalLink("google-link", "http://www.google.com",
             "Google (white list member)");
@@ -56,8 +60,8 @@ public class ChangeDetectorPage extends BasePage {
             makesModels, "selectedMake"), makesModels.getMakeChoices());
 
     final DropDownChoice<String> models =
-        new DropDownChoice<String>("models", new Model<String>(), makesModels
-            .getModelChoices());
+        new DropDownChoice<String>("models", new Model<String>(),
+            makesModels.getModelChoices());
 
     final ModelsPanel modelsPanel = new ModelsPanel("models-panel", models);
 
@@ -109,7 +113,5 @@ public class ChangeDetectorPage extends BasePage {
 
     add(googleLink);
     add(gmailLink);
-
   }
-
 }

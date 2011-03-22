@@ -9,7 +9,7 @@
  */
 
 
-package com.koodaripalvelut.common.wicket.webtest;
+package com.koodaripalvelut.common.wicket.webtest.fullcalendar;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;

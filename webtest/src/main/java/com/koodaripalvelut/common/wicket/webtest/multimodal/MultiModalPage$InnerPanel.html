@@ -2,11 +2,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
   xmlns:wicket="http://wicket.apache.org/">
 <body>
-<wicket:extend>
-  Outside Panel Page
-  <div wicket:id="windowA"></div>
-  <a wicket:id="closeWindow">Inside window</a>
-  <a wicket:id="closeInsider">Inner panel</a>
-</wicket:extend>
+<wicket:panel>
+    <div wicket:id="actionPanel"></div>
+    <div wicket:id="iFrameModal"></div>
+</wicket:panel>
 </body>
 </html>

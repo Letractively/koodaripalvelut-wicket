@@ -11,21 +11,22 @@ package com.koodaripalvelut.common.wicket.webtest.openid;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.extensions.ajax.markup.html.AjaxLazyLoadPanel;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+
+import com.koodaripalvelut.common.wicket.webtest.BasePage;
 
 /**
  * @author fbencosme
  */
-public class InfoPage extends WebPage {
+public class InfoPage extends BasePage {
 
   private static final long serialVersionUID = 1L;
 
   private static final String SIGNIN_PANEL_ID = "signinPanel";
-
-  public InfoPage() {
-    super();
+  
+  public InfoPage(){
     add(new AjaxLazyLoadPanel(SIGNIN_PANEL_ID) {
 
       private static final long serialVersionUID = 1L;
