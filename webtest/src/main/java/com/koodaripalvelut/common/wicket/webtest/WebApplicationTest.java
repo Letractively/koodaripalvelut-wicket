@@ -31,6 +31,7 @@ public class WebApplicationTest extends WebApplication {
     mount(new IndexedParamUrlCodingStrategy("searchBox", SearchBoxPage.class));
     mount(new IndexedParamUrlCodingStrategy("changeDetector", ChangeDetectorPage.class));
     mount(new IndexedParamUrlCodingStrategy("calendar", FullCalendarPage.class));
+    mount(new IndexedParamUrlCodingStrategy("dropable", DropablePage.class));
     mount(PATH, PackageName.forClass(ResultPage.class));
   }
 

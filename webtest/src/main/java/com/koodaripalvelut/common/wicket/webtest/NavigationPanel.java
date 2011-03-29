@@ -26,6 +26,8 @@ public class NavigationPanel extends Panel {
         MultiModalPage.class));
     add(new BookmarkablePageLink<InfoPage>("wicket-openid",
         InfoPage.class));
+    add(new BookmarkablePageLink<DropablePage>("droppable",
+        DropablePage.class));
   }
 
 }
