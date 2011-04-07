@@ -50,7 +50,7 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 		searchBoxInit['searchText' + searchFieldId] = searchField.value;
 		var re = new RegExp(searchField.value, regexFlags);
 		var i = 0;
-		var prevSelected = select.selectedIndex;
+		var prevVal = select.value;
 		select.options.length = 0;
 		for (var j = 0; j < allValues.length; j++) {
 			if (re.test(allValues[j].text)) {
@@ -60,10 +60,10 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 			}
 		}
 
-		var selected = select.selectedIndex;
-		if (prevSelected != selected && autoremove !== 'true') {
-			if (select.onchange)
-				select.value = select.options[selected].value;
+		var curVal = select.value;
+		// make sure the change is correctly associated and correctly notified
+		if (prevVal != curVal && autoremove !== 'true') {
+				select.value = select.options[select.selectedIndex].value;
 		}
 	}
 
