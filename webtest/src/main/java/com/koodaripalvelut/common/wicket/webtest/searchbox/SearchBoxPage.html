@@ -7,47 +7,47 @@
 <body>
 <wicket:extend>
     <h2>Search Box</h2>
-        
+
     <h3>AutoComplete with caching behavior</h3>
     <p>
-        This component is the Wicket Autocomplete component with cache behavior added. 
+        This component is the Wicket Autocomplete component with cache behavior added.
         The cache has a expiration time. Both the cache and its expiration time can be
-        configured in <span class="code">AutoCompleteSettings.java</span> through 
-        its <span class="code">setCacheDuration(int)</span> method. 
-        
+        configured in <span class="code">AutoCompleteSettings.java</span> through
+        its <span class="code">setCacheDuration(int)</span> method.
+
     </p>
     <div class="box">
         <h5>Example</h5>
        <input wicket:id="myTextField" />
     </div>
-        
+
     <h3>ChoiceSearchBoxBehavior</h3>
-    
+
     <p>
-        The <span class="code">ChoiceSearchBoxBehavior</span> adds a search 
-        field which applies search criteria to a given 
-        <span class="code">AbstractChoice</span>. Note: This behavior cannot 
+        The <span class="code">ChoiceSearchBoxBehavior</span> adds a search
+        field which applies search criteria to a given
+        <span class="code">AbstractChoice</span>. Note: This behavior cannot
         be reused between components.
     </p>
     <h4>Adding ChoiceSearchBoxBehavior to a DropDownChoice</h4>
     <p>
-      In the following example we are adding 
-      <span class="code">ChoiceSearchBoxBehavior</span> to a 
+      In the following example we are adding
+      <span class="code">ChoiceSearchBoxBehavior</span> to a
       <span class="code">DropDownChoice</span> with its default configuration.
     </p>
     <div class="box">
 	   <select wicket:id="ddc" />
 	</div>
-	
+
 	<h4>Adding ChoiceSearchBoxBehavior to a ListChoice</h4>
 	<p>
-	  Here is an example using a <span class="code">ListChoise</span> and 
+	  Here is an example using a <span class="code">ListChoise</span> and
 	  passing some configuration parameters such as the mode and the button label.
 	</p>
 	<div class="box">
 	   <select wicket:id="ddc2" onchange="alert('onchange');"/>
 	</div>
-	
+
 	<h4>Using a Form and two bound components</h4>
 	<p>
 	  The following example we use two <span class="code">DropDownChoice</span>
@@ -60,19 +60,19 @@
 		   <input type="submit" />
 		</form>
 	</div>
-	
+
 	<h4>Prefixing and suffixing the </h4>
 	<p>
-	  We can also prefix and suffix our component as desired in the 
+	  We can also prefix and suffix our component as desired in the
 	  configuration parameters.
     </p>
 	<div class="box">
 	   <select wicket:id="ddc3" />
 	</div>
-	
+
 	<h4>Nesting components</h4>
 	<p>
-	  Here we are using a <span class="code">WebMarkupContainer</span> wicket 
+	  Here we are using a <span class="code">WebMarkupContainer</span> wicket
 	  component to nest a <span class="code">ListChoice</span> and updating the container via ajax.
     </p>
 	<div class="box">
@@ -80,7 +80,7 @@
 		 <select wicket:id="nestingChild"></select>
 		</div>
 	</div>
-	
+
 </wicket:extend>
 </body>
 </html>

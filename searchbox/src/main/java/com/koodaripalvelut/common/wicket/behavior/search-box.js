@@ -47,24 +47,25 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
 
 
 	function search() {
-		searchBoxInit['searchText' + searchFieldId] = searchField.value;
-		var re = new RegExp(searchField.value, regexFlags);
-		var i = 0;
-		var prevVal = select.value;
-		select.options.length = 0;
-		for (var j = 0; j < allValues.length; j++) {
-			if (re.test(allValues[j].text)) {
-				select.options[i++] = allValues[j];
-			} else if (autoremove === 'true') {
-				allValues[j].selected = false;
-			}
-		}
+	  searchBoxInit['searchText' + searchFieldId] = searchField.value;
+    var re = new RegExp(searchField.value, regexFlags);
+    var i = 0;
+    var updateValue = false;
+    select.options.length = 0;
+    for (var j = 0; j < allValues.length; j++) {
+      if (re.test(allValues[j].text)) {
+        select.options[i++] = allValues[j];
+      } else if (autoremove === 'true') {
+        if (allValues[j].selected == true)
+          updateValue = true;
+        allValues[j].selected = false;
+      }
+    }
 
-		var curVal = select.value;
-		// make sure the change is correctly associated and correctly notified
-		if (prevVal != curVal && autoremove !== 'true') {
-				select.value = select.options[select.selectedIndex].value;
-		}
+    // make sure the change is correctly associated and correctly notified
+    if (updateValue) {
+      select.onchange();
+    }
 	}
 
 	function clear() {

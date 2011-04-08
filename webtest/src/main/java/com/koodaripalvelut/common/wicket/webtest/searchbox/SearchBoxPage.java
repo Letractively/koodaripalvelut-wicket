@@ -2,6 +2,7 @@ package com.koodaripalvelut.common.wicket.webtest.searchbox;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,9 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.ListChoice;
+import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
@@ -28,8 +31,8 @@ import com.koodaripalvelut.common.wicket.webtest.ModelsPanel;
 public class SearchBoxPage extends BasePage {
 
   private static final long serialVersionUID = 1L;
-  
-  private static final List<String> LIST =
+
+  private static final List<? extends String> LIST =
     Arrays.asList(new String[] { "African Alligator", "American Ant",
                                 "Antelope", "Ape", "Ass/Donkey", "Baboon",
                                 "Badger", "Bat", "Bear", "Beaver", "Bee",
@@ -63,7 +66,9 @@ public class SearchBoxPage extends BasePage {
                                 "Squirrel", "Swan", "Tiger", "Toad",
                                 "Turkey", "Turtle", "Water", "Weasel",
                                 "Whale"});
-  
+
+  final List<String> nestedSelections = new ArrayList<String>();
+
   @SuppressWarnings("serial")
   public SearchBoxPage(){
     add(new DropDownChoice<String>("ddc", LIST)
@@ -126,8 +131,12 @@ public class SearchBoxPage extends BasePage {
 
     final WebMarkupContainer nestingParent =
       new WebMarkupContainer("nestingParent");
-    final ListChoice<String> nestingChild =
-      new ListChoice<String>("nestingChild", Model.of("Ape"), LIST);
+
+    final IModel<? extends Collection<String>> choiceModel =
+      (IModel<? extends Collection<String>>) (Object) Model.ofList(nestedSelections);
+
+    final ListMultipleChoice<String> nestingChild =
+      new ListMultipleChoice<String>("nestingChild", choiceModel, LIST);
 
     nestingParent.setOutputMarkupPlaceholderTag(true);
     nestingChild.add(new ChoiceSearchBoxBehavior());
@@ -141,26 +150,26 @@ public class SearchBoxPage extends BasePage {
     });
 
     add(nestingParent.add(nestingChild));
-    
+
     final TextField<String> myTextField = new TextField<String>("myTextField");
     @SuppressWarnings("unchecked")
-    final AutoCompleteBehavior<String> autoComplete = 
-      new AutoCompleteBehavior<String>(StringAutoCompleteRenderer.INSTANCE, 
+    final AutoCompleteBehavior<String> autoComplete =
+      new AutoCompleteBehavior<String>(StringAutoCompleteRenderer.INSTANCE,
           new AutoCompleteSettings().setCacheDuration(10000).setPreselect(true)) {
 
       @Override
-      protected Iterator<String> getChoices(String input) { 
+      protected Iterator<String> getChoices(final String input) {
         final List<String> filteredList = new ArrayList<String>();
-        for(String str : LIST){
+        for(final String str : LIST){
           if(str.startsWith(input)){
             filteredList.add(str);
           }
         }
       return filteredList.iterator();
       }
-    }; 
+    };
     myTextField.add(autoComplete);
-    
+
     add(myTextField);
   }
 }

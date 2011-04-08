@@ -26,10 +26,30 @@
 			<version>${wicket.version}</version>
 		</dependency>
 		<dependency>
+      <groupId>com.koodaripalvelut.wicket.common</groupId>
+      <artifactId>changedetector</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+		<dependency>
 			<groupId>com.koodaripalvelut.wicket.common</groupId>
-			<artifactId>components</artifactId>
+			<artifactId>dropable</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+      <groupId>com.koodaripalvelut.wicket.common</groupId>
+      <artifactId>fullcalendar</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+		<dependency>
+      <groupId>com.koodaripalvelut.wicket.common</groupId>
+      <artifactId>searchbox</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.koodaripalvelut.wicket.common</groupId>
+      <artifactId>openid</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
