@@ -6,6 +6,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import com.koodaripalvelut.common.wicket.webtest.changedetector.ChangeDetectorPage;
 import com.koodaripalvelut.common.wicket.webtest.fullcalendar.FullCalendarPage;
 import com.koodaripalvelut.common.wicket.webtest.multimodal.MultiModalPage;
+import com.koodaripalvelut.common.wicket.webtest.multiselect.MultiSelectPage;
 import com.koodaripalvelut.common.wicket.webtest.openid.InfoPage;
 import com.koodaripalvelut.common.wicket.webtest.searchbox.SearchBoxPage;
 
@@ -28,6 +29,8 @@ public class NavigationPanel extends Panel {
         InfoPage.class));
     add(new BookmarkablePageLink<DropablePage>("droppable",
         DropablePage.class));
+    add(new BookmarkablePageLink<DropablePage>("multi-select",
+            MultiSelectPage.class));
   }
 
 }

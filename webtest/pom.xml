@@ -16,7 +16,7 @@
 
 	<properties>
 		<slf4j.version>1.6.1</slf4j.version>
-		<gae.version>1.4.2</gae.version>
+		<gae.version>1.5.0.1</gae.version>
 	</properties>
 
 	<dependencies>
@@ -48,6 +48,11 @@
     <dependency>
       <groupId>com.koodaripalvelut.wicket.common</groupId>
       <artifactId>openid</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.koodaripalvelut.wicket.common</groupId>
+      <artifactId>multiselect</artifactId>
       <version>${project.version}</version>
     </dependency>
 

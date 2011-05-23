@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:wicket="http://wicket.apache.org/">
+<head>
+<wicket:head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.3/jquery-ui.js"></script>
+</wicket:head>
+</head>
+<body>
+<wicket:extend>
+    <h2>Multi-Select Box</h2>
+
+    <h3>Single Select</h3>3    <p>
+        This component is the Wicket Autocomplete component with cache behavior added.
+        The cache has a expiration time. Both the cache and its expiration time can be
+        configured in <span class="code">AutoCompleteSettings.java</span> through
+        its <span class="code">setCacheDuration(int)</span> method.
+
+    </p>
+    <div class="box">
+       <h5>Example</h5>
+       <select wicket:id="single" ></select>
+    </div>
+
+    <h3>Multi Select</h3>
+
+    <p>
+        The <span class="code">ChoiceSearchBoxBehavior</span> adds a search
+        field which applies search criteria to a given
+        <span class="code">AbstractChoice</span>. Note: This behavior cannot
+        be reused between components.
+    </p>
+    <div class="box">
+     <h5>Example</h5>
+	   <select wicket:id="multi" />
+	</div>
+
+	<h3>Filtered Multi Select</h3>
+	<p>
+	  Here is an example using a <span class="code">ListChoise</span> and
+	  passing some configuration parameters such as the mode and the button label.
+	</p>
+	<div class="box">
+	   <h5>Example</h5>
+	   <select wicket:id="filtered" />
+	</div>
+
+	<h3>Tri State Multi Select</h3>
+	<p>
+	  The following example we use two <span class="code">DropDownChoice</span>
+	  components bound together inside a Form.
+	</p>
+	<div class="box">
+      <h5>Example</h5>
+		  <select wicket:id="tristate"></select>
+	</div>
+
+</wicket:extend>
+</body>
+</html>

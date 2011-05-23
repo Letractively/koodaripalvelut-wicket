@@ -50,6 +50,7 @@
     <module>openid</module>
     <module>searchbox</module>
     <module>webtest</module>
+    <module>multiselect</module>
   </modules>
 
 	<issueManagement>
