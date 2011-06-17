@@ -93,6 +93,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    */
   @Override
   public void renderHead(IHeaderResponse response) {
+    super.renderHead(response);
     response.renderJavascriptReference(new ResourceReference(
         MultiSelectBehavior.class, "jquery.multiselect.js"));
     response.renderCSSReference("/css/redmond2010/jquery-ui.css");
@@ -112,9 +113,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     }
     {
       // Destroy old widget
-      String script = "$('#" + getComponent().getMarkupId() + "').multiselect('destroy');"; // Replace previous
-//    script = "$('#" + getComponent().getMarkupId() + "').mouseover(function() {$(this).multiselect('destroy');});"; // Replace previous
-//    JavascriptUtils.writeJavascript(response, script);
+      String script = "try {$('#" + getComponent().getMarkupId() + "').multiselect('destroy');} catch (e) {}"; // Replace previous
       response.renderJavascript(script, null);
     }
   }
