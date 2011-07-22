@@ -31,3 +31,7 @@ ul.triState a.checkbox {
 	ul.triState li li {
 			padding: 10px 0 0 18px;
 		}
+  
+  ul.triState a {border: thick;}
+  ul.triState li{ background: url(noexpanded.png) 7px center no-repeat; }
+  ul.triState li.title{ background: url(noexpanded.png) 7px 10px no-repeat; }

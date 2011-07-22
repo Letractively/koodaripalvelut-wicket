@@ -11,6 +11,9 @@ import org.apache.wicket.util.lang.PackageName;
 
 import com.koodaripalvelut.common.wicket.webtest.changedetector.ChangeDetectorPage;
 import com.koodaripalvelut.common.wicket.webtest.fullcalendar.FullCalendarPage;
+import com.koodaripalvelut.common.wicket.webtest.multimodal.MultiModalPage;
+import com.koodaripalvelut.common.wicket.webtest.multiselect.MultiSelectPage;
+import com.koodaripalvelut.common.wicket.webtest.openid.InfoPage;
 import com.koodaripalvelut.common.wicket.webtest.openid.ResultPage;
 import com.koodaripalvelut.common.wicket.webtest.searchbox.SearchBoxPage;
 
@@ -32,6 +35,9 @@ public class WebApplicationTest extends WebApplication {
     mount(new IndexedParamUrlCodingStrategy("changeDetector", ChangeDetectorPage.class));
     mount(new IndexedParamUrlCodingStrategy("calendar", FullCalendarPage.class));
     mount(new IndexedParamUrlCodingStrategy("dropable", DropablePage.class));
+    mount(new IndexedParamUrlCodingStrategy("nestedModalWindow", MultiModalPage.class));
+    mount(new IndexedParamUrlCodingStrategy("openID", InfoPage.class));
+    mount(new IndexedParamUrlCodingStrategy("multiSelect", MultiSelectPage.class));
     mount(PATH, PackageName.forClass(ResultPage.class));
   }
 

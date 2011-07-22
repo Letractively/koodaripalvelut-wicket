@@ -23,6 +23,8 @@
       fullClass: 'full',
       heading: 'span.label',
       partialClass: 'partial',
+      labelClass: 'label',
+      sublist: 'sublist',
       showOriginalInputs: false
     };
     var opts = $.extend(config,options);
@@ -33,7 +35,9 @@
       var triState = {
         init: function () {
           // Add proxy checkbox for each heading
-          obj.find(opts.heading).before('<a href="#" class="checkbox">Heading</a>').wrap('<label></label>');
+          obj.find(opts.heading)
+          	.before('<a href="#" class="checkbox ' + opts.sublist + '">Heading</a>')
+          	.wrap('<label class="' + opts.labelClass + " " + opts.sublist + ' sublist"></label>');
           
           var $inputs = obj.find('input[type="checkbox"]');
           for (var i=0, y=$inputs.length; i<y; i++) {
@@ -106,12 +110,15 @@
             triState.setInputField($proxyLink, 'checked');
             triState.checkSiblings($($inputs[i]), true);
             triState.setAncestors($($inputs[i]), true);
+            $inputs.removeAttr('checked');
           }
         },
         
         hideInput: function ($el) {
-          var sName = $el.attr('name');
-          var $newCheckbox = $('<a href="#" class="checkbox">'+sName+'</a>');
+          var sName = $el.attr('name'),
+          title = $el.attr('title'),
+          value = $el.attr('value'),
+          $newCheckbox = $('<a href="#" class="checkbox element" title="'+title+'" valuee='+ value +'>'+sName+'</a>');
           $newCheckbox.data("name", sName);
           $el.before($newCheckbox);
           if (!opts.showOriginalInputs) { $el.hide(); }
