@@ -30,6 +30,7 @@ $.widget("ech.multiselect", {
     minWidth: 225,
     classes: '',
     checkAllText: 'Check all',
+    miniButton: true,
     uncheckAllText: 'Uncheck all',
     selectNullText: 'None', 
     acceptNull: false,
@@ -41,6 +42,7 @@ $.widget("ech.multiselect", {
     autoOpen: false,
     multiple: true,
     optionLength: 0,
+    nullItemLabel: 'null / emptyValue',
     position: {}
   },
 
@@ -109,11 +111,8 @@ $.widget("ech.multiselect", {
     if( this.options.header === false ){
       this.header.hide();
     }
-    if( this.options.multiple === false){
-    	this.headerLinkContainer.find('.ui-multiselect-all, .ui-multiselect-none').hide();
-    } 
-    if( this.options.acceptNull === false){
-    	this.headerLinkContainer.find('.ui-multiselect-null').hide();
+    if( !this.options.multiple ){
+      this.headerLinkContainer.find('.ui-multiselect-all, .ui-multiselect-none').hide();
     }
     if( this.options.autoOpen ){
       this.open();
@@ -138,7 +137,7 @@ $.widget("ech.multiselect", {
     options.each(function( i ){
       var $this = $(this), 
         parent = this.parentNode,
-        title = this.innerHTML,
+        title = this.innerHTML == "" ? o.nullItemLabel : this.innerHTML,
         value = this.value,
         inputID = this.id || 'ui-multiselect-'+id+'-option-'+i, 
         isDisabled = this.disabled,
@@ -172,13 +171,12 @@ $.widget("ech.multiselect", {
       
       html.push('<li class="listitem ' + (isDisabled ? 'ui-multiselect-disabled' : '') + '">');
       
-      if (o.multiple) {
-    	  html.push('<label for="radio'+inputID+'" class="'+labelClasses.join(' ')+ ' single-choice-radio-label">');
-    	  html.push('<input type="radio" id="radio'+inputID+'" name="multiselect_radio" checkbox="'+inputID+ '"/></label>');
-      }
+      var single = (!o.multiple || value === "") ? true : false;
+      
       // create the label
-      html.push('<label for="'+inputID+'" class="'+labelClasses.join(' ')+ (o.multiple ? " item-label" : "") +'">');
-      html.push('<input id="'+inputID+'" name="multiselect_'+id+'" type="'+(o.multiple ? "checkbox" : "radio")+'" value="'+value+'" title="'+title+'"');
+      html.push('<label for="'+inputID+'" class="'+labelClasses.join(' ') + (o.multiple ? " item-label" : "") + (single ? " multiselect-single" : "") +'">');
+    	html.push('<input type="radio" id="radio'+inputID+'" name="multiselect_radio" checkbox="'+inputID+ '"/>');
+      html.push('<input id="'+inputID+'" name="multiselect_'+id+'" type="checkbox" value="'+value+'" title="'+title+'"');
 
       // pre-selected?
       if( isSelected ){
@@ -198,6 +196,15 @@ $.widget("ech.multiselect", {
     
     // insert into the DOM
     checkboxContainer.html( html.join('') );
+    
+    this.nullEmptyValues = menu.find('.listitem').find(".multiselect-single").each(function() {
+      var $this = $(this),
+          $checkbox = $($this.children('input[type="checkbox"]')[0]),
+          $radio = $($this.children('input[type="radio"]')[0]);
+      $checkbox.hide();
+      $radio.hide();
+      $this.attr('for', $radio.attr('id'));
+    });
 
     // cache some moar useful elements
     this.labels = menu.find('.listitem');
@@ -218,7 +225,7 @@ $.widget("ech.multiselect", {
   // updates the button text.  call refresh() to rebuild
   update: function(){
     var o = this.options,
-      $inputs = this.labels.find('input' + (o.multiple ? '[type="checkbox"]' : '')),
+      $inputs = this.labels.find('input[type="checkbox"]'),
       $checked = $inputs.filter(':checked'),
       numChecked = $checked.length,
       value;
@@ -371,7 +378,8 @@ $.widget("ech.multiselect", {
           val = this.value,
           checked = this.checked,
           type = this.type,
-          tags = self.element.find('option');
+          tags = self.element.find('option'),
+          multiple = self.options.multiple;
         
         // bail if this input is disabled or the event is cancelled
         if( this.disabled || self._trigger('click', e, { value:val, text:this.title, checked:checked }) === false ){
@@ -379,16 +387,24 @@ $.widget("ech.multiselect", {
           return;
         }
         
-        if(type == 'radio' && self.options.multiple) {
-        	self._toggleChecked(false, self.labels.find('input').not(this), type);
-        	self._toggleChecked(true, self.labels.find('#' + $this.attr("checkbox")));
+        //uncheck null/emptyValues
+        self._uncheckEnptyNullValues();
+        
+        if(type == 'radio') {
+        	self._toggleChecked(false, self.labels.find('input').not(this).not('#' + $this.attr("checkbox")), type);
+        	var $targetCheckbox = $this.siblings('input[type="checkbox"]');
+        	val = $targetCheckbox.attr('value');
+        	multiple = false;
+        	self._toggleChecked(true, $targetCheckbox[0] ? $targetCheckbox : $this);
         	self.close();
         } else {
         	// toggle aria state
+          if ($($this.siblings('input[type="radio"]')[0]).attr("checked")) {
+            $this.attr('checked', true);
+            return;
+          }
         	$this.attr('aria-selected', checked);
-        	if (self.options.multiple) {
-        		self._toggleChecked(false, self.labels.find('input[type="radio"]'));
-        	}
+        	self._toggleChecked(false, self.labels.find('input[type="radio"]'));
         }
         
         // set the original option tag to selected
@@ -397,7 +413,7 @@ $.widget("ech.multiselect", {
             this.selected = checked;
 
           // deselect all others in a single select
-          } else if( !self.options.multiple ){
+          } else if( !multiple ){
             this.selected = false;
           }
         });
@@ -437,18 +453,29 @@ $.widget("ech.multiselect", {
     var width = this.element.outerWidth(),
       o = this.options;
       
+    if (o.miniButton) {
+      //    var elsu = this.element;
+//          alert("this.element=" + elsu[0].tagName + " outerWidth: " + width + " vs. width: " + elsu[0].style.width);
+          this.button.width( width );
+          o.buttonWidth = o.minWidth;
+          return;
+        }
+    
     if( /\d/.test(o.minWidth) && width < o.minWidth){
       width = o.minWidth;
     }
     
     // set widths
     this.button.width( width );
+    
+    o.buttonWidth = this.button.outerWidth();
   },
   
   // set menu width
   _setMenuWidth: function(){
     var m = this.menu,
-      width = this.button.outerWidth()-
+    o = this.options,
+    width = o.buttonWidth
         parseInt(m.css('padding-left'),10)-
         parseInt(m.css('padding-right'),10)-
         parseInt(m.css('border-right-width'),10)-
@@ -497,11 +524,19 @@ $.widget("ech.multiselect", {
   },
 
   _toggleChecked: function(flag, group, type){
-    var $inputs = (group && group.length) ?
-      group :
-      this.labels.find('input'),
-
-      self = this;
+    var self = this,
+    $inputs;
+    
+    if (group && group.length) {
+      $inputs = group;
+    } else {
+      var tempInput = this.labels.find('input');
+      if (flag) {
+        self._uncheckEnptyNullValues();
+        tempInput = tempInput.not(self.nullEmptyValues.children("input"));
+      }
+      $inputs = tempInput;
+    }
 
     // toggle state on inputs
     $inputs.each(this._toggleCheckbox('checked', flag));
@@ -510,7 +545,7 @@ $.widget("ech.multiselect", {
     this.update();
     
     // gather an array of the values that actually changed
-    var values = $inputs.map(function(){
+    var values = $inputs.filter('input[type="checkbox"]').map(function(){
       return this.value;
     }).get();
 
@@ -535,6 +570,14 @@ $.widget("ech.multiselect", {
     
     this.element
       .attr({ 'disabled':flag, 'aria-disabled':flag });
+  },
+  
+  //uncheck null/emptyValues
+  _uncheckEnptyNullValues: function() {
+    var nullEmptyValues = this.nullEmptyValues.children('input');
+    if (nullEmptyValues && nullEmptyValues.length) {
+      this._toggleChecked(false, nullEmptyValues);
+    }
   },
   
   // open the menu
@@ -668,6 +711,10 @@ $.widget("ech.multiselect", {
         break;
       case 'height':
         menu.find('ul:last').height( parseInt(value,10) );
+        break;
+      case "miniButton":
+        this.options[ key ] = value;
+        this._setButtonWidth();
         break;
       case 'minWidth':
         this.options[ key ] = parseInt(value,10);

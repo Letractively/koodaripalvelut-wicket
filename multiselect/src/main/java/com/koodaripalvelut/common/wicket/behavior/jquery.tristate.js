@@ -25,6 +25,7 @@
       partialClass: 'partial',
       labelClass: 'label',
       sublist: 'sublist',
+      multiple: true,
       showOriginalInputs: false
     };
     var opts = $.extend(config,options);
@@ -35,9 +36,37 @@
       var triState = {
         init: function () {
           // Add proxy checkbox for each heading
-          obj.find(opts.heading)
-          	.before('<a href="#" class="checkbox ' + opts.sublist + '">Heading</a>')
-          	.wrap('<label class="' + opts.labelClass + " " + opts.sublist + ' sublist"></label>');
+          obj.find(opts.heading).each(function() {
+            var $this = $(this),
+            stateAnchor = $('<a href="#" class="checkbox ' + opts.sublist + '">Heading</a>');
+            $this.before(stateAnchor);
+            if($this.children().length > 0) {
+              var optionItem = $this.children()[0],
+              anchor = triState.convertToAnchor($(optionItem), 'node-item-checkbox'),
+              radio = triState.convertToRadio($(optionItem)),
+              span = $('<span class="tristate-node-element"></span> ');
+              stringAnchorItem = $('<div>').append(anchor).remove().html(),
+              stringRadioItem = $('<div>').append(radio).remove().html();
+              
+              $this.before(span.append(radio).append(anchor));
+              
+              $this.wrap('<label class="ui-corner-all tristateMultiselect-label ' + opts.sublist + '"></label>');
+              
+              this.innerHTML = $(optionItem).attr('title');
+              
+              if(opts.multiple){
+                triState.bindLabel(stateAnchor);
+              } else {
+                anchor.hide();
+                triState.bindLabel(radio, radio.parent().siblings('label'));
+              }
+            } else {
+              $this.wrap('<label class="ui-corner-all tristateMultiselect-label ' + opts.sublist + '"></label>');
+              if(opts.multiple) {
+                triState.bindLabel(stateAnchor);
+              }
+            }
+          });
           
           var $inputs = obj.find('input[type="checkbox"]');
           for (var i=0, y=$inputs.length; i<y; i++) {
@@ -48,10 +77,34 @@
           // Initialize proxy links
           triState.updateProxyStates();
           
+          obj.find('a.node-item-checkbox').each(function() {
+            var $this = $(this),
+            $parentList = $this.parent('span').parent('li').parent('ul'),
+            $clone = $this.clone(),
+            $liClone = $clone.wrap('<li></li>').parent();
+            $clone.attr('id', 'clone-' + $this.attr('id'));
+            $clone.addClass('node-item-clone');
+            $clone.removeClass('node-item-checkbox');
+            $parentList.append($liClone.hide());
+            
+            $this.bind('click', function(e) {
+              e.preventDefault();
+              $this.attr()
+              $clone.trigger('click');
+              if ($clone.hasClass('checked')) {
+                $this.addClass('checked');
+              } else {
+                $this.removeClass('checked');
+              }
+            });
+            
+          });
+          
           // Set click behavior on appropriate input fields
-          obj.find('a.checkbox, label').bind('click', function (e) {
+          obj.find('a.checkbox').bind('click', function (e) {
+            var $this = $(this);
             e.preventDefault();
-            triState.initProxyClick($(this));
+            triState.initProxyClick($this);
           });
         },
         
@@ -115,13 +168,54 @@
         },
         
         hideInput: function ($el) {
+          var $anchor = triState.convertToAnchor($el);
+          var $radio = triState.convertToRadio($el);
+          $el.before($radio).before($anchor);
+          
+          if(!opts.multiple || $el.attr("value") == "") {
+            triState.hideInputs($($anchor.siblings('label')[0]), $anchor, $radio);
+          } else {
+            triState.bindLabel($anchor);
+          }
+          if (!opts.showOriginalInputs) { $el.hide(); }
+        },
+        
+        hideInputs: function($label, $anchor, $radio) {
+          $radio.attr('id', 'radio-' + $anchor.attr('id'));
+          $($anchor.siblings('label')[0]).attr('for', $radio.attr('id'));
+          $label.attr('for', $radio.attr('id'));
+          $radio.hide();
+          $anchor.hide();
+        },
+        
+        convertToAnchor: function ($el, classes) {
           var sName = $el.attr('name'),
+          id = $el.attr('id'),
           title = $el.attr('title'),
           value = $el.attr('value'),
-          $newCheckbox = $('<a href="#" class="checkbox element" title="'+title+'" valuee='+ value +'>'+sName+'</a>');
+          isSelected = $el.attr('checked'),
+          $newCheckbox = $('<a id="anchor-'+ id +'" href="#" class="checkbox element '+ (isSelected ? "checked" : "") + (classes ?  classes : "")+'" title="'+title+'" optionvalue='+ value +'>'+sName+'</a>');
           $newCheckbox.data("name", sName);
-          $el.before($newCheckbox);
-          if (!opts.showOriginalInputs) { $el.hide(); }
+          return $newCheckbox;
+        },
+        
+        convertToRadio: function($el) {
+          var checkboxId = $el.attr('id');
+          
+          return $('<input type="radio" class="checkbox radiobutton" checkbox="' + checkboxId + '" style="float: left;"/>')
+        },
+        
+        
+        bindLabel: function($target, $label) {
+          
+          if ($label == undefined) {
+            $label = $($target.siblings('label')[0]).attr('for', '');
+          }
+          
+          $label.bind('click', function() {
+            $target.trigger('click');
+          });
+          
         },
         
         setAncestors: function ($el, bChecked) {

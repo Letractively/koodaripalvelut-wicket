@@ -75,7 +75,7 @@
         this.update();
         
         // figure out which option tags need to be selected
-        var values = $inputs.map(function(){
+        var values = $inputs.filter('input[type="checkbox"]').map(function(){
           return this.value;
         }).get();
         
@@ -141,9 +141,9 @@
         }
         
         // see _create() in jquery.multiselect.js
-        if( !self.val().length ){
-          return null;
-        }
+//        if( !self.val().length ){
+//          return null;
+//        }
         
         return self.map(function(){
           return this.innerHTML.toLowerCase();

@@ -4,7 +4,7 @@
 <head>
 <wicket:head>
 <link rel="stylesheet" type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1/themes/ui-lightness/jquery-ui.css"/>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.5.2.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1/jquery-ui.js"></script>
 </wicket:head>
 </head>
@@ -22,8 +22,8 @@
     </p>
     <div wicket:id="single"></div>
     
-    <h3>Single Select</h3>
-    <div wicket:id="singleWithNull"></div>
+<!--     <h3>Single Select</h3> -->
+<!--     <div wicket:id="singleWithNull"></div> -->
   
     <h3>Multi Select</h3>
     <p>
@@ -49,7 +49,45 @@
 	  components bound together inside a Form.
 	</p>
   <div wicket:id="tristate"></div>
+  
+  <h3>DropDownChoice</h3>
+    <div class="box">
+    <table>
+      <tr>
+        <td>
+          <h5>Example</h5>
+          <form wicket:id="form2">
+            <select wicket:id="select"> </select> 
+            <br />
+            <input type="button" value="submit-ajax" wicket:id="save"/><br />
+            <input type="submit" value="submit"/>
+          </form></td>
+        <td>
+          <span wicket:id="label2"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
 
+<h3>DropDownChoice.setNullValid</h3>
+    <div class="box">
+    <table>
+      <tr>
+        <td>
+          <h5>Example</h5>
+          <form wicket:id="form">
+            <select wicket:id="select"> </select> 
+            <br />
+            <input type="button" value="submit-ajax" wicket:id="save"/><br />
+            <input type="submit" value="submit"/>
+          </form></td>
+        <td>
+          <span wicket:id="label"></span>
+        </td>
+      </tr>
+    </table>
+  </div>
+  
   </wicket:extend>
 </body>
 </html>

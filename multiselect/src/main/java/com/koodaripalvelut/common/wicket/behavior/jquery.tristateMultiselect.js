@@ -30,17 +30,19 @@ $.widget("ech.triStateMultiselect", {
     minWidth: 225,
     classes: '',
     checkAllText: 'Check all',
+    miniButton: true,
     uncheckAllText: 'Uncheck all',
     noneSelectedText: 'Select options',
     selectedText: '# selected',
-    sublistText: 'sub-list',
+    defaultListLabel: 'sub-list',
     selectedList: 0,
     show: '',
     hide: '',
     autoOpen: false,
     multiple: true,
-    labelClass: 'label',
+    labelClass: 'tristateMultiselect-label',
     sublistClass: 'sublist', 
+    nullItemLabel: 'null / emptyValue',
     position: {}
   },
 
@@ -115,6 +117,9 @@ $.widget("ech.triStateMultiselect", {
     if( this.element.is(':disabled') ){
       this.disable();
     }
+    
+    $(this.menu).find('ul.triState').tristate({heading: 'span.heading', multiple: this.options.multiple});
+    this.button[0].defaultValue = this.update();
   },
   
   refresh: function( init ){
@@ -124,10 +129,116 @@ $.widget("ech.triStateMultiselect", {
       checkboxContainer = this.checkboxContainer,
       optgroups = [],
       html = [],
+      result = {},
+      parentIdElementMap = {},
+      parentElements = {},
+      nullOptions = [],
       id = el.attr('id') || multiselectID++; // unique ID for the label & option tags
     
+    //Organizes options hierarchically
+    this.element.find('option').each(function( i ) {
+      
+      if(this.value == "") {
+        this.innerHTML = o.nullItemLabel;
+        nullOptions.push(this);
+        return;
+      }
+      
+      var optParentId = $(this).attr('optparentid'),
+      parent = parentIdElementMap[optParentId];
+      
+      if(optParentId == "null") { //belongs to root.
+        parent = parentIdElementMap["null"];
+        if (parent == undefined) {
+          parent = [];
+          parentIdElementMap["null"] = parent;
+        }
+      } else if (parent == undefined) { //Parent is not yet registered. 
+        
+        var elementsWithNoParent = parentIdElementMap["null"];
+        
+        if(elementsWithNoParent != undefined) {
+          for (var i = 0; i < elementsWithNoParent.length; i++) {
+            if (elementsWithNoParent[i].innerHTML == optParentId) {
+              parentElements[optParentId] = elementsWithNoParent[i];
+              elementsWithNoParent.splice(i, 1);
+              break;
+            }
+          }
+        }
+        
+        parent = [];
+        result[optParentId] = parent;
+        parentIdElementMap[optParentId] = parent;
+      } else if (parent instanceof Array) { //parent is registered.
+        parentIdElementMap[this.innerHTML] = this;
+      } else { //Parent is an exiting option.
+        
+        var grandParent = parentIdElementMap[$(parent).attr('optparentid')];
+        
+        var obj = parent;
+        parentElements[optParentId] = obj;
+        
+        parent = [];
+        parentIdElementMap[optParentId] = parent;
+        
+        for (var i = 0; i < grandParent.length; i++) {
+          if (grandParent[i] == obj) {
+            grandParent[i] = parent;
+            break;
+          }
+        }
+      }
+      
+      if(this.value == "") {
+        this.innerHTML = o.nullItemLabel;
+      }
+      parent.push(this);
+    });
+    
+    var elementsWithNoParent = parentIdElementMap["null"];
+    if(elementsWithNoParent != undefined) {
+      var counter = 0;
+      for(obj in elementsWithNoParent) {
+        result["withnoparent" + counter++] = elementsWithNoParent[obj];
+      }
+    }
+
+    
+    function flat( arr ) {
+      var array = [];
+      var startOpt = document.createElement('OPTION');
+      $(startOpt).attr('optcontainer', 'startOpt');
+      array.push(startOpt);
+      for (keyVar in arr) {
+        var obj = arr[keyVar];
+        if (obj instanceof Array) {
+          array = array.concat(flat(obj));
+        } else {
+          array.push(obj);
+          if (startOpt.innerHTML == "") {
+            startOpt.innerHTML = $(obj).attr('optparentid');
+          }
+        }
+      }
+      var endOpt = document.createElement('OPTION');
+      $(endOpt).attr('optcontainer', 'endOpt');
+      array.push(endOpt);
+      return array;
+    }
+    
+    var flatResult = nullOptions.concat(flat(result));
+    
+    $(flatResult).filter(function(){return ($(this).attr('optcontainer')  == 'startOpt')}).each(function(){
+      var parentElement = parentElements[this.innerHTML];
+      if (parentElement != undefined) {
+        $(parentElement).attr({optcontainer: 'startOpt', isItem: true});
+        flatResult[jQuery.inArray( this, flatResult )] = parentElement;
+      }
+    });
+    
     // build items
-    this.element.find('option').each(function( i ){
+    $(flatResult).each(function( i ){
       var $this = $(this), 
         parent = this.parentNode,
         title = this.innerHTML,
@@ -137,17 +248,25 @@ $.widget("ech.triStateMultiselect", {
         isSelected = this.selected,
         labelClasses = ['ui-corner-all'],
         className = this.label,
+        optcontainer = $this.attr('optcontainer'),
         optLabel;
       
-      // is this an optgroup?
-      if( parent.tagName.toLowerCase() === 'optgroup' ){
-        optLabel = parent.getAttribute('label');
+      function convertToInput() {
+        var buf = '<input id="'+ inputID +'" type="checkbox" value="'+value+'" title="'+title+'"';
         
-        // has this optgroup been added already?
-        if( $.inArray(optLabel, optgroups) === -1 ){
-          html.push('<li class="ui-multiselect-optgroup-label"><a href="#">' + optLabel + '</a></li>');
-          optgroups.push( optLabel );
+        // pre-selected?
+        if( isSelected ){
+          buf += ' checked="checked"';
+          buf += ' aria-selected="true"';
         }
+        
+        // disabled?
+        if( isDisabled ){
+          buf += ' disabled="disabled"' ;
+          buf += ' aria-disabled="true"';
+        }
+        buf += ' />';
+        return buf;
       }
     
       if( isDisabled ){
@@ -160,31 +279,24 @@ $.widget("ech.triStateMultiselect", {
         labelClasses.push('ui-state-active');
       }
       
-      if ( className == "startOpt" )  {
+      if ( optcontainer == "startOpt" )  {
     	  this.sublistCount++;
-    	  html.push('<li class="title"> <span class=heading>' + o.sublistText + '</span><ul>');
-      } else if ( className == "endOpt" ) {
+    	  title;
+    	  if($(this).attr('isItem')) {
+    	    title = convertToInput();
+    	  } else {
+    	    title = (title === "null" ? o.defaultListLabel : title)
+    	  }
+    	  html.push('<li class="title"><span class="heading">' + title + '</span><ul>');
+      } else if ( optcontainer == "endOpt" ) {
     	  html.push('</ul></li>');
       } else {
     	  html.push('<li class="' + (isDisabled ? 'ui-multiselect-disabled' : '') + '">');
     	  
-    	  // create the label
-    	  html.push('<input id="'+ inputID +'" type="'+(o.multiple ? "checkbox" : "radio")+'" value="'+value+'" title="'+title+'"');
-    	  
-    	  // pre-selected?
-    	  if( isSelected ){
-    		  html.push(' checked="checked"');
-    		  html.push(' aria-selected="true"');
-    	  }
-    	  
-    	  // disabled?
-    	  if( isDisabled ){
-    		  html.push(' disabled="disabled"');
-    		  html.push(' aria-disabled="true"');
-    	  }
+    	  html.push(convertToInput());
     	  
     	  // add the title and close everything off
-    	  html.push(' /><label href="#" for="' + inputID + '" class="ui-corner-all label">' + title + '</label></li>');
+    	  html.push('<label href="#" for="' + inputID + '" class="ui-corner-all ' + o.labelClass + '"><span>' + title + '</span></label></li>');
       }
     });
     
@@ -199,7 +311,7 @@ $.widget("ech.triStateMultiselect", {
     this._setMenuWidth();
     
     // remember default value
-    this.button[0].defaultValue = this.update('input:checked');
+    this.button[0].defaultValue = this.update();
     
     // broadcast refresh event; useful for widgets
     if( !init ){
@@ -208,10 +320,10 @@ $.widget("ech.triStateMultiselect", {
   },
   
   // updates the button text.  call refresh() to rebuild
-  update: function(selector){
+  update: function(){
     var o = this.options,
-      $inputs = $('ul.triState').find(selector ? selector : 'a.checkbox'),
-      $checked = selector ? $inputs.filter(':checked') : $inputs.filter('.checked').filter('.element'),
+      $inputs = this.menu.find('ul.triState').find('a.checkbox:not(.node-item-clone)'),
+      $checked = $inputs.filter('.checked').filter('.element'),
       numChecked = $checked.length,
       value;
     
@@ -325,16 +437,14 @@ $.widget("ech.triStateMultiselect", {
     	e.preventDefault();
     	
     	var $this = $(this),
-    	  $inputs = $this.parent().find('.checkbox'),
-    	  nodes = $inputs.get(),
-          label = $this.parent().text(),
+    	  $inputs = $this.parent().find('.checkbox:not(".radiobutton")'),
           tags = self.element.find('option'),
           checked = $inputs.filter('.checked').length === $inputs.length;
     	
     	$inputs.each(function(){
     		$this = $(this);
     		$this.attr('aria-selected', checked);
-    		var val = $this.attr('valuee');
+    		var val = $this.attr('optionvalue');
             tags.each(function(){
                 if( this.value === val ){
                   this.selected = checked;
@@ -367,25 +477,39 @@ $.widget("ech.triStateMultiselect", {
             break;
         }
       })
-      .delegate('.checkbox, .'+ self.options.labelClass + ', input[type="checkbox"], input[type="radio"]', 'click.multiselect', function(e){
+      .delegate('.radiobutton', 'click.multiselect', function(e) {
+        var $this = $(this);
+          self._toggleChecked(false, self.menu.find('ul.triState').find('.checkbox')
+              .not(this));
+          $this.siblings('#anchor-' + $this.attr("checkbox")).trigger('click');
+          $this.attr('checked', 'checked');
+          self.close();
+      })
+      .delegate('.checkbox:not(".radiobutton", ".node-item-checkbox"), input[type="checkbox"], input[type="radio"]:not(".radiobutton")', 'click.multiselect', function(e){
         var $this = $(this),       
-        anchor = $($this.parent().children('.checkbox').get(0)),
-        val = anchor.attr('valuee'),
-        checked = anchor.hasClass('checked'),
-        tags = self.element.find('option');
+          anchor = $($this.parent().children('a.checkbox').get(0)),
+          val = anchor.attr('optionvalue'),
+          checked = anchor.hasClass('checked'),
+          type = this.type,
+          tags = self.element.find('option');
         
         // bail if this input is disabled or the event is cancelled
         if( this.disabled || self._trigger('click', e, { value:val, text:this.title, checked:checked }) === false ){
           e.preventDefault();
           return;
         }
-        
-        // toggle aria state
-        $this.attr('aria-selected', checked);
+          
+          if ($($this.siblings('input[type="radio"]')[0]).attr("checked")) {
+            $this.attr('checked', true);
+            return;
+          }
+          $this.attr('aria-selected', checked);
         
         // set the original option tag to selected
-        tags.each(function(){
-          if( this.value === val ){
+        tags.each(function() {
+          if (this.value == "" && tags.length > 0) {
+            this.selected = false;
+          } else if( this.value === val ){
             this.selected = checked;
 
           // deselect all others in a single select
@@ -397,7 +521,11 @@ $.widget("ech.triStateMultiselect", {
         // some additional single select-specific logic
         if( !self.options.multiple ){
           self.labels.removeClass('ui-state-active');
-          $this.closest('label').toggleClass('ui-state-active', checked );
+          var $label = $this.siblings('label');
+          if ($label == undefined) {
+            $label = $this.closest('label');
+          }
+          $label.toggleClass('ui-state-active', checked );
           
           // close menu
           self.close();
@@ -428,6 +556,14 @@ $.widget("ech.triStateMultiselect", {
   _setButtonWidth: function(){
     var width = this.element.outerWidth(),
       o = this.options;
+    
+    if (o.miniButton) {
+      //    var elsu = this.element;
+//          alert("this.element=" + elsu[0].tagName + " outerWidth: " + width + " vs. width: " + elsu[0].style.width);
+          this.button.width( width );
+          o.buttonWidth = o.minWidth;
+          return;
+        }
       
     if( /\d/.test(o.minWidth) && width < o.minWidth){
       width = o.minWidth;
@@ -435,12 +571,15 @@ $.widget("ech.triStateMultiselect", {
     
     // set widths
     this.button.width( width );
+    
+    o.buttonWidth = this.button.outerWidth();
   },
   
   // set menu width
   _setMenuWidth: function(){
     var m = this.menu,
-      width = this.button.outerWidth()-
+    o = this.options,
+    width = o.buttonWidth
         parseInt(m.css('padding-left'),10)-
         parseInt(m.css('padding-right'),10)-
         parseInt(m.css('border-right-width'),10)-
@@ -491,9 +630,12 @@ $.widget("ech.triStateMultiselect", {
   _toggleChecked: function(flag, group){
     var $inputs = (group && group.length) ?
       group :
-    	  $('ul.triState').find('a.checkbox'),
+    	  this.menu.find('ul.triState').find('a.checkbox'),
 
       self = this;
+    
+    // toggle state on inputs
+    $inputs.each(this._toggleCheckbox('checked', flag));
     
     if (flag) {
     	$inputs.addClass('checked');
@@ -506,7 +648,7 @@ $.widget("ech.triStateMultiselect", {
     
     // gather an array of the values that actually changed
     var values = $inputs.map(function(){
-      return $(this).attr('valuee');
+      return $(this).attr('optionvalue');
     }).get();
 
     // toggle state on original option tags
@@ -663,6 +805,10 @@ $.widget("ech.triStateMultiselect", {
         break;
       case 'height':
         menu.find('ul:last').height( parseInt(value,10) );
+        break;
+      case "miniButton":
+        this.options[ key ] = value;
+        this._setButtonWidth();
         break;
       case 'minWidth':
         this.options[ key ] = parseInt(value,10);

@@ -11,7 +11,10 @@ import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.AbstractChoice;
+import org.apache.wicket.markup.html.form.ChoiceRenderer;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -20,9 +23,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 
 import com.koodaripalvelut.common.wicket.behavior.MultiSelectBehavior;
-import com.koodaripalvelut.common.wicket.behavior.TristateMultiSelectBehavior;
-import com.koodaripalvelut.common.wicket.component.multiselect.ListMultipleChoiceWithNull;
-import com.koodaripalvelut.common.wicket.component.multiselect.TristateListMultipleChoice;
+import com.koodaripalvelut.common.wicket.components.IStyledChoiceRenderer;
+import com.koodaripalvelut.common.wicket.components.ListMultipleChoiceWithStylingOptions;
 import com.koodaripalvelut.common.wicket.webtest.BasePage;
 
 public class MultiSelectPage extends BasePage {
@@ -30,110 +32,163 @@ public class MultiSelectPage extends BasePage {
   private static final long serialVersionUID = 1L;
 
   private static final List<? extends String> LIST =
-    Arrays.asList(new String[] { "African Alligator", "American Ant",
-                                 "Antelope", "Ape", "Ass/Donkey", "Baboon",
-                                 "Badger", "Bat", "Bear", "Beaver", "Bee",
-                                 "Bison", "Boar", "Butterfly", "Camel", "Cat",
-                                 "Cattle[note", "Chamois", "Cheetah",
-                                 "Chicken", "Cobra", "Cockroach", "Cormorant",
-                                 "Coyote", "Crab", "Crane", "Crocodile",
-                                 "Crow", "Deer", "Dog", "Dogfish", "Dolphin",
-                                 "Donkey/Ass", "Dove", "Duck", "Eagle",
-                                 "Echidna", "Eel", "Eland", "Elephant",
-                                 "Elephant", "Elk", "Falcon", "Ferret",
-                                 "Finch", "Fly", "Fox", "Frog", "Gazelle",
-                                 "Gerbil", "Giant", "Giraffe", "Gnu", "Goat",
-                                 "Goose", "Gorilla", "silverback", "Guanaco",
-                                 "Guinea", "Gull", "Hamster", "Hare", "Hawk",
-                                 "Hedgehog", "Heron", "Hippopotamus",
-                                 "Hornet", "Horse[note", "Human", "Hyena",
-                                 "Jackal", "Jaguar", "Jellyfish", "Kangaroo",
-                                 "Kudu", "Lark", "Leopard", "Lion", "Llama",
-                                 "Lobster", "Louse", "Lyrebird", "Magpie",
-                                 "Mallard", "Manatee", "Meerkat", "Mink",
-                                 "Mole", "Monkey", "Moose", "Mosquito",
-                                 "Mouse", "Mule", "Nightingale", "Oryx",
-                                 "Ostrich", "Otter", "Owl", "Ox", "Oyster",
-                                 "Panther", "Partridge", "Peafowl", "Pelican",
-                                 "Pig[note", "Pigeon", "Pony", "Porcupine",
-                                 "Rabbit", "Raccoon", "Rail", "Ram", "Rat",
-                                 "Raven", "Red", "Reindeer", "Rhinoceros",
-                                 "Sea", "Seal", "Seastar", "Shark", "Sheep",
-                                 "Skunk", "Snail", "Snake", "Spider",
-                                 "Squirrel", "Swan", "Tiger", "Toad",
-                                 "Turkey", "Turtle", "Water", "Weasel",
+    Arrays
+    .asList(new String[] { null, "African Alligator", "American Ant",
+                           "Antelope", "Ape", "Ass/Donkey", "Baboon",
+                           "Badger", "Bat", "Bear", "Beaver", "Bee",
+                           "Bison", "Boar", "Butterfly", "Camel", "Cat",
+                           "Cattle[note", "Chamois", "Cheetah",
+                           "Chicken", "Cobra", "Cockroach", "Cormorant",
+                           "Coyote", "Crab", "Crane", "Crocodile",
+                           "Crow", "Deer", "Dog", "Dogfish", "Dolphin",
+                           "Donkey/Ass", "Dove", "Duck", "Eagle",
+                           "Echidna", "Eel", "Eland", "Elephant",
+                           "Elephant", "Elk", "Falcon", "Ferret",
+                           "Finch", "Fly", "Fox", "Frog", "Gazelle",
+                           "Gerbil", "Giant", "Giraffe", "Gnu", "Goat",
+                           "Goose", "Gorilla", "silverback", "Guanaco",
+                           "Guinea", "Gull", "Hamster", "Hare", "Hawk",
+                           "Hedgehog", "Heron", "Hippopotamus",
+                           "Hornet", "Horse[note", "Human", "Hyena",
+                           "Jackal", "Jaguar", "Jellyfish", "Kangaroo",
+                           "Kudu", "Lark", "Leopard", "Lion", "Llama",
+                           "Lobster", "Louse", "Lyrebird", "Magpie",
+                           "Mallard", "Manatee", "Meerkat", "Mink",
+                           "Mole", "Monkey", "Moose", "Mosquito",
+                           "Mouse", "Mule", "Nightingale", "Oryx",
+                           "Ostrich", "Otter", "Owl", "Ox", "Oyster",
+                           "Panther", "Partridge", "Peafowl", "Pelican",
+                           "Pig[note", "Pigeon", "Pony", "Porcupine",
+                           "Rabbit", "Raccoon", "Rail", "Ram", "Rat",
+                           "Raven", "Red", "Reindeer", "Rhinoceros",
+                           "Sea", "Seal", "Seastar", "Shark", "Sheep",
+                           "Skunk", "Snail", "Snake", "Spider",
+                           "Squirrel", "Swan", "Tiger", "Toad",
+                           "Turkey", "Turtle", "Water", "Weasel",
     "Whale"});
 
   public MultiSelectPage(){
 
-    final List<Object> l1 = new ArrayList<Object>();
+    final List<Person> persons = getPersons();
 
-    final List<String> l4 = new ArrayList<String>();
-    l4.add("Chicken");
-    l4.add("Cobra");
-    l4.add("Cockroach");
-    l4.add("Cormorant");
+    final IChoiceRenderer<String> rend = new ChoiceRenderer<String>() {
+      @Override
+      public String getIdValue(final String object, final int index) {
+        if (object == null) {
+          return "";
+        }
+        return super.getIdValue(object, index);
+      }
+    };
 
-    final List<Object> l3 = new ArrayList<Object>();
-    l3.add("Bison");
-    l3.add("Boar");
-    l3.add("Butterfly");
-    l3.add("Camel");
-    l3.add("Cat");
-    l3.add(l4);
-
-    final List<Object> l2 = new ArrayList<Object>();
-    l2.add("Badger");
-    l2.add("Bat");
-    l2.add("Bear");
-    l2.add("Beaver");
-    l2.add("Bee");
-
-
-    l2.add("African Alligator");
-    l2.add("American Ant");
-    l2.add("Antelope");
-    l1.add(l2);
-    l1.add(l3);
+    final IChoiceRenderer<Person> tristateRenderer =
+      new PersonTreeStyledChoiceRenderer("name");
 
     final ListMultipleChoice<String> single =
       new ListMultipleChoice<String>("select",
           new Model<ArrayList<String>>(
-              new ArrayList<String>()), LIST);
-
-    final ListMultipleChoice<String> singleWithNull =
-      new ListMultipleChoiceWithNull<String>("select",
-          new Model<ArrayList<String>>(new ArrayList<String>()), LIST);
+              new ArrayList<String>()), LIST, rend);
 
     final ListMultipleChoice<String> multi =
       new ListMultipleChoice<String>("select", new Model<ArrayList<String>>(
-          new ArrayList<String>()), LIST);
+          new ArrayList<String>()), LIST, rend);
 
     final ListMultipleChoice<String> filter =
       new ListMultipleChoice<String>("select",
-          new Model<ArrayList<String>>(new ArrayList<String>()), LIST);
+          new Model<ArrayList<String>>(new ArrayList<String>()), LIST, rend);
 
-    final IModel<ArrayList<Object>> model = new Model<ArrayList<Object>>(
-        new ArrayList<Object>());
+    final IModel<ArrayList<Person>> model =
+      new Model<ArrayList<Person>>(new ArrayList<Person>());
 
-    final TristateListMultipleChoice tristate =
-      new TristateListMultipleChoice("select", model, l1);
+
+    final ListMultipleChoiceWithStylingOptions<Person> tristate =
+      new ListMultipleChoiceWithStylingOptions("select", model, persons,
+          tristateRenderer);
 
     single.add(new MultiSelectBehavior().single());
-    singleWithNull.add(new MultiSelectBehavior().single());
     multi.add(new MultiSelectBehavior());
     filter.add(new MultiSelectBehavior().filtering());
-    tristate.add(new TristateMultiSelectBehavior().setSubListText("Sub-List"));
+    tristate.add(new MultiSelectBehavior().tristate());
 
     add(new SimpleFeedbackFormPanel<String>("single", single));
-    add(new SimpleFeedbackFormPanel<String>("singleWithNull", singleWithNull));
     add(new SimpleFeedbackFormPanel<String>("multi", multi));
     add(new SimpleFeedbackFormPanel<String>("filter", filter));
-    add(new SimpleFeedbackFormPanel<Object>("tristate", tristate));
+    add(new SimpleFeedbackFormPanel<Person>("tristate", tristate));
+
+    final List<String> LIST2 = new ArrayList<String>(LIST);
+    LIST2.remove(0);
+    final DropDownChoice<String> ddc =
+      new DropDownChoice<String>("select", new Model<String>(), LIST2);
+    ddc.add(new MultiSelectBehavior().filtering().single());
+    ddc.setNullValid(true);
+
+    final Label rv = new Label("label");
+    rv.setOutputMarkupId(true);
+
+    final Form<String> form = new Form<String>("form") {
+      @Override
+      protected void onSubmit() {
+        final Model<String> model =
+          new Model((Serializable) ddc.getDefaultModelObject());
+        rv.setDefaultModel(model);
+      }
+    };
+
+    form.add(new AjaxSubmitLink("save") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
+        final Model<String> model =
+          new Model((Serializable) ddc.getDefaultModelObject());
+        rv.setDefaultModel(model);
+        target.addComponent(rv);
+      }
+    });
+
+    add(rv);
+    form.add(ddc);
+
+    add(form);
+
+    final DropDownChoice<String> ddc2 =
+      new DropDownChoice<String>("select", new Model<String>(), LIST2);
+    ddc2.add(new MultiSelectBehavior().filtering().single());
+
+    final Label rv2 = new Label("label2");
+    rv2.setOutputMarkupId(true);
+
+    final Form<String> form2 = new Form<String>("form2") {
+      @Override
+      protected void onSubmit() {
+        final Model<String> model =
+          new Model((Serializable) ddc2.getDefaultModelObject());
+        rv2.setDefaultModel(model);
+      }
+    };
+
+    form2.add(new AjaxSubmitLink("save") {
+
+      private static final long serialVersionUID = 1L;
+
+      @Override
+      protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
+        final Model<String> model =
+          new Model((Serializable) ddc2.getDefaultModelObject());
+        rv2.setDefaultModel(model);
+        target.addComponent(rv2);
+      }
+    });
+
+    add(rv2);
+    form2.add(ddc2);
+
+    add(form2);
 
   }
 
-  private class SimpleFeedbackFormPanel<T> extends Panel {
+  private class SimpleFeedbackFormPanel<T extends Serializable> extends Panel {
 
     private static final long serialVersionUID = 1L;
 
@@ -155,10 +210,13 @@ public class MultiSelectPage extends BasePage {
         protected void populateItem(final ListItem<T> item) {
           String value;
 
-          if(item.getModelObject() == null) {
+          final T modelObject = item.getModelObject();
+          if(modelObject == null) {
             value = "null";
+          } else if (modelObject instanceof Person) {
+            value = ((Person) modelObject).getName();
           } else {
-            value = item.getModelObject().toString();
+            value = modelObject.toString();
           }
           item.add(new Label("value", value));
         }
@@ -169,11 +227,13 @@ public class MultiSelectPage extends BasePage {
 
       form.add(new AjaxSubmitLink("save") {
 
+        private static final long serialVersionUID = 1L;
+
         @Override
         protected void onSubmit(final AjaxRequestTarget target,
             final Form<?> form) {
-          final Model model =
-              new Model((Serializable) choiceComp.getModelObject());
+          final Model<T> model =
+            new Model((Serializable) choiceComp.getDefaultModelObject());
           rv.setDefaultModel(model);
           target.addComponent(container);
         }
@@ -188,4 +248,117 @@ public class MultiSelectPage extends BasePage {
     }
 
   }
+
+  private List<Person> getPersons() {
+    final List<Person> persons = new ArrayList<Person>();
+    persons.add(null);
+
+    for (final String name : Arrays
+        .asList(new String[] { "One", "Two", "Three" })) {
+      final Person person = createPerson(name);
+      persons.add(person);
+      persons.addAll(createPersons(person));
+    }
+
+    return persons;
+  }
+
+  private List<Person> createPersons(final Person person1) {
+
+    final List<Person> list = new ArrayList<Person>();
+
+    list.add(createPerson("First", person1));
+
+    final Person person2 = createPerson("Second", person1);
+
+    list.add(createPerson("Third", person1));
+
+    final Person person3 = createPerson("Fourth", person1);
+    list.add(person3);
+
+    for (final String name : Arrays.asList(new String[] { "I", "II" })) {
+      list.add(createPerson(name, person2));
+      list.add(createPerson(name, person3));
+    }
+    return list;
+  }
+
+  private Person createPerson(final String name) {
+    return createPerson(name, null);
+  }
+
+  private Person createPerson(final String name, final Person person1) {
+
+    final Person person2 = new Person();
+
+    String pName = "";
+    if (person1 != null) {
+      pName = person1.getName() + " - ";
+    }
+
+    person2.setName(pName + name);
+    person2.setParent(person1);
+
+    return person2;
+  }
+
+}
+
+class Person implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+  private Person parent;
+  private String name;
+
+  public Person setParent(final Person parent) {
+    this.parent = parent;
+    return this;
+  }
+
+  public Person getParent() {
+    return parent;
+  }
+
+  public Person setName(final String name) {
+    this.name = name;
+    return this;
+  }
+
+  public String getName() {
+    return name;
+  }
+}
+
+class PersonTreeStyledChoiceRenderer extends ChoiceRenderer<Person> implements
+IStyledChoiceRenderer<Person> {
+
+  private static final long serialVersionUID = 1L;
+
+  public PersonTreeStyledChoiceRenderer(final String displayExpression) {
+    super(displayExpression);
+  }
+
+  @Override
+  public String getOptGroupLabel(final Person person) {
+    if (person == null) {
+      return null;
+    }
+    final Person parent = person.getParent();
+    return parent != null ? parent.getName() : null;
+  }
+
+  @Override
+  public String getOptionCssClassName(final Person person) {
+    return null;
+  }
+
+  @Override
+  public String getIdValue(final Person object, final int index) {
+    if (object == null) {
+      // return super.getIdValue(object, index);
+      return "";
+    }
+    return super.getIdValue(object, index);
+  }
+
 }
