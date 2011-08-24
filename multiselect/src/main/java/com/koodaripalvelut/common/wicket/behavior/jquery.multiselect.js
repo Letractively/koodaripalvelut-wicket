@@ -574,10 +574,7 @@ $.widget("ech.multiselect", {
   
   //uncheck null/emptyValues
   _uncheckEnptyNullValues: function() {
-    var nullEmptyValues = this.nullEmptyValues.children('input');
-    if (nullEmptyValues && nullEmptyValues.length) {
-      this._toggleChecked(false, nullEmptyValues);
-    }
+	  this.element.find("option[value=]").attr('selected','');
   },
   
   // open the menu
