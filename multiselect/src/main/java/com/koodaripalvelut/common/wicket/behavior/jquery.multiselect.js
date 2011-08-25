@@ -33,7 +33,6 @@ $.widget("ech.multiselect", {
     miniButton: true,
     uncheckAllText: 'Uncheck all',
     selectNullText: 'None', 
-    acceptNull: false,
     noneSelectedText: 'Select options',
     selectedText: '# selected',
     selectedList: 0,
@@ -79,9 +78,7 @@ $.widget("ech.multiselect", {
           if( o.header === true ){
             return '<li><a class="ui-multiselect-all" href="#"><span class="ui-icon ui-icon-check"></span><span>'
             	+ o.checkAllText + '</span></a></li><li><a class="ui-multiselect-none" href="#"><span class="ui-icon ui-icon-closethick"></span><span>'
-            	+ o.uncheckAllText + '</span></a>'
-            	+ (o.acceptNull ? '</li><li><a class="ui-multiselect-null" href="#"><span class="ui-icon ui-icon-closethick"></span><span>'
-            	+ o.selectNullText + '</span></a></li>' : '');
+            	+ o.uncheckAllText + '</span></a></li>';
           } else if(typeof o.header === "string"){
             return '<li>' + o.header + '</li>';
           } else {
@@ -171,10 +168,8 @@ $.widget("ech.multiselect", {
       
       html.push('<li class="listitem ' + (isDisabled ? 'ui-multiselect-disabled' : '') + '">');
       
-      var single = (!o.multiple || value === "") ? true : false;
-      
       // create the label
-      html.push('<label for="'+inputID+'" class="'+labelClasses.join(' ') + (o.multiple ? " item-label" : "") + (single ? " multiselect-single" : "") +'">');
+      html.push('<label for="'+inputID+'" class="'+labelClasses.join(' ') + (o.multiple ? " item-label" : "") + (!o.multiple ? " multiselect-single" : "") +'">');
     	html.push('<input type="radio" id="radio'+inputID+'" name="multiselect_radio" checkbox="'+inputID+ '"/>');
       html.push('<input id="'+inputID+'" name="multiselect_'+id+'" type="checkbox" value="'+value+'" title="'+title+'"');
 
@@ -297,23 +292,11 @@ $.widget("ech.multiselect", {
     // header links
     this.header
       .delegate('a', 'click.multiselect', function(e){
-        // close link
-        if( $(this).hasClass('ui-multiselect-close') ){
-          self.close();
-      
         
-        } else if( $(this).hasClass('ui-multiselect-null') ){
-        	self.element.find('option').each(function() {
-        		if( this.value == self.options.optionLength ){
-        			this.selected = true;
-        			self.buttonlabel.html( self.options.selectNullText );
-        		} else {
-        			this.selected = false;
-        		}
-        	});
-        	
-        // check all / uncheck all
-        } else {
+        if( $(this).hasClass('ui-multiselect-close') ){ // close link
+          self.close();
+          
+        } else { // check all / uncheck all
           self[ $(this).hasClass('ui-multiselect-all') ? 'checkAll' : 'uncheckAll' ]();
         }
 		self.labels.find('label').removeClass('ui-state-active ui-state-hover');

@@ -163,9 +163,15 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     sb.append(noneSelectedKey == null ? "" : getComponent().getString(noneSelectedKey));
     sb.append("', multiple: ");
     sb.append(multiple);
-    sb.append(", nullItemLabel: '");
-    sb.append(getComponent().getString("nullValid"));
-    sb.append("'");
+
+    final String nullItemLabel = getComponent().getString("nullValid");
+
+    if (nullItemLabel.equals("")) {
+      sb.append(", nullItemLabel: '");
+      sb.append(nullItemLabel);
+      sb.append("'");
+    }
+
     sb.append("}");
     return sb.toString();
   }

@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 
 import com.koodaripalvelut.common.wicket.behavior.MultiSelectBehavior;
 import com.koodaripalvelut.common.wicket.components.IStyledChoiceRenderer;
@@ -33,8 +34,8 @@ public class MultiSelectPage extends BasePage {
 
   private static final List<? extends String> LIST =
     Arrays
-    .asList(new String[] { null, "African Alligator", "American Ant",
-                           "Antelope", "Ape", "Ass/Donkey", "Baboon",
+    .asList(new String[] { null, "African Alligator", "American Ant", null,
+                           "Antelope", "Ape", "Ass/Donkey", "Baboon", null,
                            "Badger", "Bat", "Bear", "Beaver", "Bee",
                            "Bison", "Boar", "Butterfly", "Camel", "Cat",
                            "Cattle[note", "Chamois", "Cheetah",
@@ -64,10 +65,10 @@ public class MultiSelectPage extends BasePage {
                            "Sea", "Seal", "Seastar", "Shark", "Sheep",
                            "Skunk", "Snail", "Snake", "Spider",
                            "Squirrel", "Swan", "Tiger", "Toad",
-                           "Turkey", "Turtle", "Water", "Weasel",
-    "Whale"});
+                           "Turkey", "Turtle", "Water", "Weasel", "Whale"});
 
-  public MultiSelectPage(){
+  private List<String> select;
+  public MultiSelectPage() {
 
     final List<Person> persons = getPersons();
 
@@ -118,7 +119,8 @@ public class MultiSelectPage extends BasePage {
     final List<String> LIST2 = new ArrayList<String>(LIST);
     LIST2.remove(0);
     final DropDownChoice<String> ddc =
-      new DropDownChoice<String>("select", new Model<String>(), LIST2);
+      new DropDownChoice<String>("select", new PropertyModel<String>(this,
+      "select"), LIST2);
     ddc.add(new MultiSelectBehavior().filtering().single());
     ddc.setNullValid(true);
 
@@ -126,6 +128,8 @@ public class MultiSelectPage extends BasePage {
     rv.setOutputMarkupId(true);
 
     final Form<String> form = new Form<String>("form") {
+      private static final long serialVersionUID = 1L;
+
       @Override
       protected void onSubmit() {
         final Model<String> model =
@@ -192,7 +196,6 @@ public class MultiSelectPage extends BasePage {
 
     private static final long serialVersionUID = 1L;
 
-
     public SimpleFeedbackFormPanel(final String id,
         final AbstractChoice<Collection<T>, T> choiceComp) {
       super(id);
@@ -208,17 +211,12 @@ public class MultiSelectPage extends BasePage {
 
         @Override
         protected void populateItem(final ListItem<T> item) {
-          String value;
-
           final T modelObject = item.getModelObject();
-          if(modelObject == null) {
-            value = "null";
-          } else if (modelObject instanceof Person) {
-            value = ((Person) modelObject).getName();
+          if (modelObject instanceof Person) {
+            item.add(new Label("value", ((Person) modelObject).getName()));
           } else {
-            value = modelObject.toString();
+            item.add(new Label("value", String.valueOf(modelObject)));
           }
-          item.add(new Label("value", value));
         }
 
       };
