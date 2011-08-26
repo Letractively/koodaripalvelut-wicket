@@ -71,6 +71,8 @@ public class MultiSelectPage extends BasePage {
   public MultiSelectPage() {
 
     final List<Person> persons = getPersons();
+    persons.add(2, null);
+    persons.add(6, null);
 
     final IChoiceRenderer<String> rend = new ChoiceRenderer<String>() {
       @Override
@@ -352,10 +354,10 @@ IStyledChoiceRenderer<Person> {
 
   @Override
   public String getIdValue(final Person object, final int index) {
-    if (object == null) {
-      // return super.getIdValue(object, index);
-      return "";
-    }
+    // if (object == null) {
+    // // return super.getIdValue(object, index);
+    // return "";
+    // }
     return super.getIdValue(object, index);
   }
 

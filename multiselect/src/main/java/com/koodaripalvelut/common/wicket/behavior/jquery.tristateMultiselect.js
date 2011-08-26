@@ -138,7 +138,7 @@ $.widget("ech.triStateMultiselect", {
     //Organizes options hierarchically
     this.element.find('option').each(function( i ) {
       
-      if(this.value == "") {
+      if(this.innerHTML == "") {
         this.innerHTML = o.nullItemLabel;
         nullOptions.push(this);
         return;
@@ -190,26 +190,32 @@ $.widget("ech.triStateMultiselect", {
         }
       }
       
-      if(this.value == "") {
-        this.innerHTML = o.nullItemLabel;
-      }
       parent.push(this);
     });
     
     var elementsWithNoParent = parentIdElementMap["null"];
+    
     if(elementsWithNoParent != undefined) {
-      var counter = 0;
-      for(obj in elementsWithNoParent) {
-        result["withnoparent" + counter++] = elementsWithNoParent[obj];
-      }
+      elementsWithNoParent = [];
     }
-
+    
+    if(nullOptions.length > 0) {
+      elementsWithNoParent = nullOptions.concat(elementsWithNoParent);
+    }
     
     function flat( arr ) {
       var array = [];
       var startOpt = document.createElement('OPTION');
       $(startOpt).attr('optcontainer', 'startOpt');
+      
       array.push(startOpt);
+      
+      if (elementsWithNoParent != undefined) {
+        for(i=0; i <  elementsWithNoParent.length; i++) {
+          array.push(elementsWithNoParent[i]);
+        }
+        elementsWithNoParent = undefined;
+      }
       for (keyVar in arr) {
         var obj = arr[keyVar];
         if (obj instanceof Array) {
@@ -227,7 +233,7 @@ $.widget("ech.triStateMultiselect", {
       return array;
     }
     
-    var flatResult = nullOptions.concat(flat(result));
+    var flatResult = flat(result);
     
     $(flatResult).filter(function(){return ($(this).attr('optcontainer')  == 'startOpt')}).each(function(){
       var parentElement = parentElements[this.innerHTML];

@@ -166,7 +166,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
 
     final String nullItemLabel = getComponent().getString("nullValid");
 
-    if (nullItemLabel.equals("")) {
+    if (!nullItemLabel.equals("")) {
       sb.append(", nullItemLabel: '");
       sb.append(nullItemLabel);
       sb.append("'");

@@ -32,7 +32,6 @@ $.widget("ech.multiselect", {
     checkAllText: 'Check all',
     miniButton: true,
     uncheckAllText: 'Uncheck all',
-    selectNullText: 'None', 
     noneSelectedText: 'Select options',
     selectedText: '# selected',
     selectedList: 0,

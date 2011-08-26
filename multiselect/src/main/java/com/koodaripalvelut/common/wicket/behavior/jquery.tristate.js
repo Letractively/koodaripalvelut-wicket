@@ -172,7 +172,7 @@
           var $radio = triState.convertToRadio($el);
           $el.before($radio).before($anchor);
           
-          if(!opts.multiple || $el.attr("value") == "") {
+          if(!opts.multiple) {
             triState.hideInputs($($anchor.siblings('label')[0]), $anchor, $radio);
           } else {
             triState.bindLabel($anchor);
