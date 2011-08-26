@@ -108,15 +108,21 @@ public class MultiSelectPage extends BasePage {
       new ListMultipleChoiceWithStylingOptions("select", model, persons,
           tristateRenderer);
 
+    final ListMultipleChoiceWithStylingOptions<Person> tristateFilter =
+      new ListMultipleChoiceWithStylingOptions("select", model, persons,
+          tristateRenderer);
+
     single.add(new MultiSelectBehavior().single());
     multi.add(new MultiSelectBehavior());
     filter.add(new MultiSelectBehavior().filtering());
     tristate.add(new MultiSelectBehavior().tristate());
+    tristateFilter.add(new MultiSelectBehavior().tristate().filtering());
 
     add(new SimpleFeedbackFormPanel<String>("single", single));
     add(new SimpleFeedbackFormPanel<String>("multi", multi));
     add(new SimpleFeedbackFormPanel<String>("filter", filter));
     add(new SimpleFeedbackFormPanel<Person>("tristate", tristate));
+    add(new SimpleFeedbackFormPanel<Person>("tristateFilter", tristateFilter));
 
     final List<String> LIST2 = new ArrayList<String>(LIST);
     LIST2.remove(0);

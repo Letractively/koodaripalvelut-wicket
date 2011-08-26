@@ -39,6 +39,7 @@
           obj.find(opts.heading).each(function() {
             var $this = $(this),
             stateAnchor = $('<a href="#" class="checkbox ' + opts.sublist + '">Heading</a>');
+            $this.parent().addClass("node-li");
             $this.before(stateAnchor);
             if($this.children().length > 0) {
               var optionItem = $this.children()[0],
@@ -81,7 +82,7 @@
             var $this = $(this),
             $parentList = $this.parent('span').parent('li').parent('ul'),
             $clone = $this.clone(),
-            $liClone = $clone.wrap('<li></li>').parent();
+            $liClone = $clone.wrap('<li class="node-item-clone-li"></li>').parent();
             $clone.attr('id', 'clone-' + $this.attr('id'));
             $clone.addClass('node-item-clone');
             $clone.removeClass('node-item-checkbox');

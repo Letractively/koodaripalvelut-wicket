@@ -91,25 +91,22 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
   public void renderHead(final IHeaderResponse response) {
     //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY);
     //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY_UI);
-    response.renderCSSReference("/css/redmond2010/jquery-ui.css");
-    response.renderCSSReference(new ResourceReference(
-        MultiSelectBehavior.class, "jquery.multiselect.css"));
+    renderCSSReference(response, "/css/redmond2010/jquery-ui.css");
+    renderCSSReference(response, "jquery.multiselect.css");
+
     if (isTristate()) {
-      response.renderJavascriptReference(new ResourceReference(
-          MultiSelectBehavior.class, "jquery.tristateMultiselect.js"));
-      response.renderJavascriptReference(new ResourceReference(
-          MultiSelectBehavior.class, "jquery.tristate.js"));
-      response.renderCSSReference(new ResourceReference(
-          MultiSelectBehavior.class, "jquery.tristate.css"));
+      renderJavascriptReference(response, "jquery.tristateMultiselect.js");
+      renderJavascriptReference(response, "jquery.tristate.js");
+      renderCSSReference(response, "jquery.tristate.css");
+
     } else {
-      response.renderJavascriptReference(new ResourceReference(
-          MultiSelectBehavior.class, "jquery.multiselect.js"));
-      if (isFiltering()) {
-        response.renderJavascriptReference(new ResourceReference(
-            MultiSelectBehavior.class, "jquery.multiselect.filter.js"));
-        response.renderCSSReference(new ResourceReference(
-            MultiSelectBehavior.class, "jquery.multiselect.filter.css"));
-      }
+      renderJavascriptReference(response, "jquery.multiselect.js");
+
+    }
+    if (isFiltering()) {
+      renderJavascriptReference(response, getFilterFileName());
+      renderCSSReference(response, "jquery.multiselect.filter.css");
+
     }
     {
       // Destroy old widget
@@ -119,6 +116,18 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
       //    JavascriptUtils.writeJavascript(response, script);
       response.renderJavascript(script, null);
     }
+  }
+
+  private void renderJavascriptReference(final IHeaderResponse response,
+      final String fileName) {
+    response.renderJavascriptReference(new ResourceReference(
+        MultiSelectBehavior.class, fileName));
+  }
+
+  private void renderCSSReference(final IHeaderResponse response,
+      final String fileName) {
+    response.renderCSSReference(new ResourceReference(
+        MultiSelectBehavior.class, fileName));
   }
 
   /**
@@ -131,8 +140,10 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     final StringBuilder script = new StringBuilder("$('#" + getComponent().getMarkupId()
         + "')." + getMultiselectMethodName() + "("
         + prepareOptions() + ")");
-    if (isFiltering() && !isTristate()) {
-      script.append(".multiselectfilter({label: 'Search'})");
+    if (isFiltering()) {//
+      script.append(".");
+      script.append(getFilterMethodName());
+      script.append("({label: 'Search'})");
       //      script.append(".multiselectfilter('updateCache')"); is created new?
     }
     script.append(";");
@@ -192,6 +203,15 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
 
   private String getMultiselectMethodName() {
     return isTristate() ? "triStateMultiselect" : "multiselect";
+  }
+
+  private String getFilterMethodName() {
+    return isTristate() ? "tristatemultiselectfilter" : "multiselectfilter";
+  }
+
+  private String getFilterFileName() {
+    return isTristate() ? "jquery.tristateMultiselect.filter.js"
+        : "jquery.multiselect.filter.js";
   }
 
   /**

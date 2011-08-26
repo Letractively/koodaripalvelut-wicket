@@ -191,6 +191,7 @@ $.widget("ech.triStateMultiselect", {
       }
       
       parent.push(this);
+      
     });
     
     var elementsWithNoParent = parentIdElementMap["null"];
