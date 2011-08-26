@@ -91,10 +91,10 @@
               e.preventDefault();
               $this.attr()
               $clone.trigger('click');
-              if ($clone.hasClass('checked')) {
-                $this.addClass('checked');
+              if ($this.hasClass('checked')) {
+                $clone.removeClass('checked');
               } else {
-                $this.removeClass('checked');
+                $clone.addClass('checked');
               }
             });
             
@@ -153,6 +153,22 @@
           triState.setAncestors($el, bChecked);
           
           triState.updateProxyStates();
+//          triState.updateClons();
+        },
+        
+        updateClons: function() {
+        	$clones = $(".node-item-clone");
+        	
+        	$clones.each( function() {
+        		originalobj = ($(this).attr('id').substr(6))
+        		
+        		if (!$(originalobj).hasClass('checked')) {
+				  $(this).removeClass('checked');
+				} else {
+				  $(this).addClass('checked');
+				}
+        		
+        	});
         },
         
         updateProxyStates: function () {
@@ -247,7 +263,8 @@
         setDescendants: function ($el, bChecked) {
           var $parentItem = $el.parent('li');
           var $descendantList = $parentItem.find('ul');
-          var $descendantInputs = $parentItem.find('a.checkbox');
+          var $descendantInputs = $parentItem.find('a.checkbox:not(.node-item-clone,.node-item-checkbox)');
+          //var $descendantInputs = $parentItem.find('a.checkbox');
           
           if (bChecked) {
             for (var i=0, j=$descendantInputs.length; i<j; i++) {

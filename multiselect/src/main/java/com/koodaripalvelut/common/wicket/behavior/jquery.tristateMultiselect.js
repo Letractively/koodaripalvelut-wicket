@@ -443,7 +443,7 @@ $.widget("ech.triStateMultiselect", {
     	e.preventDefault();
     	
     	var $this = $(this),
-    	  $inputs = $this.parent().find('.checkbox:not(".radiobutton")'),
+    	  $inputs = $this.parent().find('.checkbox:not(.radiobutton)').not(".node-item-checkbox").not(".sublist").not(".node-item-clone"),
           tags = self.element.find('option'),
           checked = $inputs.filter('.checked').length === $inputs.length;
     	
