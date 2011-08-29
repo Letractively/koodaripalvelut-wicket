@@ -31,7 +31,7 @@
     var opts = $.extend(config,options);
     
     return this.each(function() {  
-      obj = $(this);
+      var obj = $(this);
 
       var triState = {
         init: function () {

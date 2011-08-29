@@ -19,7 +19,6 @@ import org.apache.wicket.markup.html.form.ListMultipleChoice;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 
@@ -100,16 +99,14 @@ public class MultiSelectPage extends BasePage {
       new ListMultipleChoice<String>("select",
           new Model<ArrayList<String>>(new ArrayList<String>()), LIST, rend);
 
-    final IModel<ArrayList<Person>> model =
-      new Model<ArrayList<Person>>(new ArrayList<Person>());
-
-
     final ListMultipleChoiceWithStylingOptions<Person> tristate =
-      new ListMultipleChoiceWithStylingOptions("select", model, persons,
+        new ListMultipleChoiceWithStylingOptions("select",
+            new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
           tristateRenderer);
 
     final ListMultipleChoiceWithStylingOptions<Person> tristateFilter =
-      new ListMultipleChoiceWithStylingOptions("select", model, persons,
+        new ListMultipleChoiceWithStylingOptions("select",
+            new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
           tristateRenderer);
 
     single.add(new MultiSelectBehavior().single());

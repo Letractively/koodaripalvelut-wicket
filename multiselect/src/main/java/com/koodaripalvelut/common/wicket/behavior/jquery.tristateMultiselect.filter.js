@@ -64,7 +64,8 @@
       instance._toggleChecked = function(flag, group, type){
         var $inputs = (group && group.length) ?
             group :
-            this.labels.find('input'),
+//            this.labels.find('input'),
+              this.menu.find('ul.triState').find('a.checkbox'),
           
           _self = this,
 
@@ -76,12 +77,18 @@
 
         $inputs = $inputs.not( selector ).each(this._toggleCheckbox('checked', flag));
         
+        if (flag) {
+          $inputs.addClass('checked');
+        } else {
+          $inputs.removeClass('checked partial');
+        }
+        
         // update text
         this.update();
         
         // figure out which option tags need to be selected
-        var values = $inputs.filter('input[type="checkbox"]').map(function(){
-          return this.value;
+        var values = $inputs.map(function(){
+          return $(this).attr('optionvalue');
         }).get();
         
         // select option tags

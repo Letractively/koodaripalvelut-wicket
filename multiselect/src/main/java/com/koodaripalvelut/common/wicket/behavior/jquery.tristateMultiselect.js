@@ -487,7 +487,7 @@ $.widget("ech.triStateMultiselect", {
       .delegate('.radiobutton', 'click.multiselect', function(e) {
         var $this = $(this);
           self._toggleChecked(false, self.menu.find('ul.triState').find('.checkbox')
-              .not(this));
+              .not(this), this.type);
           $this.siblings('#anchor-' + $this.attr("checkbox")).trigger('click');
           $this.attr('checked', 'checked');
           self.close();
@@ -634,7 +634,7 @@ $.widget("ech.triStateMultiselect", {
     }
   },
 
-  _toggleChecked: function(flag, group){
+  _toggleChecked: function(flag, group, type){
     var $inputs = (group && group.length) ?
       group :
     	  this.menu.find('ul.triState').find('a.checkbox'),
