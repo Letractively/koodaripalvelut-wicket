@@ -7,13 +7,15 @@
           <form wicket:id="form">
             <select wicket:id="select"> </select> 
             <br />
-            <input type="button" value="submit" wicket:id="save"/>
+            <input type="button" value="ajax submit" wicket:id="save"/>
+            <input type="submit" value="normal submit"/>
           </form></td>
         <td>
           <ul wicket:id="listContainer" class="feedBacklistContainer" >
             <li wicket:id="feedbackId" ><span wicket:id="value"></span>
             </li>
-          </ul></td>
+          </ul>
+        </td>
       </tr>
     </table>
   </div>

@@ -118,11 +118,12 @@ $.widget("ech.triStateMultiselect", {
       this.disable();
     }
     
-    $(this.menu).find('ul.triState').tristate({heading: 'span.heading', multiple: this.options.multiple});
+    $(this.checkboxContainer).tristate({heading: 'span.heading', multiple: this.options.multiple});
+    $(this.checkboxContainer).find('input[type="radio"]').each(function() { $(this).attr('checked', ''); }); 
     this.button[0].defaultValue = this.update();
   },
   
-  refresh: function( init ){
+  refresh: function( init ) {
     var el = this.element,
       o = this.options,
       menu = this.menu,
@@ -239,7 +240,11 @@ $.widget("ech.triStateMultiselect", {
     $(flatResult).filter(function(){return ($(this).attr('optcontainer')  == 'startOpt')}).each(function(){
       var parentElement = parentElements[this.innerHTML];
       if (parentElement != undefined) {
-        $(parentElement).attr({optcontainer: 'startOpt', isItem: true});
+        $(parentElement).attr({
+          optcontainer: 'startOpt', 
+          isItem: true, 
+          selected: parentElement.selected, 
+          disabled: parentElement.disabled});
         flatResult[jQuery.inArray( this, flatResult )] = parentElement;
       }
     });

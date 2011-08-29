@@ -211,7 +211,7 @@
           title = $el.attr('title'),
           value = $el.attr('value'),
           isSelected = $el.attr('checked'),
-          $newCheckbox = $('<a id="anchor-'+ id +'" href="#" class="checkbox element '+ (isSelected ? "checked" : "") + (classes ?  classes : "")+'" title="'+title+'" optionvalue='+ value +'>'+sName+'</a>');
+          $newCheckbox = $('<a id="anchor-'+ id +'" href="#" class="checkbox element '+ (isSelected ? "checked " : "") + (classes ?  classes : "")+'" title="'+title+'" optionvalue='+ value +'>'+sName+'</a>');
           $newCheckbox.data("name", sName);
           return $newCheckbox;
         },

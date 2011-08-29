@@ -12,7 +12,6 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.AbstractChoice;
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
-import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
@@ -20,7 +19,6 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 
 import com.koodaripalvelut.common.wicket.behavior.MultiSelectBehavior;
 import com.koodaripalvelut.common.wicket.components.IStyledChoiceRenderer;
@@ -73,15 +71,7 @@ public class MultiSelectPage extends BasePage {
     persons.add(2, null);
     persons.add(6, null);
 
-    final IChoiceRenderer<String> rend = new ChoiceRenderer<String>() {
-      @Override
-      public String getIdValue(final String object, final int index) {
-        if (object == null) {
-          return "";
-        }
-        return super.getIdValue(object, index);
-      }
-    };
+    final IChoiceRenderer<String> rend = new ChoiceRenderer<String>();
 
     final IChoiceRenderer<Person> tristateRenderer =
       new PersonTreeStyledChoiceRenderer("name");
@@ -100,13 +90,13 @@ public class MultiSelectPage extends BasePage {
           new Model<ArrayList<String>>(new ArrayList<String>()), LIST, rend);
 
     final ListMultipleChoiceWithStylingOptions<Person> tristate =
-        new ListMultipleChoiceWithStylingOptions("select",
-            new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
+      new ListMultipleChoiceWithStylingOptions("select",
+          new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
           tristateRenderer);
 
     final ListMultipleChoiceWithStylingOptions<Person> tristateFilter =
-        new ListMultipleChoiceWithStylingOptions("select",
-            new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
+      new ListMultipleChoiceWithStylingOptions("select",
+          new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
           tristateRenderer);
 
     single.add(new MultiSelectBehavior().single());
@@ -121,79 +111,6 @@ public class MultiSelectPage extends BasePage {
     add(new SimpleFeedbackFormPanel<Person>("tristate", tristate));
     add(new SimpleFeedbackFormPanel<Person>("tristateFilter", tristateFilter));
 
-    final List<String> LIST2 = new ArrayList<String>(LIST);
-    LIST2.remove(0);
-    final DropDownChoice<String> ddc =
-      new DropDownChoice<String>("select", new PropertyModel<String>(this,
-      "select"), LIST2);
-    ddc.add(new MultiSelectBehavior().filtering().single());
-    ddc.setNullValid(true);
-
-    final Label rv = new Label("label");
-    rv.setOutputMarkupId(true);
-
-    final Form<String> form = new Form<String>("form") {
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onSubmit() {
-        final Model<String> model =
-          new Model((Serializable) ddc.getDefaultModelObject());
-        rv.setDefaultModel(model);
-      }
-    };
-
-    form.add(new AjaxSubmitLink("save") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-        final Model<String> model =
-          new Model((Serializable) ddc.getDefaultModelObject());
-        rv.setDefaultModel(model);
-        target.addComponent(rv);
-      }
-    });
-
-    add(rv);
-    form.add(ddc);
-
-    add(form);
-
-    final DropDownChoice<String> ddc2 =
-      new DropDownChoice<String>("select", new Model<String>(), LIST2);
-    ddc2.add(new MultiSelectBehavior().filtering().single());
-
-    final Label rv2 = new Label("label2");
-    rv2.setOutputMarkupId(true);
-
-    final Form<String> form2 = new Form<String>("form2") {
-      @Override
-      protected void onSubmit() {
-        final Model<String> model =
-          new Model((Serializable) ddc2.getDefaultModelObject());
-        rv2.setDefaultModel(model);
-      }
-    };
-
-    form2.add(new AjaxSubmitLink("save") {
-
-      private static final long serialVersionUID = 1L;
-
-      @Override
-      protected void onSubmit(final AjaxRequestTarget target, final Form<?> form) {
-        final Model<String> model =
-          new Model((Serializable) ddc2.getDefaultModelObject());
-        rv2.setDefaultModel(model);
-        target.addComponent(rv2);
-      }
-    });
-
-    add(rv2);
-    form2.add(ddc2);
-
-    add(form2);
 
   }
 
@@ -226,7 +143,14 @@ public class MultiSelectPage extends BasePage {
 
       };
 
-      final Form<T> form = new Form<T>("form");
+      final Form<T> form = new Form<T>("form") {
+        @Override
+        protected void onSubmit() {
+          final Model<T> model =
+            new Model((Serializable) choiceComp.getDefaultModelObject());
+          rv.setDefaultModel(model);
+        }
+      };
 
       form.add(new AjaxSubmitLink("save") {
 
