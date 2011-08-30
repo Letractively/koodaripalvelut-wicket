@@ -264,7 +264,8 @@
         setDescendants: function ($el, bChecked) {
           var $parentItem = $el.parent('li');
           var $descendantList = $parentItem.find('ul');
-          var $descendantInputs = $parentItem.find('a.checkbox:not(.node-item-clone,.node-item-checkbox)');
+          var $not_included = $el.siblings().not('ul').find('.node-item-checkbox')
+          var $descendantInputs = $parentItem.find('a.checkbox').not($not_included);
           //var $descendantInputs = $parentItem.find('a.checkbox');
           
           if (bChecked) {

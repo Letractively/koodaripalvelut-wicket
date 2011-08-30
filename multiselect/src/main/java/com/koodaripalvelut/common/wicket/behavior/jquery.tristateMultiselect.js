@@ -448,8 +448,10 @@ $.widget("ech.triStateMultiselect", {
       .delegate('.' + self.options.sublistClass, 'click.multiselect', function(e){
     	e.preventDefault();
     	
+    	
     	var $this = $(this),
-    	  $inputs = $this.parent().find('.checkbox:not(.radiobutton)').not(".node-item-checkbox").not(".sublist").not(".node-item-clone"),
+    	  $not_inc = $this.siblings().not('ul').find('.node-item-checkbox');
+    	  $inputs = $this.parent().find('.checkbox:not(.radiobutton)').not($not_inc).not(".sublist").not(".node-item-clone"),
           tags = self.element.find('option'),
           checked = $inputs.filter('.checked').length === $inputs.length;
     	
