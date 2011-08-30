@@ -118,8 +118,12 @@ $.widget("ech.triStateMultiselect", {
       this.disable();
     }
     
-    $(this.checkboxContainer).tristate({heading: 'span.heading', multiple: this.options.multiple});
-    $(this.checkboxContainer).find('input[type="radio"]').each(function() { $(this).attr('checked', ''); }); 
+    //Apply tristate plugin.
+    this.checkboxContainer.tristate({heading: 'span.heading', multiple: this.options.multiple});
+    
+    //Uncheck all radios. Only checkboxes need to be checked.
+    this.checkboxContainer.find('input[type="radio"]').each(function() { $(this).attr('checked', ''); }); 
+    
     this.button[0].defaultValue = this.update();
   },
   
@@ -139,13 +143,16 @@ $.widget("ech.triStateMultiselect", {
     //Organizes options hierarchically
     this.element.find('option').each(function( i ) {
       
+      //catch null/emptyValues. It is catching emptyString (""), it should be a problem.
       if(this.innerHTML == "") {
         this.innerHTML = o.nullItemLabel;
         nullOptions.push(this);
         return;
       }
       
+      
       var optParentId = $(this).attr('optparentid'),
+      
       parent = parentIdElementMap[optParentId];
       
       if(optParentId == "null") { //belongs to root.
@@ -154,6 +161,7 @@ $.widget("ech.triStateMultiselect", {
           parent = [];
           parentIdElementMap["null"] = parent;
         }
+        
       } else if (parent == undefined) { //Parent is not yet registered. 
         
         var elementsWithNoParent = parentIdElementMap["null"];
@@ -191,6 +199,7 @@ $.widget("ech.triStateMultiselect", {
         }
       }
       
+      //add option to its parent.
       parent.push(this);
       
     });
@@ -202,6 +211,7 @@ $.widget("ech.triStateMultiselect", {
     }
     
     if(nullOptions.length > 0) {
+      //set null values top most.
       elementsWithNoParent = nullOptions.concat(elementsWithNoParent);
     }
     
@@ -212,12 +222,14 @@ $.widget("ech.triStateMultiselect", {
       
       array.push(startOpt);
       
+      //set root elements to top most.
       if (elementsWithNoParent != undefined) {
         for(i=0; i <  elementsWithNoParent.length; i++) {
           array.push(elementsWithNoParent[i]);
         }
         elementsWithNoParent = undefined;
       }
+      
       for (keyVar in arr) {
         var obj = arr[keyVar];
         if (obj instanceof Array) {
@@ -334,7 +346,7 @@ $.widget("ech.triStateMultiselect", {
   // updates the button text.  call refresh() to rebuild
   update: function(){
     var o = this.options,
-      $inputs = this.menu.find('ul.triState').find('a.checkbox:not(.node-item-clone)'),
+      $inputs = this.checkboxContainer.find('a.checkbox:not(.node-item-clone)'),
       $checked = $inputs.filter('.checked').filter('.element'),
       numChecked = $checked.length,
       value;
@@ -612,7 +624,7 @@ $.widget("ech.triStateMultiselect", {
     
     // if at the first/last element
     if( !$next.length ){
-      var $container = this.menu.find('ul.triState');
+      var $container = this.checkboxContainer;
       
       // move to the first/last
       this.menu.find('label')[ moveToLast ? 'last' : 'first' ]().trigger('mouseover');
@@ -644,7 +656,7 @@ $.widget("ech.triStateMultiselect", {
   _toggleChecked: function(flag, group, type){
     var $inputs = (group && group.length) ?
       group :
-    	  this.menu.find('ul.triState').find('a.checkbox'),
+    	  this.checkboxContainer.find((flag ? 'a' : '') + '.checkbox'),
 
       self = this;
     
