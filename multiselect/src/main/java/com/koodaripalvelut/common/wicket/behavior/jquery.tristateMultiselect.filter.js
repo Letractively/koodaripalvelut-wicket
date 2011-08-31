@@ -56,8 +56,24 @@
         click: $.proxy(self._handler, self)
       });
       
+      self.selectedHidden = {}
+      
       // cache input values for searching
       this.updateCache();
+      
+      this.nodes.click(function() {
+    	  if(!$(this).is(".checked")) {
+    		  $.each($(this).siblings('ul').find(".element"),function(){
+    			  if(self.selectedHidden[ $(this).attr('id')] ) delete(self.selectedHidden[ $(this).attr('id')] );
+    		  });
+    	  }
+      });
+      $.each(this.rows,function(i, currRow) {
+    	  var ckbox = $(currRow).find('.checkbox');
+    	  ckbox.click(function() {
+    		 if(!ckbox.is(".checked")) delete(self.selectedHidden[ $(this).attr('id')] ); 
+    	  });
+      });
       
       // rewrite internal _toggleChecked fn so that when checkAll/uncheckAll is fired,
       // only the currently filtered elements are checked
@@ -110,15 +126,37 @@
     
     // thx for the logic here ben alman
     _handler: function( e ){
+      var $this = this;
       var term = $.trim( this.input[0].value.toLowerCase() ),
       
         // speed up lookups
         rows = this.rows, inputs = this.inputs, cache = this.cache, nodes = this.nodes;
       
+      var inst = $($this.element).data("triStateMultiselect");
       if( !term ){
         rows.show();
         nodes.show();
+        
+        $.each($this.selectedHidden,function(i,elid) {
+        	var ckbox = $("#"+elid);
+        	if(!ckbox.is(".checked") ) {
+        		inst._toggleChecked(true,ckbox  );
+        	}
+        });
       } else {
+  	    $.each(rows.find('a.checked'),function(i,currRow) {
+  	    	var ckbox = $(currRow);
+        	
+            inst._toggleChecked(false,$("#"+ ckbox.attr('id') ) );
+    		$this.selectedHidden[ckbox.attr('id')] = ckbox.attr('id');
+        });
+  	    $.each(nodes.find('a.checked'),function(i,currRow) {
+	    	var ckbox = $(currRow);
+      	
+            inst._toggleChecked(false,$("#"+ ckbox.attr('id') ) );
+  		    $this.selectedHidden[ckbox.attr('id')] = ckbox.attr('id');
+        });
+    	  
         rows.hide();
         nodes.hide();
         
@@ -127,6 +165,11 @@
         this._trigger( "filter", e, $.map(cache, function(v,i){
           if( v.search(regex) !== -1 ){
             rows.eq(i).show();
+            
+            ckbox = rows.eq(i).find("a.checkbox");
+            if($this.selectedHidden[ckbox.attr('id')]) {
+            	inst._toggleChecked(true,ckbox);
+            }
             
             function showParents ($el) {
               var $parentList = $el.parent('li').parent('ul');

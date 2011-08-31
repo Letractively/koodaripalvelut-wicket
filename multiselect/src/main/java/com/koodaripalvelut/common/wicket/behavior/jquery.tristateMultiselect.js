@@ -206,7 +206,7 @@ $.widget("ech.triStateMultiselect", {
     
     var elementsWithNoParent = parentIdElementMap["null"];
     
-    if(elementsWithNoParent != undefined) {
+    if(elementsWithNoParent == undefined) {
       elementsWithNoParent = [];
     }
     
