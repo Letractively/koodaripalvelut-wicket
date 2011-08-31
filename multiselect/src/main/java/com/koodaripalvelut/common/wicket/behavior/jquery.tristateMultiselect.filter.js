@@ -78,10 +78,13 @@
       // rewrite internal _toggleChecked fn so that when checkAll/uncheckAll is fired,
       // only the currently filtered elements are checked
       instance._toggleChecked = function(flag, group, type){
+        
+        //On "uncheck all" clean selectedHidden if any.
+        if (group == undefined && !flag) self.selectedHidden = {};
+        
         var $inputs = (group && group.length) ?
             group :
-//            this.labels.find('input'),
-              this.menu.find('ul.triState').find('a.checkbox'),
+              this.menu.find('ul.triState').find((flag ? 'a' : '') + '.checkbox'),
           
           _self = this,
 
@@ -140,7 +143,7 @@
         $.each($this.selectedHidden,function(i,elid) {
         	var ckbox = $("#"+elid);
         	if(!ckbox.is(".checked") ) {
-        		inst._toggleChecked(true,ckbox  );
+        		inst._toggleChecked(true, ckbox);
         	}
         });
       } else {
