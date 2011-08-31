@@ -19,7 +19,7 @@ import org.apache.wicket.util.string.AppendingStringBuffer;
  *
  * Copyright (c) Koodaripalvelut.com Finland 2008
  * 
- * @param <T>
+ * @param <T> 
  */
 public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<T> implements IOnChangeListener {
   private String previouslyAppendedOptGroupLabel;
@@ -30,9 +30,9 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param choices
    * @param renderer
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final IModel<? extends List<? extends T>> choices,
-          final IChoiceRenderer<? super T> renderer) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      IModel<? extends List<? extends T>> choices,
+      IChoiceRenderer<? super T> renderer) {
     super(id, choices, renderer);
   }
 
@@ -40,8 +40,8 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param id
    * @param choices
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final IModel<? extends List<? extends T>> choices) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      IModel<? extends List<? extends T>> choices) {
     super(id, choices);
   }
 
@@ -51,9 +51,9 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param choices
    * @param renderer
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final IModel<Collection<T>> model, final IModel<? extends List<? extends T>> choices,
-          final IChoiceRenderer<? super T> renderer) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      IModel<Collection<T>> model, IModel<? extends List<? extends T>> choices,
+      IChoiceRenderer<? super T> renderer) {
     super(id, model, choices, renderer);
   }
 
@@ -62,8 +62,8 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param model
    * @param choices
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final IModel<Collection<T>> model, final IModel<? extends List<? extends T>> choices) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      IModel<Collection<T>> model, IModel<? extends List<? extends T>> choices) {
     super(id, model, choices);
   }
 
@@ -73,9 +73,9 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param choices
    * @param renderer
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final IModel<Collection<T>> object, final List<? extends T> choices,
-      final IChoiceRenderer<? super T> renderer) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      IModel<Collection<T>> object, List<? extends T> choices,
+      IChoiceRenderer<? super T> renderer) {
     super(id, object, choices, renderer);
   }
 
@@ -84,8 +84,8 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param object
    * @param choices
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final IModel<Collection<T>> object, final List<? extends T> choices) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      IModel<Collection<T>> object, List<? extends T> choices) {
     super(id, object, choices);
   }
 
@@ -94,8 +94,8 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param choices
    * @param renderer
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final List<? extends T> choices, final IChoiceRenderer<? super T> renderer) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      List<? extends T> choices, IChoiceRenderer<? super T> renderer) {
     super(id, choices, renderer);
   }
 
@@ -104,8 +104,8 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param choices
    * @param maxRows
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final List<? extends T> choices, final int maxRows) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      List<? extends T> choices, int maxRows) {
     super(id, choices, maxRows);
   }
 
@@ -113,31 +113,31 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @param id
    * @param choices
    */
-  public ListMultipleChoiceWithStylingOptions(final String id,
-      final List<? extends T> choices) {
+  public ListMultipleChoiceWithStylingOptions(String id,
+      List<? extends T> choices) {
     super(id, choices);
   }
 
   /**
    * @param id
    */
-  public ListMultipleChoiceWithStylingOptions(final String id) {
+  public ListMultipleChoiceWithStylingOptions(String id) {
     super(id);
   }
-
+  
   /**
    * @see org.apache.wicket.markup.html.form.AbstractChoice#appendOptionHtml(org.apache.wicket.util.string.AppendingStringBuffer, java.lang.Object, int, java.lang.String)
    */
   @Override
-  protected void appendOptionHtml(final AppendingStringBuffer buffer, final T choice,
-      final int index, final String selected) {
-    final AppendingStringBuffer tmp = new AppendingStringBuffer(50);
+  protected void appendOptionHtml(AppendingStringBuffer buffer, T choice,
+      int index, String selected) {
+    AppendingStringBuffer tmp = new AppendingStringBuffer(50);
     super.appendOptionHtml(tmp, choice, index, selected);
-
+    
     if (getChoiceRenderer() instanceof IStyledChoiceRenderer) {
-      final IStyledChoiceRenderer<T> styledChoiceRenderer = (IStyledChoiceRenderer<T>) getChoiceRenderer();
+      IStyledChoiceRenderer<T> styledChoiceRenderer = (IStyledChoiceRenderer<T>) getChoiceRenderer();
 
-      final String currentOptGroupLabel = styledChoiceRenderer.getOptGroupLabel(choice);
+      String currentOptGroupLabel = styledChoiceRenderer.getOptGroupLabel(choice);
 
       addParentId(tmp, currentOptGroupLabel);
 
@@ -148,42 +148,42 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
         if (previouslyAppendedOptGroupLabel != null) {
           endOptGroup(buffer);
         }
-
+        
         if (currentOptGroupLabel != null) {
           // OptGroup started
-          final int start = tmp.indexOf("<option");
-          final StringBuilder label = new StringBuilder(currentOptGroupLabel.length() + 19);
+          int start = tmp.indexOf("<option");
+          StringBuilder label = new StringBuilder(currentOptGroupLabel.length() + 19);
           label.append("<optgroup label=\"").append(currentOptGroupLabel).append("\">");
           tmp.insert(start, label);
         }
       }
 
-      if (currentOptGroupLabel != null && index == choices-1) {
+      if ((currentOptGroupLabel != null) && (index == (choices-1))) {
         // Last option group must end too
         endOptGroup(tmp);
       }
 
       {
-        final String cssClass = styledChoiceRenderer.getOptionCssClassName(choice);
+        String cssClass = styledChoiceRenderer.getOptionCssClassName(choice);
         if (cssClass != null) {
-          final int start = tmp.indexOf("<option");
+          int start = tmp.indexOf("<option");
           tmp.insert(start + 7, new StringBuilder(" class=\"").append(cssClass).append("\""));
         }
       }
-
+      
       previouslyAppendedOptGroupLabel = currentOptGroupLabel;
     }
 
-
+    
     buffer.append(tmp);
   }
-
+  
   /**
    * @see org.apache.wicket.markup.html.form.AbstractChoice#onComponentTagBody(org.apache.wicket.markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
    */
   @Override
-  protected void onComponentTagBody(final MarkupStream markupStream,
-      final ComponentTag openTag) {
+  protected void onComponentTagBody(MarkupStream markupStream,
+      ComponentTag openTag) {
     previouslyAppendedOptGroupLabel = null;
     choices = getChoices().size();
     super.onComponentTagBody(markupStream, openTag);
@@ -197,9 +197,9 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
   /**
    * @param tmp
    */
-  private void endOptGroup(final AppendingStringBuffer tmp) {
+  private void endOptGroup(AppendingStringBuffer tmp) {
     // OptGroup ended
-    final int start = tmp.indexOf("</option>");
+    int start = tmp.indexOf("</option>");
     tmp.insert(start + 9, "</optgroup>");
   }
 

@@ -38,8 +38,6 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    */
   private boolean filtering;
 
-  private boolean tristate;
-
   private int minWidth = 255;
   private int height = 175;
   private boolean miniButton;
@@ -54,18 +52,18 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
   /**
    * @param string
    */
-  public MultiSelectBehavior(final String string) {
+  public MultiSelectBehavior(String string) {
     this.noneSelectedKey = string;
   }
-
-
-
-
+  
+  
+  
+  
   /**
    * @see org.apache.wicket.ajax.AbstractDefaultAjaxBehavior#respond(org.apache.wicket.ajax.AjaxRequestTarget)
    */
   @Override
-  protected void respond(final AjaxRequestTarget pTarget) {
+  protected void respond(AjaxRequestTarget pTarget) {
     //
   }
 
@@ -77,9 +75,9 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     if (!AbstractChoice.class.isAssignableFrom(getComponent().getClass())) {
       throw new WicketRuntimeException(
           "Error while adding behavior to component ["
-          + getComponent().getPath() + "]. Behavior of type "
-          + this.getClass().getName()
-          + " may not be added to components other than selects.");
+              + getComponent().getPath() + "]. Behavior of type "
+              + this.getClass().getName()
+              + " may not be added to components other than selects.");
     }
     super.onBind();
   }
@@ -88,21 +86,14 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @see org.apache.wicket.ajax.AbstractDefaultAjaxBehavior#renderHead(org.apache.wicket.markup.html.IHeaderResponse)
    */
   @Override
-  public void renderHead(final IHeaderResponse response) {
+  public void renderHead(IHeaderResponse response) {
     //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY);
     //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY_UI);
     renderCSSReference(response, "/css/redmond2010/jquery-ui.css");
     renderCSSReference(response, "jquery.multiselect.css");
 
-    if (isTristate()) {
-      renderJavascriptReference(response, "jquery.tristateMultiselect.js");
-      renderJavascriptReference(response, "jquery.tristate.js");
-      renderCSSReference(response, "jquery.tristate.css");
+    renderJavascriptReference(response, getMultiselectFileName());
 
-    } else {
-      renderJavascriptReference(response, "jquery.multiselect.js");
-
-    }
     if (isFiltering()) {
       renderJavascriptReference(response, getFilterFileName());
       renderCSSReference(response, "jquery.multiselect.filter.css");
@@ -118,13 +109,13 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     }
   }
 
-  private void renderJavascriptReference(final IHeaderResponse response,
+  protected void renderJavascriptReference(final IHeaderResponse response,
       final String fileName) {
     response.renderJavascriptReference(new ResourceReference(
         MultiSelectBehavior.class, fileName));
   }
 
-  private void renderCSSReference(final IHeaderResponse response,
+  protected void renderCSSReference(final IHeaderResponse response,
       final String fileName) {
     response.renderCSSReference(new ResourceReference(
         MultiSelectBehavior.class, fileName));
@@ -147,13 +138,13 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
       //      script.append(".multiselectfilter('updateCache')"); is created new?
     }
     script.append(";");
-    JavascriptUtils.writeJavascript(getComponent().getResponse(), script.toString());
-    //    getComponent().getResponse().renderOnDomReadyJavascript(script);
+    JavascriptUtils.writeJavascript(getComponent().getResponse(), script.toString());  
+//    getComponent().getResponse().renderOnDomReadyJavascript(script);
   }
 
   private String prepareOptions() {
     final StringBuilder sb = new StringBuilder("{");
-    sb.append("selectedList: " + (noneSelectedKey == null ? "false, selectedText: '', miniButton: true" : "2, miniButton: " + miniButton + ", selectedText: '#" + getComponent().getString("pcs_selected") + "'"));
+    sb.append("selectedList: " + (noneSelectedKey == null ? "false, selectedText: '', miniButton: true" : "2, miniButton: " + miniButton + ", selectedText: '# " + getComponent().getString("pcs_selected") + "'"));
     sb.append(", minWidth: " + minWidth);
     sb.append(", height: " + height);
     sb.append(", checkAllText: '");
@@ -166,25 +157,21 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     sb.append("}, beforeopen: function() {");
     sb.append(getStateVariable() + getSerializationScript());
     sb.append("}, click: function(event, ui) { if (ui.radio) {} ");
-    //    sb.append("$('#" + getComponent().getMarkupId() + "').val(ui.value);"); bug bug
-    //    sb.append("$('#" + getComponent().getMarkupId() + "').multiselect('close'); }"); bug bug
+//    sb.append("$('#" + getComponent().getMarkupId() + "').val(ui.value);"); bug bug
+//    sb.append("$('#" + getComponent().getMarkupId() + "').multiselect('close'); }"); bug bug
     sb.append("}, uncheckAllText: '");
     sb.append(getComponent().getString("multiselect-uncheck-all-text"));
     sb.append("', noneSelectedText: '");
     sb.append(noneSelectedKey == null ? "" : getComponent().getString(noneSelectedKey));
     sb.append("', multiple: ");
     sb.append(multiple);
-
-    final String nullItemLabel = getComponent().getString("nullValid");
-
-    if (!nullItemLabel.equals("")) {
-      sb.append(", nullItemLabel: '");
-      sb.append(nullItemLabel);
-      sb.append("'");
-    }
-
+    sb.append(getOtherOptions());
     sb.append("}");
     return sb.toString();
+  }
+
+  protected String getOtherOptions() {
+    return "";
   }
 
   /**
@@ -201,19 +188,22 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     return STATE_VARIABLE_PREFIX + getComponent().getMarkupId();
   }
 
-  private String getMultiselectMethodName() {
-    return isTristate() ? "triStateMultiselect" : "multiselect";
+  protected String getMultiselectFileName() {
+    return "jquery.multiselect.js";
   }
 
-  private String getFilterMethodName() {
-    return isTristate() ? "tristatemultiselectfilter" : "multiselectfilter";
+  protected String getFilterFileName() {
+    return "jquery.multiselect.filter.js";
   }
 
-  private String getFilterFileName() {
-    return isTristate() ? "jquery.tristateMultiselect.filter.js"
-        : "jquery.multiselect.filter.js";
+  protected String getMultiselectMethodName() {
+    return "multiselect";
   }
 
+  protected String getFilterMethodName() {
+    return "multiselectfilter";
+  }
+  
   /**
    * 
    * @return this
@@ -232,11 +222,6 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     return this;
   }
 
-  public MultiSelectBehavior tristate() {
-    this.tristate = true;
-    return this;
-  }
-
   /**
    * @return the minWidth
    */
@@ -248,7 +233,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @param minWidth the minWidth to set
    * @return MultiSelectBehavior
    */
-  public MultiSelectBehavior setMinWidth(final int minWidth) {
+  public MultiSelectBehavior setMinWidth(int minWidth) {
     this.minWidth = minWidth;
     return this;
   }
@@ -264,7 +249,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @param height the height to set
    * @return MultiSelectBehavior
    */
-  public MultiSelectBehavior setHeight(final int height) {
+  public MultiSelectBehavior setHeight(int height) {
     this.height = height;
     return this;
   }
@@ -283,15 +268,11 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     return miniButton;
   }
 
-  public boolean isTristate() {
-    return tristate;
-  }
-
   /**
    * @param miniButton the miniButton to set
    * @return MultiSelectBehavior
    */
-  public MultiSelectBehavior setMiniButton(final boolean miniButton) {
+  public MultiSelectBehavior setMiniButton(boolean miniButton) {
     this.miniButton = miniButton;
     return this;
   }

@@ -21,6 +21,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 
 import com.koodaripalvelut.common.wicket.behavior.MultiSelectBehavior;
+import com.koodaripalvelut.common.wicket.behavior.TristateMultiSelectBehavior;
 import com.koodaripalvelut.common.wicket.components.IStyledChoiceRenderer;
 import com.koodaripalvelut.common.wicket.components.ListMultipleChoiceWithStylingOptions;
 import com.koodaripalvelut.common.wicket.webtest.BasePage;
@@ -102,8 +103,8 @@ public class MultiSelectPage extends BasePage {
     single.add(new MultiSelectBehavior().single());
     multi.add(new MultiSelectBehavior());
     filter.add(new MultiSelectBehavior().filtering());
-    tristate.add(new MultiSelectBehavior().tristate());
-    tristateFilter.add(new MultiSelectBehavior().tristate().filtering());
+    tristate.add(new TristateMultiSelectBehavior());
+    tristateFilter.add(new TristateMultiSelectBehavior().filtering());
 
     add(new SimpleFeedbackFormPanel<String>("single", single));
     add(new SimpleFeedbackFormPanel<String>("multi", multi));
@@ -204,8 +205,14 @@ public class MultiSelectPage extends BasePage {
     list.add(person3);
 
     for (final String name : Arrays.asList(new String[] { "I", "II" })) {
-      list.add(createPerson(name, person2));
-      list.add(createPerson(name, person3));
+      final Person pers1 = createPerson(name, person2);
+      final Person pers2 = createPerson(name, person3);
+      list.add(pers1);
+      list.add(pers2);
+      for (final String name2 : Arrays.asList(new String[] { "1", "2" })) {
+        list.add(createPerson(name2, pers1));
+        list.add(createPerson(name2, pers2));
+      }
     }
     return list;
   }
@@ -281,10 +288,6 @@ IStyledChoiceRenderer<Person> {
 
   @Override
   public String getIdValue(final Person object, final int index) {
-    // if (object == null) {
-    // // return super.getIdValue(object, index);
-    // return "";
-    // }
     return super.getIdValue(object, index);
   }
 
