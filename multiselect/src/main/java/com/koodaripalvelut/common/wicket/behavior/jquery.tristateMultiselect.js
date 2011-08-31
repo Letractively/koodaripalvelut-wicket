@@ -276,7 +276,8 @@ $.widget("ech.triStateMultiselect", {
         optLabel;
       
       function convertToInput() {
-        var buf = '<input id="'+ inputID +'" type="checkbox" value="'+value+'" title="'+title+'"';
+        var escTitle = title.replace(/\"/gi, "&quot;");
+        var buf = '<input id="'+ inputID +'" type="checkbox" value="'+value+'" title="'+escTitle+'"';
         
         // pre-selected?
         if( isSelected ){
@@ -521,11 +522,13 @@ $.widget("ech.triStateMultiselect", {
           type = this.type,
           tags = self.element.find('option');
         
-        // bail if this input is disabled or the event is cancelled
+          // bail if this input is disabled or the event is cancelled
         if( this.disabled || self._trigger('click', e, { value:val, text:this.title, checked:checked }) === false ){
           e.preventDefault();
           return;
         }
+        
+        self._toggleChecked(false, self.menu.find('ul.triState').find('input[type="radio"]'));
           
           if ($($this.siblings('input[type="radio"]')[0]).attr("checked")) {
             $this.attr('checked', true);

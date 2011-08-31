@@ -208,7 +208,7 @@
         convertToAnchor: function ($el, classes) {
           var sName = $el.attr('name'),
           id = $el.attr('id'),
-          title = $el.attr('title'),
+          title = $el.attr('title').replace(/\"/gi, "&quot;"),
           value = $el.attr('value'),
           isSelected = $el.attr('checked'),
           $newCheckbox = $('<a id="anchor-'+ id +'" href="#" class="checkbox element '+ (isSelected ? "checked " : "") + (classes ?  classes : "")+'" title="'+title+'" optionvalue='+ value +'>'+sName+'</a>');
