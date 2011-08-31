@@ -507,7 +507,9 @@ $.widget("ech.triStateMultiselect", {
         var $this = $(this);
           self._toggleChecked(false, self.menu.find('ul.triState').find('.checkbox')
               .not(this), this.type);
-          $this.siblings('#anchor-' + $this.attr("checkbox")).trigger('click');
+          var checkBox =  $this.siblings('#anchor-' + $this.attr("checkbox"));
+          checkBox.trigger('click');
+          checkBox.addClass('checked');
           $this.attr('checked', 'checked');
           self.close();
       })
