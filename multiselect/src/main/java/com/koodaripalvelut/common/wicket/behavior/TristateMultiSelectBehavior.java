@@ -37,20 +37,5 @@ public class TristateMultiSelectBehavior extends MultiSelectBehavior {
     return "tristatemultiselectfilter";
   }
 
-  @Override
-  protected String getOtherOptions() {
-
-    final StringBuilder sb = new StringBuilder();
-    final String nullItemLabel = getComponent().getString("nullLabel");
-
-    if (!nullItemLabel.equals("")) {
-      sb.append(", nullItemLabel: '");
-      sb.append(nullItemLabel);
-      sb.append("'");
-    }
-
-    return sb.toString();
-  }
-
 }
 

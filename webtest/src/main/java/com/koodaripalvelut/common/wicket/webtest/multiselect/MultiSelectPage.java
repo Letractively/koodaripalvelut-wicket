@@ -274,16 +274,16 @@ IStyledChoiceRenderer<Person> {
 
   @Override
   public String getOptGroupLabel(final Person person) {
+    return null;
+  }
+
+  @Override
+  public String getOptionCssClassName(final Person person) {
     if (person == null) {
       return null;
     }
     final Person parent = person.getParent();
     return parent != null ? parent.getName() : null;
-  }
-
-  @Override
-  public String getOptionCssClassName(final Person person) {
-    return null;
   }
 
   @Override

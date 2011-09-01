@@ -139,8 +139,6 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
 
       String currentOptGroupLabel = styledChoiceRenderer.getOptGroupLabel(choice);
 
-      addParentId(tmp, currentOptGroupLabel);
-
       if (currentOptGroupLabel == previouslyAppendedOptGroupLabel
           || currentOptGroupLabel != null
           && currentOptGroupLabel.equals(previouslyAppendedOptGroupLabel)) {
@@ -187,11 +185,6 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
     previouslyAppendedOptGroupLabel = null;
     choices = getChoices().size();
     super.onComponentTagBody(markupStream, openTag);
-  }
-
-  private void addParentId(final AppendingStringBuffer tmp, final String id) {
-    final int start = tmp.indexOf("<option");
-    tmp.insert(start + 7, " optparentid=\"" + id + "\"");
   }
 
   /**

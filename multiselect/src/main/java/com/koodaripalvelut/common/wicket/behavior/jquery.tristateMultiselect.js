@@ -140,6 +140,13 @@ $.widget("ech.triStateMultiselect", {
       nullOptions = [],
       id = el.attr('id') || multiselectID++; // unique ID for the label & option tags
     
+    function getParentId(el) {
+    //TODO - Only a class? if more, Does parentId start with a given string?
+      var optParentId = $(el).attr('class');
+      if (optParentId == "") optParentId = "null";
+      return optParentId;
+    }
+    
     //Organizes options hierarchically
     this.element.find('option').each(function( i ) {
       
@@ -151,8 +158,7 @@ $.widget("ech.triStateMultiselect", {
       }
       
       
-      var optParentId = $(this).attr('optparentid'),
-      
+      var optParentId = getParentId(this),
       parent = parentIdElementMap[optParentId];
       
       if(optParentId == "null") { //belongs to root.
@@ -183,7 +189,7 @@ $.widget("ech.triStateMultiselect", {
         parentIdElementMap[this.innerHTML] = this;
       } else { //Parent is an exiting option.
         
-        var grandParent = parentIdElementMap[$(parent).attr('optparentid')];
+        var grandParent = parentIdElementMap[getParentId(parent)];
         
         var obj = parent;
         parentElements[optParentId] = obj;
@@ -237,7 +243,7 @@ $.widget("ech.triStateMultiselect", {
         } else {
           array.push(obj);
           if (startOpt.innerHTML == "") {
-            startOpt.innerHTML = $(obj).attr('optparentid');
+            startOpt.innerHTML = getParentId(obj);
           }
         }
       }
