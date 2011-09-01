@@ -283,7 +283,12 @@ IStyledChoiceRenderer<Person> {
       return null;
     }
     final Person parent = person.getParent();
-    return parent != null ? parent.getName() : null;
+
+    final String parentId = parent != null ? TristateMultiSelectBehavior.formatParentId(parent.getName()) : null;
+
+    // adding more classes in addition to the parent id.
+    return "my-class option-class " + parentId + " other-class whatelse";
+
   }
 
   @Override

@@ -10,6 +10,8 @@ public class TristateMultiSelectBehavior extends MultiSelectBehavior {
 
   private static final long serialVersionUID = 1L;
 
+  private static final String PARENT_ID_PREFIX = "tsp-";
+
   @Override
   public void renderHead(final IHeaderResponse response) {
     renderJavascriptReference(response, "jquery.tristate.js");
@@ -35,6 +37,11 @@ public class TristateMultiSelectBehavior extends MultiSelectBehavior {
   @Override
   protected String getFilterMethodName() {
     return "tristatemultiselectfilter";
+  }
+
+  public static String formatParentId(final String parentId) {
+
+    return PARENT_ID_PREFIX + parentId.replace(" ", "&nbsp");
   }
 
 }

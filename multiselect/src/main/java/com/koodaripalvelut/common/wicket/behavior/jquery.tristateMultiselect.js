@@ -141,10 +141,19 @@ $.widget("ech.triStateMultiselect", {
       id = el.attr('id') || multiselectID++; // unique ID for the label & option tags
     
     function getParentId(el) {
-    //TODO - Only a class? if more, Does parentId start with a given string?
-      var optParentId = $(el).attr('class');
-      if (optParentId == "") optParentId = "null";
-      return optParentId;
+      
+      var elClasses = $(el).attr('class').split(" ");
+      
+      for (i=0; i <  elClasses.length; i++) {
+        
+        var elClass = elClasses[i];
+        
+        if (elClass.indexOf("tsp-") == 0) {
+          return elClass.substring(4, elClass.length);
+        }
+        
+      }
+      return "null";
     }
     
     //Organizes options hierarchically
