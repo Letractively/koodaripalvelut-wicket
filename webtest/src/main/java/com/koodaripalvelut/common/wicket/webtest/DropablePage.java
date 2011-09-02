@@ -19,8 +19,8 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 
-import com.koodaripalvelut.common.wicket.dropable.Droppable;
-import com.koodaripalvelut.common.wicket.dropable.MultiDraggable;
+//import com.koodaripalvelut.common.wicket.dropable.Droppable;
+//import com.koodaripalvelut.common.wicket.dropable.MultiDraggable;
 
 public class DropablePage extends BasePage {
   private static final String BR = "<br/>";
@@ -54,31 +54,31 @@ public class DropablePage extends BasePage {
         item.add(new Label("drag", item.getModelObject()))
         .add(
             new AttributeAppender("class",
-                of("drag" + item.getIndex() % 2), " "))
-                .add(new MultiDraggable() {
-
-                  @Override
-                  protected void onDrop(final AjaxRequestTarget target,
-                      final Component comp) {
-                    final StringBuilder sb = new StringBuilder();
-                    sb.append(this);
-                    sb.append(BR);
-                    sb.append(" droppend on ");
-                    sb.append(comp);
-                    sb.append(BR);
-                    sb.append(" shiftKey: ");
-                    sb.append(isShiftKey());
-                    sb.append(BR);
-                    sb.append("ctrlKey: ");
-                    sb.append(isCtrlKey());
-                    sb.append(BR);
-                    sb.append("altKey: ");
-                    sb.append(isAltKey());
-                    sb.append(BR);
-                    info(String.valueOf(sb));
-                    target.addChildren(getPage(), FeedbackPanel.class);
-                  }
-                });
+                of("drag" + item.getIndex() % 2), " "));
+//                .add(new MultiDraggable() {
+//
+//                  @Override
+//                  protected void onDrop(final AjaxRequestTarget target,
+//                      final Component comp) {
+//                    final StringBuilder sb = new StringBuilder();
+//                    sb.append(this);
+//                    sb.append(BR);
+//                    sb.append(" droppend on ");
+//                    sb.append(comp);
+//                    sb.append(BR);
+//                    sb.append(" shiftKey: ");
+//                    sb.append(isShiftKey());
+//                    sb.append(BR);
+//                    sb.append("ctrlKey: ");
+//                    sb.append(isCtrlKey());
+//                    sb.append(BR);
+//                    sb.append("altKey: ");
+//                    sb.append(isAltKey());
+//                    sb.append(BR);
+//                    info(String.valueOf(sb));
+//                    target.addChildren(getPage(), FeedbackPanel.class);
+//                  }
+//                });
       }
     });
     add(container);
@@ -95,18 +95,18 @@ public class DropablePage extends BasePage {
         item.add(new Label("drop", item.getModelObject()))
         .add(
             new AttributeAppender("class", Model.of("drop"
-                + item.getIndex()), " "))
-                .add(new Droppable() {
-
-                  @Override
-                  protected void beforeDrop(final AjaxRequestTarget target,
-                      final Component comp) {
-                    info(comp + " will be dropped on " + this + " shiftKey: "
-                        + isShiftKey() + " ctrlKey: " + isCtrlKey() + " altKey: "
-                        + isAltKey());
-                    target.addChildren(getPage(), FeedbackPanel.class);
-                  }
-                });
+                + item.getIndex()), " "));
+//                .add(new Droppable() {
+//
+//                  @Override
+//                  protected void beforeDrop(final AjaxRequestTarget target,
+//                      final Component comp) {
+//                    info(comp + " will be dropped on " + this + " shiftKey: "
+//                        + isShiftKey() + " ctrlKey: " + isCtrlKey() + " altKey: "
+//                        + isAltKey());
+//                    target.addChildren(getPage(), FeedbackPanel.class);
+//                  }
+//                });
       }
     });
 

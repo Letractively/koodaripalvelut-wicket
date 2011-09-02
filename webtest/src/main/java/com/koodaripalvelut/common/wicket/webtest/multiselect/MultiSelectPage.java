@@ -160,8 +160,10 @@ public class MultiSelectPage extends BasePage {
         @Override
         protected void onSubmit(final AjaxRequestTarget target,
             final Form<?> form) {
+          String str = choiceComp.getRawInput();
           final Model<T> model =
             new Model((Serializable) choiceComp.getDefaultModelObject());
+          List list = (ArrayList)model.getObject();
           rv.setDefaultModel(model);
           target.addComponent(container);
         }
@@ -293,6 +295,9 @@ IStyledChoiceRenderer<Person> {
 
   @Override
   public String getIdValue(final Person object, final int index) {
+    if (object == null) {
+      return "";
+    }
     return super.getIdValue(object, index);
   }
 

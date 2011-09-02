@@ -42,7 +42,6 @@ $.widget("ech.triStateMultiselect", {
     multiple: true,
     labelClass: 'tristateMultiselect-label',
     sublistClass: 'sublist', 
-    nullItemLabel: 'null / emptyValue',
     position: {}
   },
 
@@ -138,6 +137,7 @@ $.widget("ech.triStateMultiselect", {
       parentIdElementMap = {},
       parentElements = {},
       nullOptions = [],
+      $this = this,
       id = el.attr('id') || multiselectID++; // unique ID for the label & option tags
     
     function getParentId(el) {
@@ -159,14 +159,23 @@ $.widget("ech.triStateMultiselect", {
     //Organizes options hierarchically
     this.element.find('option').each(function( i ) {
       
-      //catch null/emptyValues. It is catching emptyString (""), it should be a problem.
-      if(this.innerHTML == "") {
-        this.innerHTML = o.nullItemLabel;
-        nullOptions.push(this);
-        return;
+      // Generate random strinf for id's
+      var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
+      var randomstring = '';
+      for (var i=0; i<4; i++) {
+        var rnum = Math.floor(Math.random() * chars.length);
+        randomstring += chars.substring(rnum,rnum+1);
       }
       
-      
+      $this.optionIds = []
+      if($(this).attr('id')) {
+    	  $this.optionIds.push($(this).attr('id'));
+      } else {
+    	  var elid = "tristate-option-"+randomstring+i;
+    	  $(this).attr('id',elid);
+    	  $this.optionIds.push(elid);
+      }
+    	
       var optParentId = getParentId(this),
       parent = parentIdElementMap[optParentId];
       
@@ -282,9 +291,10 @@ $.widget("ech.triStateMultiselect", {
         parent = this.parentNode,
         title = this.innerHTML,
         value = this.value,
-        inputID = this.id || 'ui-multiselect-'+id+'-option-'+i, 
+        inputID = 'ui-multiselect-'+id+'-option-'+i, 
         isDisabled = this.disabled,
         isSelected = this.selected,
+        optid = $(this).attr('id'),
         labelClasses = ['ui-corner-all'],
         className = this.label,
         optcontainer = $this.attr('optcontainer'),
@@ -292,7 +302,7 @@ $.widget("ech.triStateMultiselect", {
       
       function convertToInput() {
         var escTitle = title.replace(/\"/gi, "&quot;");
-        var buf = '<input id="'+ inputID +'" type="checkbox" value="'+value+'" title="'+escTitle+'"';
+        var buf = '<input id="'+ inputID +'" type="checkbox" value="'+value+'" title="'+escTitle+'" optid="'+optid+'"';
         
         // pre-selected?
         if( isSelected ){
@@ -336,7 +346,8 @@ $.widget("ech.triStateMultiselect", {
     	  html.push(convertToInput());
     	  
     	  // add the title and close everything off
-    	  html.push('<label href="#" for="' + inputID + '" class="ui-corner-all ' + o.labelClass + '"><span>' + title + '</span></label></li>');
+    	  html.push('<label href="#" for="' + inputID + '" class="ui-corner-all ' + o.labelClass + (title == "" ? ' ui-multiselect-empty-label' : '')+ '"><span>' + title + '</span></label></li>');
+    	  
       }
     });
     
@@ -554,7 +565,7 @@ $.widget("ech.triStateMultiselect", {
         // set the original option tag to selected
         tags.each(function() {
           if (this.value == "" && tags.length > 0) {
-            this.selected = false;
+            this.selected = $('a[optid="'+this.id+'"]').hasClass('checked');
           } else if( this.value === val ){
             this.selected = checked;
 
