@@ -39,10 +39,5 @@ public class TristateMultiSelectBehavior extends MultiSelectBehavior {
     return "tristatemultiselectfilter";
   }
 
-  public static String formatParentId(final String parentId) {
-
-    return PARENT_ID_PREFIX + parentId.replace(" ", "&nbsp");
-  }
-
 }
 

@@ -121,7 +121,7 @@ $.widget("ech.triStateMultiselect", {
     this.checkboxContainer.tristate({heading: 'span.heading', multiple: this.options.multiple});
     
     //Uncheck all radios. Only checkboxes need to be checked.
-    this.checkboxContainer.find('input[type="radio"]').each(function() { $(this).attr('checked', ''); }); 
+    this.checkboxContainer.find('input[type="radio"]').each(function() { $(this).attr('checked', false); }); 
     
     this.button[0].defaultValue = this.update();
   },
@@ -142,24 +142,42 @@ $.widget("ech.triStateMultiselect", {
     
     function getParentId(el) {
       
-      var elClasses = $(el).attr('class').split(" ");
-      
-      for (i=0; i <  elClasses.length; i++) {
+      function getClassParentId() {
         
-        var elClass = elClasses[i];
+        var elClasses = $(el).attr('class');
         
-        if (elClass.indexOf("tsp-") == 0) {
-          return elClass.substring(4, elClass.length);
+        if(elClasses == undefined || elClasses == "") {
+          return;
         }
         
+        for (i=0; i <  elClasses.split(" ").length; i++) {
+          
+          var elClass = elClasses[i];
+          
+          if (elClass.indexOf("tsp-") == 0) {
+            return elClass.substring(4, elClass.length);
+          }
+          
+        }
       }
-      return "null";
+      
+      var parentId = getClassParentId();
+      
+      if (parentId == undefined) {
+        var parent = el.parentNode;
+        if (parent.tagName.toLowerCase() === 'optgroup') {
+          var optLabel = parent.getAttribute('label');
+          $(el).addClass("tsp-" + optLabel.replace(/\s/gi, '&nbsp;'));
+          return optLabel;
+        }
+        return "null";
+      }
     }
     
     //Organizes options hierarchically
     this.element.find('option').each(function( i ) {
       
-      // Generate random strinf for id's
+      // Generate random string for id's
       var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
       var randomstring = '';
       for (var i=0; i<4; i++) {
@@ -167,7 +185,7 @@ $.widget("ech.triStateMultiselect", {
         randomstring += chars.substring(rnum,rnum+1);
       }
       
-      $this.optionIds = []
+      $this.optionIds = [];
       if($(this).attr('id')) {
     	  $this.optionIds.push($(this).attr('id'));
       } else {

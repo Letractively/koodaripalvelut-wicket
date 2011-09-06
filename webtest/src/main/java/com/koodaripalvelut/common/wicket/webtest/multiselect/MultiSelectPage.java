@@ -69,6 +69,7 @@ public class MultiSelectPage extends BasePage {
   public MultiSelectPage() {
 
     final List<Person> persons = getPersons();
+    persons.add(0, null);
     persons.add(2, null);
     persons.add(6, null);
 
@@ -160,10 +161,10 @@ public class MultiSelectPage extends BasePage {
         @Override
         protected void onSubmit(final AjaxRequestTarget target,
             final Form<?> form) {
-          String str = choiceComp.getRawInput();
+          final String str = choiceComp.getRawInput();
           final Model<T> model =
             new Model((Serializable) choiceComp.getDefaultModelObject());
-          List list = (ArrayList)model.getObject();
+          final List list = (ArrayList)model.getObject();
           rv.setDefaultModel(model);
           target.addComponent(container);
         }
@@ -181,7 +182,6 @@ public class MultiSelectPage extends BasePage {
 
   private List<Person> getPersons() {
     final List<Person> persons = new ArrayList<Person>();
-    persons.add(null);
 
     for (final String name : Arrays
         .asList(new String[] { "One", "Two", "Three" })) {
@@ -275,29 +275,26 @@ IStyledChoiceRenderer<Person> {
   }
 
   @Override
-  public String getOptGroupLabel(final Person person) {
+  public String getOptionCssClassName(final Person person) {
     return null;
   }
 
   @Override
-  public String getOptionCssClassName(final Person person) {
+  public String getOptGroupLabel(final Person person) {
+
     if (person == null) {
       return null;
     }
-    final Person parent = person.getParent();
 
-    final String parentId = parent != null ? TristateMultiSelectBehavior.formatParentId(parent.getName()) : null;
+    String optGroup =
+        person.getParent() == null ? null : person.getParent().getName();
 
-    // adding more classes in addition to the parent id.
-    return "my-class option-class " + parentId + " other-class whatelse";
+    return optGroup;
 
   }
 
   @Override
   public String getIdValue(final Person object, final int index) {
-    if (object == null) {
-      return "";
-    }
     return super.getIdValue(object, index);
   }
 

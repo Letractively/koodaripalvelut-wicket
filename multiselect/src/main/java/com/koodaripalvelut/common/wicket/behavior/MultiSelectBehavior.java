@@ -52,7 +52,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
   /**
    * @param string
    */
-  public MultiSelectBehavior(String string) {
+  public MultiSelectBehavior(final String string) {
     this.noneSelectedKey = string;
   }
   
@@ -63,7 +63,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @see org.apache.wicket.ajax.AbstractDefaultAjaxBehavior#respond(org.apache.wicket.ajax.AjaxRequestTarget)
    */
   @Override
-  protected void respond(AjaxRequestTarget pTarget) {
+  protected void respond(final AjaxRequestTarget pTarget) {
     //
   }
 
@@ -86,10 +86,9 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @see org.apache.wicket.ajax.AbstractDefaultAjaxBehavior#renderHead(org.apache.wicket.markup.html.IHeaderResponse)
    */
   @Override
-  public void renderHead(IHeaderResponse response) {
+  public void renderHead(final IHeaderResponse response) {
     //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY);
     //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY_UI);
-    renderCSSReference(response, "/css/redmond2010/jquery-ui.css");
     renderCSSReference(response, "jquery.multiselect.css");
 
     renderJavascriptReference(response, getMultiselectFileName());
@@ -233,7 +232,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @param minWidth the minWidth to set
    * @return MultiSelectBehavior
    */
-  public MultiSelectBehavior setMinWidth(int minWidth) {
+  public MultiSelectBehavior setMinWidth(final int minWidth) {
     this.minWidth = minWidth;
     return this;
   }
@@ -249,7 +248,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @param height the height to set
    * @return MultiSelectBehavior
    */
-  public MultiSelectBehavior setHeight(int height) {
+  public MultiSelectBehavior setHeight(final int height) {
     this.height = height;
     return this;
   }
@@ -272,7 +271,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @param miniButton the miniButton to set
    * @return MultiSelectBehavior
    */
-  public MultiSelectBehavior setMiniButton(boolean miniButton) {
+  public MultiSelectBehavior setMiniButton(final boolean miniButton) {
     this.miniButton = miniButton;
     return this;
   }

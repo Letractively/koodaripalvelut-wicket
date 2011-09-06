@@ -139,9 +139,8 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
 
       String currentOptGroupLabel = styledChoiceRenderer.getOptGroupLabel(choice);
 
-      if (currentOptGroupLabel == previouslyAppendedOptGroupLabel
-          || currentOptGroupLabel != null
-          && currentOptGroupLabel.equals(previouslyAppendedOptGroupLabel)) {
+      if (!(currentOptGroupLabel != null
+          && currentOptGroupLabel.equals(previouslyAppendedOptGroupLabel))) {
         // OptGroup changed
         if (previouslyAppendedOptGroupLabel != null) {
           endOptGroup(buffer);
@@ -192,7 +191,7 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    */
   private void endOptGroup(AppendingStringBuffer tmp) {
     // OptGroup ended
-    int start = tmp.indexOf("</option>");
+    int start = tmp.lastIndexOf("</option>");
     tmp.insert(start + 9, "</optgroup>");
   }
 
