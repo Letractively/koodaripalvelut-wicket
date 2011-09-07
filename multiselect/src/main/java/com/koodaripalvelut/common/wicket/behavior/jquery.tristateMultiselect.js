@@ -527,6 +527,15 @@ $.widget("ech.triStateMultiselect", {
         if( !$(this).hasClass('ui-state-disabled') ){
         	$('.'+ self.options.labelClass).removeClass('ui-state-hover');
           $(this).addClass('ui-state-hover').find('input').focus();
+          
+          var i =0;
+          par = $(this).parent();
+          while(!par.is(".ui-multiselect-checkboxes")) {
+            if(par.is('ul')) i++;
+            par = par.parent();
+          }
+          
+          $(this).css('margin-left',(-20 * i) + "px")
         }
       })
       .delegate('label', 'keydown.multiselect', function(e){
