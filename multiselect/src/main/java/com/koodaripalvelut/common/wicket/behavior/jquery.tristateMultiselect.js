@@ -526,16 +526,26 @@ $.widget("ech.triStateMultiselect", {
       .delegate('label', 'mouseenter.multiselect', function(){
         if( !$(this).hasClass('ui-state-disabled') ){
         	$('.'+ self.options.labelClass).removeClass('ui-state-hover');
-          $(this).addClass('ui-state-hover').find('input').focus();
-          
-          var i =0;
-          par = $(this).parent();
-          while(!par.is(".ui-multiselect-checkboxes")) {
-            if(par.is('ul')) i++;
-            par = par.parent();
-          }
-          
-          $(this).css('margin-left',(-20 * i) + "px")
+        	if (!(!self.options.multiple && $(this).hasClass('node-checkbox'))) {
+        	  $(this).addClass('ui-state-hover').find('input').focus();
+        	}
+        	
+        	if ($(this).attr('level') == undefined) {
+        	  var i =0;
+        	  par = $(this).parent();
+        	  while(!par.is(".ui-multiselect-checkboxes")) {
+        	    if(par.is('ul')) i++;
+        	    par = par.parent();
+        	  }
+        	  
+        	  if(!self.options.multiple) {
+        	    $(this).before($('<span style="float: left;">&nbsp;</span>'));
+        	  }
+        	  
+        	  $(this).css('margin-left',(-20 * i) + "px");
+        	  
+        	  $(this).attr('level', i);
+        	}
         }
       })
       .delegate('label', 'keydown.multiselect', function(e){

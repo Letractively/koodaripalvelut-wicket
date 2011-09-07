@@ -58,13 +58,23 @@
               if(opts.multiple){
                 triState.bindLabel(stateAnchor);
               } else {
+                stateAnchor.hide();
                 anchor.hide();
                 triState.bindLabel(radio, radio.parent().siblings('label'));
               }
             } else {
-              $this.wrap('<label class="ui-corner-all tristateMultiselect-label ' + opts.sublist + ($this.html() == "" ? ' ui-multiselect-empty-label' : '') + '"></label>');
+              $this.wrap('<label class="node-checkbox ui-corner-all tristateMultiselect-label ' + opts.sublist + ($this.html() == "" ? ' ui-multiselect-empty-label' : '') + '"></label>');
               if(opts.multiple) {
                 triState.bindLabel(stateAnchor);
+              } else {
+                stateAnchor.hide();
+              }
+              
+              if ($this.parent().parent('li').parent('ul').hasClass('triState')) {
+                $this.parent().parent('li').css('background', 'none');
+                if (!opts.multiple) {
+                  $this.parent().hide();
+                }
               }
             }
           });
@@ -201,7 +211,6 @@
           $radio.attr('id', 'radio-' + $anchor.attr('id'));
           $($anchor.siblings('label')[0]).attr('for', $radio.attr('id'));
           $label.attr('for', $radio.attr('id'));
-          $radio.hide();
           $anchor.hide();
         },
         
