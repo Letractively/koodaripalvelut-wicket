@@ -38,7 +38,7 @@ ul.triState .radiobutton { margin-top: .7em; margin-left: 0; }
 ul.triState .tristate-node-element {float: left;}
 ul.triState a.checked { background-position: 0 -13px; }
 ul.triState a.partial { background-position: 0 -26px; }
-ul.triState li li { padding: 0 0 0 18px; }
+ul.triState li li { padding: 0 0 0 21px; }
   
 ul.triState a {border: thick;}
 ul.triState li{ background: url(noexpanded.png) 7px center no-repeat; }

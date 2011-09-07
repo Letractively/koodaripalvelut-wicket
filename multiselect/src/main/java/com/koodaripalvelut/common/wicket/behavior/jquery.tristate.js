@@ -62,7 +62,7 @@
                 triState.bindLabel(radio, radio.parent().siblings('label'));
               }
             } else {
-              $this.wrap('<label class="ui-corner-all tristateMultiselect-label ' + opts.sublist + '"></label>');
+              $this.wrap('<label class="ui-corner-all tristateMultiselect-label ' + opts.sublist + ($this.html() == "" ? ' ui-multiselect-empty-label' : '') + '"></label>');
               if(opts.multiple) {
                 triState.bindLabel(stateAnchor);
               }

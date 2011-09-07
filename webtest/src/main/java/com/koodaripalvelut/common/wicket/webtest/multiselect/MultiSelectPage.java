@@ -101,17 +101,24 @@ public class MultiSelectPage extends BasePage {
           new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
           tristateRenderer);
 
+    final ListMultipleChoiceWithStylingOptions<Person> tristateSingle =
+      new ListMultipleChoiceWithStylingOptions("select",
+          new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
+          tristateRenderer);
+
     single.add(new MultiSelectBehavior().single());
     multi.add(new MultiSelectBehavior());
     filter.add(new MultiSelectBehavior().filtering());
     tristate.add(new TristateMultiSelectBehavior());
     tristateFilter.add(new TristateMultiSelectBehavior().filtering());
+    tristateSingle.add(new TristateMultiSelectBehavior().single());
 
     add(new SimpleFeedbackFormPanel<String>("single", single));
     add(new SimpleFeedbackFormPanel<String>("multi", multi));
     add(new SimpleFeedbackFormPanel<String>("filter", filter));
     add(new SimpleFeedbackFormPanel<Person>("tristate", tristate));
     add(new SimpleFeedbackFormPanel<Person>("tristateFilter", tristateFilter));
+    add(new SimpleFeedbackFormPanel<Person>("tristateSingle", tristateSingle));
 
 
   }
@@ -286,8 +293,8 @@ IStyledChoiceRenderer<Person> {
       return null;
     }
 
-    String optGroup =
-        person.getParent() == null ? null : person.getParent().getName();
+    final String optGroup =
+      person.getParent() == null ? null : person.getParent().getName();
 
     return optGroup;
 
