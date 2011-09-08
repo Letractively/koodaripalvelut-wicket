@@ -13,6 +13,9 @@ public class TristateMultiSelectBehavior extends MultiSelectBehavior {
   @Override
   public void renderHead(final IHeaderResponse response) {
     renderJavascriptReference(response, "jquery.tristate.js");
+    if (isFiltering()) {
+      renderJavascriptReference(response, "jquery.tristateMultiselect.filter.js");
+    }
     renderCSSReference(response, "jquery.tristate.css");
     super.renderHead(response);
   }
@@ -23,18 +26,15 @@ public class TristateMultiSelectBehavior extends MultiSelectBehavior {
   }
 
   @Override
-  protected String getFilterFileName() {
-    return "jquery.tristateMultiselect.filter.js";
-  }
-
-  @Override
   protected String getMultiselectMethodName() {
     return "triStateMultiselect";
   }
 
   @Override
-  protected String getFilterMethodName() {
-    return "tristatemultiselectfilter";
+  protected void appendMethods(final StringBuilder script) {
+    if (isFiltering()) {
+      script.append(".tristatefilter()");
+    }
   }
 
 }

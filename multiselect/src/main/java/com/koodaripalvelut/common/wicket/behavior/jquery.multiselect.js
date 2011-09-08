@@ -463,7 +463,9 @@ $.widget("ech.multiselect", {
         parseInt(m.css('border-right-width'),10)-
         parseInt(m.css('border-left-width'),10);
         
-    m.width( width || this.button.outerWidth() );
+//    alert("window: " + $(window).width() + " button.offset.left: " + this.button.offset().left);
+    m.css('min-width', width || this.button.outerWidth())
+     .css('max-width', Math.max(width || this.button.outerWidth(), $(window).width() - this.button.offset().left - 100));
   },
   
   // move up or down within the menu
@@ -611,6 +613,14 @@ $.widget("ech.multiselect", {
     button.addClass('ui-state-active');
     this._isOpen = true;
     this._trigger('open');
+		
+		{
+	      var filter = this.menu.find('.ui-multiselect-filter input');
+//	      alert('filter=' + filter);
+	      if (filter) {
+	    	filter.focus();
+	      }
+		}
   },
   
   // close the menu

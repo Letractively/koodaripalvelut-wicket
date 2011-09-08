@@ -55,10 +55,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
   public MultiSelectBehavior(final String string) {
     this.noneSelectedKey = string;
   }
-  
-  
-  
-  
+
   /**
    * @see org.apache.wicket.ajax.AbstractDefaultAjaxBehavior#respond(org.apache.wicket.ajax.AjaxRequestTarget)
    */
@@ -75,9 +72,9 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     if (!AbstractChoice.class.isAssignableFrom(getComponent().getClass())) {
       throw new WicketRuntimeException(
           "Error while adding behavior to component ["
-              + getComponent().getPath() + "]. Behavior of type "
-              + this.getClass().getName()
-              + " may not be added to components other than selects.");
+          + getComponent().getPath() + "]. Behavior of type "
+          + this.getClass().getName()
+          + " may not be added to components other than selects.");
     }
     super.onBind();
   }
@@ -133,12 +130,18 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     if (isFiltering()) {//
       script.append(".");
       script.append(getFilterMethodName());
-      script.append("({label: 'Search'})");
-      //      script.append(".multiselectfilter('updateCache')"); is created new?
+      script.append("({label: 'Search', multiselectMethodName: '");
+      script.append(getMultiselectMethodName());
+      script.append("'})");
     }
+    appendMethods(script);
     script.append(";");
-    JavascriptUtils.writeJavascript(getComponent().getResponse(), script.toString());  
-//    getComponent().getResponse().renderOnDomReadyJavascript(script);
+    JavascriptUtils.writeJavascript(getComponent().getResponse(), script.toString());
+    //    getComponent().getResponse().renderOnDomReadyJavascript(script);
+  }
+
+  protected void appendMethods(StringBuilder script) {
+
   }
 
   private String prepareOptions() {
@@ -156,8 +159,8 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     sb.append("}, beforeopen: function() {");
     sb.append(getStateVariable() + getSerializationScript());
     sb.append("}, click: function(event, ui) { if (ui.radio) {} ");
-//    sb.append("$('#" + getComponent().getMarkupId() + "').val(ui.value);"); bug bug
-//    sb.append("$('#" + getComponent().getMarkupId() + "').multiselect('close'); }"); bug bug
+    //    sb.append("$('#" + getComponent().getMarkupId() + "').val(ui.value);"); bug bug
+    //    sb.append("$('#" + getComponent().getMarkupId() + "').multiselect('close'); }"); bug bug
     sb.append("}, uncheckAllText: '");
     sb.append(getComponent().getString("multiselect-uncheck-all-text"));
     sb.append("', noneSelectedText: '");
@@ -202,7 +205,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
   protected String getFilterMethodName() {
     return "multiselectfilter";
   }
-  
+
   /**
    * 
    * @return this

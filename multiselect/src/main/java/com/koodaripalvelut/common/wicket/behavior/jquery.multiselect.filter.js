@@ -13,26 +13,28 @@
  *
 */
 (function($){
-  var rEscape = /[\-\[\]{}()*+?.,\\^$|#\s]/g;
   
   $.widget("ech.multiselectfilter", {
     
     options: {
       label: "Filter:",
       width: null, /* override default width set in css file (px). null will inherit */
-      placeholder: "Enter keywords"
+      placeholder: "Enter keywords",
+      multiselectMethodName: "multiselect"
     },
     
     _create: function(){
       var self = this,
         opts = this.options,
-        instance = (this.instance = $(this.element).data("multiselect")),
+        instance = (this.instance = $(this.element).data(opts.multiselectMethodName)),
         
         // store header; add filter class so the close/check all/uncheck all links can be positioned correctly
         header = (this.header = instance.menu.find(".ui-multiselect-header").addClass("ui-multiselect-hasfilter")),
         
         // wrapper elem
         wrapper = (this.wrapper = $('<div class="ui-multiselect-filter">'+(opts.label.length ? opts.label : '')+'<input placeholder="'+opts.placeholder+'" type="search"' + (/\d/.test(opts.width) ? 'style="width:'+opts.width+'px"' : '') + ' /></div>').prependTo( this.header ));
+      
+      this.rEscape = /[\-\[\]{}()*+?.,\\^$|#\s]/g;
 
       // reference to the actual inputs
       this.inputs = instance.menu.find('input[type="checkbox"], input[type="radio"]');
@@ -52,52 +54,21 @@
       });
       
       // cache input values for searching
-      this.updateCache();
+      this._updateCache();
       
       // rewrite internal _toggleChecked fn so that when checkAll/uncheckAll is fired,
       // only the currently filtered elements are checked
-      instance._toggleChecked = function(flag, group, type){
-        var $inputs = (group && group.length) ?
-            group :
-            this.labels.find('input'),
-          
-          _self = this,
-
-          selector = (type == 'radio') ? '' :
-        	  // do not include hidden elems if the menu isn't open.
-        	  self.instance._isOpen ?
-            ":disabled, :hidden" :
-            ":disabled";
-
-        $inputs = $inputs.not( selector ).each(this._toggleCheckbox('checked', flag));
-        
-        // update text
-        this.update();
-        
-        // figure out which option tags need to be selected
-        var values = $inputs.filter('input[type="checkbox"]').map(function(){
-          return this.value;
-        }).get();
-        
-        // select option tags
-        this.element
-          .find('option')
-          .filter(function(){
-            if( !this.disabled && $.inArray(this.value, values) > -1 ){
-              _self._toggleCheckbox('selected', flag).call( this );
-            }
-          });
-      };
+      instance._toggleChecked = self._toggleChecked;
       
       // rebuild cache when multiselect is updated
       $(document).bind("multiselectrefresh", function(){
-        self.updateCache();
+        self._updateCache();
         self._handler();
       });
     },
     
     // thx for the logic here ben alman
-    _handler: function( e ){
+    handler: function( e ){
       var $this = this;
       var term = $.trim( this.input[0].value.toLowerCase() ),
       
@@ -110,7 +81,7 @@
       } else {
   	    rows.hide();
         
-        var regex = new RegExp(term.replace(rEscape, "\\$&"), 'gi');
+        var regex = new RegExp(term.replace(this.rEscape, "\\$&"), 'gi');
         
         this._trigger( "filter", e, $.map(cache, function(v,i){
           if( v.search(regex) !== -1 ){
@@ -127,6 +98,43 @@
         var $this = $(this);
         $this[ $this.nextUntil('.ui-multiselect-optgroup-label').filter(':visible').length ? 'show' : 'hide' ]();
       });
+    },
+    
+    _handler: function(e) {
+      this.handler(e);
+    },
+    
+    _toggleChecked: function(flag, group, type){
+      var $inputs = (group && group.length) ?
+          group :
+          this.labels.find('input'),
+        
+        _self = this,
+
+        selector = (type == 'radio') ? '' :
+          // do not include hidden elems if the menu isn't open.
+          _self._isOpen ?
+          ":disabled, :hidden" :
+          ":disabled";
+
+      $inputs = $inputs.not( selector ).each(this._toggleCheckbox('checked', flag));
+      
+      // update text
+      this.update();
+      
+      // figure out which option tags need to be selected
+      var values = $inputs.filter('input[type="checkbox"]').map(function(){
+        return this.value;
+      }).get();
+      
+      // select option tags
+      this.element
+        .find('option')
+        .filter(function(){
+          if( !this.disabled && $.inArray(this.value, values) > -1 ){
+            _self._toggleCheckbox('selected', flag).call( this );
+          }
+        });
     },
     
     updateCache: function(){
@@ -151,6 +159,10 @@
           return this.innerHTML.toLowerCase();
         }).get();
       }).get();
+    },
+    
+    _updateCache: function() {
+      this.updateCache();
     },
     
     widget: function(){

@@ -24,7 +24,6 @@
       heading: 'span.label',
       partialClass: 'partial',
       labelClass: 'label',
-      sublist: 'sublist',
       multiple: true,
       showOriginalInputs: false
     };
@@ -38,7 +37,7 @@
           // Add proxy checkbox for each heading
           obj.find(opts.heading).each(function() {
             var $this = $(this),
-            stateAnchor = $('<a href="#" class="checkbox ' + opts.sublist + '">Heading</a>');
+            stateAnchor = $('<a href="#" class="checkbox tristate-node">Heading</a>');
             $this.parent().addClass("node-li");
             $this.before(stateAnchor);
             if($this.children().length > 0) {
@@ -51,7 +50,7 @@
               
               $this.before(span.append(radio).append(anchor));
               
-              $this.wrap('<label class="ui-corner-all tristateMultiselect-label ' + opts.sublist + '"></label>');
+              $this.wrap('<label class="ui-corner-all tristateMultiselect-label tristate-node"></label>');
               
               this.innerHTML = $(optionItem).attr('title');
               
@@ -63,7 +62,7 @@
                 triState.bindLabel(radio, radio.parent().siblings('label'));
               }
             } else {
-              $this.wrap('<label class="node-checkbox ui-corner-all tristateMultiselect-label ' + opts.sublist + ($this.html() == "" ? ' ui-multiselect-empty-label' : '') + '"></label>');
+              $this.wrap('<label class="node-checkbox ui-corner-all tristateMultiselect-label tristate-node' + ($this.html() == "" ? ' ui-multiselect-empty-label' : '') + '"></label>');
               if(opts.multiple) {
                 triState.bindLabel(stateAnchor);
               } else {
@@ -211,6 +210,7 @@
           $radio.attr('id', 'radio-' + $anchor.attr('id'));
           $($anchor.siblings('label')[0]).attr('for', $radio.attr('id'));
           $label.attr('for', $radio.attr('id'));
+          $radio.hide();
           $anchor.hide();
         },
         

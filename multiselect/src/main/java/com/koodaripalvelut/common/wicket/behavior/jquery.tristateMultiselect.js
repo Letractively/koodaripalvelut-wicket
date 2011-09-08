@@ -41,7 +41,6 @@ $.widget("ech.triStateMultiselect", {
     autoOpen: false,
     multiple: true,
     labelClass: 'tristateMultiselect-label',
-    sublistClass: 'sublist', 
     position: {}
   },
 
@@ -89,7 +88,7 @@ $.widget("ech.triStateMultiselect", {
       checkboxContainer = (this.checkboxContainer = $('<ul />'))
         .addClass('ui-multiselect-checkboxes ui-helper-reset triState')
         .appendTo( menu ), 
-      sublistCount;
+        nodeCount;
     
     // perform event bindings
     this._bindEvents();
@@ -348,7 +347,7 @@ $.widget("ech.triStateMultiselect", {
       }
       
       if ( optcontainer == "startOpt" )  {
-    	  this.sublistCount++;
+    	  this.nodeCount++;
     	  title;
     	  if($(this).attr('isItem')) {
     	    title = convertToInput();
@@ -404,7 +403,7 @@ $.widget("ech.triStateMultiselect", {
       } else if( /\d/.test(o.selectedList) && o.selectedList > 0 && numChecked <= o.selectedList){
         value = $checked.map(function(){ return this.title; }).get().join(', ');
       } else {
-        value = o.selectedText.replace('#', numChecked).replace('#', $inputs.length - this.sublistCount);
+        value = o.selectedText.replace('#', numChecked).replace('#', $inputs.length - this.nodeCount);
       }
     }
     
@@ -502,13 +501,13 @@ $.widget("ech.triStateMultiselect", {
             checked: nodes[0].checked
         });
       })
-      .delegate('.' + self.options.sublistClass, 'click.multiselect', function(e){
+      .delegate('.tristate-node', 'click.multiselect', function(e){
     	e.preventDefault();
     	
     	
     	var $this = $(this),
     	  $not_inc = $this.siblings().not('ul').find('.node-item-checkbox');
-    	  $inputs = $this.parent().find('.checkbox:not(.radiobutton)').not($not_inc).not(".sublist").not(".node-item-clone"),
+    	  $inputs = $this.parent().find('.checkbox:not(.radiobutton)').not($not_inc).not(".tristate-node").not(".node-item-clone"),
           tags = self.element.find('option'),
           checked = $inputs.filter('.checked').length === $inputs.length;
     	
@@ -679,7 +678,8 @@ $.widget("ech.triStateMultiselect", {
         parseInt(m.css('border-right-width'),10)-
         parseInt(m.css('border-left-width'),10);
         
-    m.width( width || this.button.outerWidth() );
+    m.css('min-width', width || this.button.outerWidth())
+    .css('max-width', Math.max(width || this.button.outerWidth(), $(window).width() - this.button.offset().left - 100));
   },
   
   // move up or down within the menu
@@ -820,6 +820,14 @@ $.widget("ech.triStateMultiselect", {
     button.addClass('ui-state-active');
     this._isOpen = true;
     this._trigger('open');
+		
+		{
+	      var filter = this.menu.find('.ui-multiselect-filter input');
+//	      alert('filter=' + filter);
+	      if (filter) {
+	    	filter.focus();
+	      }
+		}
   },
   
   // close the menu
