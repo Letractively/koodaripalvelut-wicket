@@ -40,7 +40,6 @@ $.widget("ech.multiselect", {
     autoOpen: false,
     multiple: true,
     optionLength: 0,
-    nullItemLabel: 'null / emptyValue',
     position: {}
   },
 
@@ -133,7 +132,7 @@ $.widget("ech.multiselect", {
     options.each(function( i ){
       var $this = $(this), 
         parent = this.parentNode,
-        title = this.innerHTML == "" ? o.nullItemLabel : this.innerHTML,
+        title = this.innerHTML,
         value = this.value,
         inputID = this.id || 'ui-multiselect-'+id+'-option-'+i, 
         isDisabled = this.disabled,
@@ -168,7 +167,7 @@ $.widget("ech.multiselect", {
       html.push('<li class="listitem ' + (isDisabled ? 'ui-multiselect-disabled' : '') + '">');
       
       // create the label
-      html.push('<label for="'+inputID+'" class="'+labelClasses.join(' ') + (o.multiple ? " item-label" : "") + (!o.multiple ? " multiselect-single" : "") +'">');
+      html.push('<label for="'+inputID+'" class="'+labelClasses.join(' ') + (o.multiple ? " item-label" : " multiselect-single") + (!o.multiple && title == "" ? " ui-multiselect-empty-label": "") + '">');
     	html.push('<input type="radio" id="radio'+inputID+'" name="multiselect_radio" checkbox="'+inputID+ '"/>');
       html.push('<input id="'+inputID+'" name="multiselect_'+id+'" type="checkbox" value="'+value+'" title="'+title+'"');
 
