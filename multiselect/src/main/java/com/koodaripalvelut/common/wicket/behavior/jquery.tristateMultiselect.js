@@ -619,9 +619,6 @@ $.widget("ech.triStateMultiselect", {
             $label = $this.closest('label');
           }
           $label.toggleClass('ui-state-active', checked );
-          
-          // close menu
-          self.close();
         }
         
         // setTimeout is to fix multiselect issue #14 and #47. caused by jQuery issue #3827

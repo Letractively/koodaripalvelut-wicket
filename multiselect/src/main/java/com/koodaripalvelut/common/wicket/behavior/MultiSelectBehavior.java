@@ -84,8 +84,6 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    */
   @Override
   public void renderHead(final IHeaderResponse response) {
-    //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY);
-    //    response.renderJavascriptReference(JavaScriptConstants.JS_JQUERY_UI);
     renderCSSReference(response, "jquery.multiselect.css");
 
     renderJavascriptReference(response, getMultiselectFileName());
@@ -140,24 +138,29 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     //    getComponent().getResponse().renderOnDomReadyJavascript(script);
   }
 
-  protected void appendMethods(StringBuilder script) {
+  protected void appendMethods(final StringBuilder script) {
 
   }
 
   private String prepareOptions() {
+    final String compMarkupId = getComponent().getMarkupId();
     final StringBuilder sb = new StringBuilder("{");
     sb.append("selectedList: " + (noneSelectedKey == null ? "false, selectedText: '', miniButton: true" : "2, miniButton: " + miniButton + ", selectedText: '# " + getComponent().getString("pcs_selected") + "'"));
     sb.append(", minWidth: " + minWidth);
     sb.append(", height: " + height);
     sb.append(", checkAllText: '");
     sb.append(getComponent().getString("multiselect-check-all-text"));
-    sb.append("', close: function() {");
+    sb.append("', beforeclose: function() {");
+    sb.append("  var previous = " + "   $(\"#" + compMarkupId + "\").data('"
+        + getStateVariable() + "');");
     sb.append("  var serialized" + getSerializationScript());
-    sb.append("  if (serialized != " + getStateVariable() + ") {");
-    sb.append("   $(\"#" + getComponent().getMarkupId() + "\").trigger(\"change\");");
+    sb.append("  if (serialized != previous) {");
+    sb.append("   $(\"#" + compMarkupId + "\").trigger(\"change\");");
     sb.append("  }");
     sb.append("}, beforeopen: function() {");
-    sb.append(getStateVariable() + getSerializationScript());
+    sb.append("  var serialized" + getSerializationScript());
+    sb.append("   $(\"#" + compMarkupId + "\").data('" + getStateVariable()
+              + "', serialized);");
     sb.append("}, click: function(event, ui) { if (ui.radio) {} ");
     //    sb.append("$('#" + getComponent().getMarkupId() + "').val(ui.value);"); bug bug
     //    sb.append("$('#" + getComponent().getMarkupId() + "').multiselect('close'); }"); bug bug

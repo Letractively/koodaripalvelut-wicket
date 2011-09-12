@@ -376,9 +376,9 @@ $.widget("ech.multiselect", {
         	self._toggleChecked(false, self.labels.find('input').not(this).not('#' + $this.attr("checkbox")), type);
         	var $targetCheckbox = $this.siblings('input[type="checkbox"]');
         	val = $targetCheckbox.attr('value');
+        	$targetCheckbox.attr('checked', true);
         	multiple = false;
         	self._toggleChecked(true, $targetCheckbox[0] ? $targetCheckbox : $this);
-        	self.close();
         } else {
         	// toggle aria state
           if ($($this.siblings('input[type="radio"]')[0]).attr("checked")) {
@@ -404,8 +404,10 @@ $.widget("ech.multiselect", {
         if( !self.options.multiple ){
           self.labels.find('label').removeClass('ui-state-active');
           $this.closest('label').toggleClass('ui-state-active', checked );
-          
-          // close menu
+        }
+        
+        // close menu
+        if( !self.options.multiple || type == 'radio'){
           self.close();
         }
         

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -106,7 +107,7 @@ public class MultiSelectPage extends BasePage {
           new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
           tristateRenderer);
 
-    single.add(new MultiSelectBehavior().single());
+    single.add(new MultiSelectBehavior().single().filtering());
     multi.add(new MultiSelectBehavior());
     filter.add(new MultiSelectBehavior().filtering());
     tristate.add(new TristateMultiSelectBehavior());
@@ -168,10 +169,20 @@ public class MultiSelectPage extends BasePage {
         @Override
         protected void onSubmit(final AjaxRequestTarget target,
             final Form<?> form) {
-          final String str = choiceComp.getRawInput();
           final Model<T> model =
             new Model((Serializable) choiceComp.getDefaultModelObject());
-          final List list = (ArrayList)model.getObject();
+          rv.setDefaultModel(model);
+          target.addComponent(container);
+        }
+      });
+
+      choiceComp.add(new AjaxFormComponentUpdatingBehavior("onchange") {
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        protected void onUpdate(final AjaxRequestTarget target) {
+          final Model<T> model =
+            new Model((Serializable) choiceComp.getDefaultModelObject());
           rv.setDefaultModel(model);
           target.addComponent(container);
         }
