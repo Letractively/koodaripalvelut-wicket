@@ -86,7 +86,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
   public void renderHead(final IHeaderResponse response) {
     renderCSSReference(response, "jquery.multiselect.css");
 
-    renderJavascriptReference(response, getMultiselectFileName());
+    renderJavascriptReference(response, "jquery.multiselect.js");
 
     if (isFiltering()) {
       renderJavascriptReference(response, getFilterFileName());
@@ -95,7 +95,8 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     }
     {
       // Destroy old widget
-      final String script = "$('#" + getComponent().getMarkupId() + "')." + getMultiselectMethodName() + "('destroy');"; // Replace
+      final String script =
+          "$('#" + getComponent().getMarkupId() + "').multiselect('destroy');"; // Replace
       // previous
       //    script = "$('#" + getComponent().getMarkupId() + "').mouseover(function() {$(this).multiselect('destroy');});"; // Replace previous
       //    JavascriptUtils.writeJavascript(response, script);
@@ -123,14 +124,12 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     super.onComponentRendered();
 
     final StringBuilder script = new StringBuilder("$('#" + getComponent().getMarkupId()
-        + "')." + getMultiselectMethodName() + "("
+        + "').multiselect("
         + prepareOptions() + ")");
     if (isFiltering()) {//
       script.append(".");
       script.append(getFilterMethodName());
-      script.append("({label: 'Search', multiselectMethodName: '");
-      script.append(getMultiselectMethodName());
-      script.append("'})");
+      script.append("({label: 'Search', multiselectMethodName: 'multiselect'})");
     }
     appendMethods(script);
     script.append(";");
@@ -160,7 +159,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     sb.append("}, beforeopen: function() {");
     sb.append("  var serialized" + getSerializationScript());
     sb.append("   $(\"#" + compMarkupId + "\").data('" + getStateVariable()
-              + "', serialized);");
+        + "', serialized);");
     sb.append("}, click: function(event, ui) { if (ui.radio) {} ");
     //    sb.append("$('#" + getComponent().getMarkupId() + "').val(ui.value);"); bug bug
     //    sb.append("$('#" + getComponent().getMarkupId() + "').multiselect('close'); }"); bug bug
@@ -193,16 +192,8 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     return STATE_VARIABLE_PREFIX + getComponent().getMarkupId();
   }
 
-  protected String getMultiselectFileName() {
-    return "jquery.multiselect.js";
-  }
-
   protected String getFilterFileName() {
     return "jquery.multiselect.filter.js";
-  }
-
-  protected String getMultiselectMethodName() {
-    return "multiselect";
   }
 
   protected String getFilterMethodName() {

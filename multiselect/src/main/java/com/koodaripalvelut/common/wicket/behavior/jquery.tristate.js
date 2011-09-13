@@ -70,7 +70,7 @@
               }
               
               if ($this.parent().parent('li').parent('ul').hasClass('triState')) {
-                $this.parent().parent('li').css('background', 'none');
+                $this.parent().parent('li').css('background', 'none').addClass('tristate-root').children('a, label').addClass('tristate-root');
                 if (!opts.multiple) {
                   $this.parent().hide();
                 }

@@ -92,6 +92,10 @@ public class MultiSelectPage extends BasePage {
       new ListMultipleChoice<String>("select",
           new Model<ArrayList<String>>(new ArrayList<String>()), LIST, rend);
 
+    final ListMultipleChoice<String> singleFilter =
+      new ListMultipleChoice<String>("select", new Model<ArrayList<String>>(
+          new ArrayList<String>()), LIST, rend);
+
     final ListMultipleChoiceWithStylingOptions<Person> tristate =
       new ListMultipleChoiceWithStylingOptions("select",
           new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
@@ -107,19 +111,30 @@ public class MultiSelectPage extends BasePage {
           new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
           tristateRenderer);
 
-    single.add(new MultiSelectBehavior().single().filtering());
+    final ListMultipleChoiceWithStylingOptions<Person> tristateSingleFilter =
+      new ListMultipleChoiceWithStylingOptions("select",
+          new Model<ArrayList<Person>>(new ArrayList<Person>()), persons,
+          tristateRenderer);
+
+    single.add(new MultiSelectBehavior().single());
     multi.add(new MultiSelectBehavior());
     filter.add(new MultiSelectBehavior().filtering());
+    singleFilter.add(new MultiSelectBehavior().single().filtering());
     tristate.add(new TristateMultiSelectBehavior());
     tristateFilter.add(new TristateMultiSelectBehavior().filtering());
     tristateSingle.add(new TristateMultiSelectBehavior().single());
+    tristateSingleFilter.add(new TristateMultiSelectBehavior().single()
+        .filtering());
 
     add(new SimpleFeedbackFormPanel<String>("single", single));
     add(new SimpleFeedbackFormPanel<String>("multi", multi));
     add(new SimpleFeedbackFormPanel<String>("filter", filter));
+    add(new SimpleFeedbackFormPanel<String>("singleFilter", singleFilter));
     add(new SimpleFeedbackFormPanel<Person>("tristate", tristate));
     add(new SimpleFeedbackFormPanel<Person>("tristateFilter", tristateFilter));
     add(new SimpleFeedbackFormPanel<Person>("tristateSingle", tristateSingle));
+    add(new SimpleFeedbackFormPanel<Person>("tristateSingleFilter",
+        tristateSingleFilter));
 
 
   }

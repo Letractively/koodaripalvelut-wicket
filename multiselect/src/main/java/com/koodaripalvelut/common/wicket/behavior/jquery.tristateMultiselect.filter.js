@@ -8,13 +8,13 @@
 
     _create : function() {
       
-      instance = (this.instance = $(this.element).data("triStateMultiselect"));
+      instance = (this.instance = $(this.element).data("multiselect"));
 
       var filterInstance = (this.filterInstance = $(this.element).data("multiselectfilter"));
       
       instance._toggleChecked = this._toggleChecked;
       
-      filterInstance.nodes = instance.menu.find('.tristate-node');
+      filterInstance.nodes = instance.menu.find('.tristate-node' + (instance.options.multiple ? '' : ':not(.checkbox, .tristate-root)'));
       filterInstance.nodeItems = instance.menu.find('.node-item-checkbox');
       filterInstance.inputs = instance.menu.find('.element:not(.node-item-clone)');
       filterInstance.handler = this._handler;
@@ -36,7 +36,7 @@
 
         selector = (type == 'radio') ? '' :
           // do not include hidden elems if the menu isn't open.
-          self.instance._isOpen ?
+          _self.isOpen() ?
           ":disabled, :hidden" :
           ":disabled";
 
@@ -91,7 +91,7 @@
             
             function showParents ($el) {
               var $parentList = $el.parent('li').parent('ul');
-              $parentList.parent().children('.tristate-node').show();
+              $parentList.parent().children('.tristate-node' + (this.instance.options.multiple ? '' : ':not(.checkbox, .tristate-root)')).show();
               var $ancestorInput = $parentList.parent('li').children('a.checkbox');
               
               if ($ancestorInput.length > 0) {

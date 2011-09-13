@@ -39,7 +39,6 @@ $.widget("ech.multiselect", {
     hide: '',
     autoOpen: false,
     multiple: true,
-    optionLength: 0,
     position: {}
   },
 
@@ -117,19 +116,17 @@ $.widget("ech.multiselect", {
     }
   },
   
-  refresh: function( init ){
+  refresh: function( init ) {
     var el = this.element,
       o = this.options,
       menu = this.menu,
       checkboxContainer = this.checkboxContainer,
-      options = this.element.find('option');
       optgroups = [],
       html = [],
       id = el.attr('id') || multiselectID++; // unique ID for the label & option tags
     
     // build items
-    o.optionLength = options.length - 1;
-    options.each(function( i ){
+    this.element.find('option').each(function( i ){
       var $this = $(this), 
         parent = this.parentNode,
         title = this.innerHTML,
@@ -140,9 +137,6 @@ $.widget("ech.multiselect", {
         labelClasses = ['ui-corner-all'],
         optLabel;
       
-      if (title == "multiselect-null-acceptance") {
-    	  return;
-      }
       // is this an optgroup?
       if( parent.tagName.toLowerCase() === 'optgroup' ){
         optLabel = parent.getAttribute('label');
@@ -575,7 +569,7 @@ $.widget("ech.multiselect", {
       return;
     }
     
-    var $container = menu.find('ul:last'),
+    var $container = menu.find('.ui-multiselect-checkboxes'),
       effect = o.show,
       pos = button.position();
     
