@@ -7,7 +7,6 @@
   $.widget("ech.triStateMultiselect", {
     
     options: {
-      defaultListLabel: 'sub-list',
       labelClass: 'tristateMultiselect-label',
     },
 
@@ -58,8 +57,9 @@
         html = [],
         result = {},
         parentIdElementMap = {},
-        parentElements = {},
+        parentElements = {}, //Elements that are nodes and item at a time.
         nullOptions = [],
+        nullId = "tristate-multiselect-nullId"
         $this = this,
         id = el.attr('id') || multiselectID++; // unique ID for the label &
                                                 // option tags
@@ -94,8 +94,12 @@
             $(el).addClass("tsp-" + optLabel.replace(/\s/gi, '&nbsp;'));
             return optLabel;
           }
-          return "null";
+          return nullId;
         }
+      }
+      
+      function escapeString(str) {
+        return $("<div/>").html(str).text()
       }
       
       // Organizes options hierarchically
@@ -119,18 +123,30 @@
         }
         
         var optParentId = getParentId(this),
+        escInnerHTML = escapeString(this.innerHTML),
         parent = parentIdElementMap[optParentId];
         
-        if(optParentId == "null") { // belongs to root.
-          parent = parentIdElementMap["null"];
+        
+        if (parentIdElementMap[escInnerHTML] instanceof Array) {//it is an existing node
+          parentElements[escInnerHTML] = this;
+          
+          if (getParentId(this) != nullId && result[escInnerHTML]) {
+            parent.push(result[escInnerHTML]);
+            delete result[escInnerHTML];
+          }
+          
+          return;
+          
+        } else if(optParentId == nullId) { // belongs to root.
+          parent = parentIdElementMap[nullId];
           if (parent == undefined) {
             parent = [];
-            parentIdElementMap["null"] = parent;
+            parentIdElementMap[nullId] = parent;
           }
           
         } else if (parent == undefined) { // Parent is not yet registered.
           
-          var elementsWithNoParent = parentIdElementMap["null"];
+          var elementsWithNoParent = parentIdElementMap[nullId];
           
           if(elementsWithNoParent != undefined) {
             for (var i = 0; i < elementsWithNoParent.length; i++) {
@@ -146,7 +162,7 @@
           result[optParentId] = parent;
           parentIdElementMap[optParentId] = parent;
         } else if (parent instanceof Array) { // parent is registered.
-          parentIdElementMap[this.innerHTML] = this;
+          parentIdElementMap[escInnerHTML] = this;
         } else { // Parent is an exiting option.
           
           var grandParent = parentIdElementMap[getParentId(parent)];
@@ -170,7 +186,7 @@
         
       });
       
-      var elementsWithNoParent = parentIdElementMap["null"];
+      var elementsWithNoParent = parentIdElementMap[nullId];
       
       if(elementsWithNoParent == undefined) {
         elementsWithNoParent = [];
@@ -276,8 +292,6 @@
           title;
           if($(this).attr('isItem')) {
             title = convertToInput();
-          } else {
-            title = (title === "null" ? o.defaultListLabel : title)
           }
           html.push('<li class="title"><span class="heading">' + title + '</span><ul>');
         } else if ( optcontainer == "endOpt" ) {
