@@ -98,10 +98,6 @@
         }
       }
       
-      function escapeString(str) {
-        return $("<div/>").html(str).text()
-      }
-      
       // Organizes options hierarchically
       this.element.find('option').each(function( i ) {
         
@@ -123,7 +119,7 @@
         }
         
         var optParentId = getParentId(this),
-        escInnerHTML = escapeString(this.innerHTML),
+        escInnerHTML = $(this).text(),
         parent = parentIdElementMap[optParentId];
         
         
