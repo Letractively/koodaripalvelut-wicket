@@ -14,7 +14,7 @@
       
       instance._toggleChecked = this._toggleChecked;
       
-      filterInstance.nodes = instance.menu.find('.tristate-node' + (instance.options.multiple ? '' : ':not(.checkbox, .tristate-root)'));
+      filterInstance.nodes = instance.menu.find('.tristate-node:not(.tristate-root' + (instance.options.multiple ? ')' : ', .checkbox)'));
       filterInstance.nodeItems = instance.menu.find('.node-item-checkbox');
       filterInstance.inputs = instance.menu.find('.element:not(.node-item-clone)');
       filterInstance.handler = this._handler;
@@ -91,7 +91,7 @@
             
             function showParents ($el) {
               var $parentList = $el.parent('li').parent('ul');
-              $parentList.parent().children('.tristate-node' + (this.instance.options.multiple ? '' : ':not(.checkbox, .tristate-root)')).show();
+              $parentList.parent().children('.tristate-node:not(.tristate-root' + (this.instance.options.multiple ? ')' : ', .checkbox)')).show();
               var $ancestorInput = $parentList.parent('li').children('a.checkbox');
               
               if ($ancestorInput.length > 0) {

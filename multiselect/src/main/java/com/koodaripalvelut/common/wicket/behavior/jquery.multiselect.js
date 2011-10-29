@@ -82,7 +82,7 @@ $.widget("ech.multiselect", {
             return '';
           }
         })
-        .append('<li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span class="ui-icon ui-icon-circle-close"></span></a></li>')
+        .append('<li class="ui-multiselect-close"><a href="#" class="ui-multiselect-close"><span style="padding-left: 25px; padding-right: 7px;" class="ui-icon ui-icon-circle-check">Ok</span></a></li>')
         .appendTo( header ),
       
       checkboxContainer = (this.checkboxContainer = $('<ul />'))
@@ -162,7 +162,7 @@ $.widget("ech.multiselect", {
       
       // create the label
       html.push('<label for="'+inputID+'" class="'+labelClasses.join(' ') + (o.multiple ? " item-label" : " multiselect-single") + (!o.multiple && title == "" ? " ui-multiselect-empty-label": "") + '">');
-    	html.push('<input type="radio" id="radio'+inputID+'" name="multiselect_radio" checkbox="'+inputID+ '"/>');
+      html.push('<input type="radio" id="radio'+inputID+'" name="multiselect_radio" checkbox="'+inputID+ '"/> ');
       html.push('<input id="'+inputID+'" name="multiselect_'+id+'" type="checkbox" value="'+value+'" title="'+title+'"');
 
       // pre-selected?
@@ -188,8 +188,6 @@ $.widget("ech.multiselect", {
       var $this = $(this),
           $checkbox = $($this.children('input[type="checkbox"]')[0]),
           $radio = $($this.children('input[type="radio"]')[0]);
-      $checkbox.hide();
-      $radio.hide();
       $this.attr('for', $radio.attr('id'));
     });
 

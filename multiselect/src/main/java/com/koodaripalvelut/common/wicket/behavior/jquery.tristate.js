@@ -70,10 +70,8 @@
               }
               
               if ($this.parent().parent('li').parent('ul').hasClass('triState')) {
-                $this.parent().parent('li').css('background', 'none').addClass('tristate-root').children('a, label').addClass('tristate-root');
-                if (!opts.multiple) {
-                  $this.parent().hide();
-                }
+                $this.parent().parent('li').css('background', 'none').addClass('tristate-root').children('a, label').addClass('tristate-root').hide();
+                $this.parent().hide();
               }
             }
           });
@@ -210,8 +208,6 @@
           $radio.attr('id', 'radio-' + $anchor.attr('id'));
           $($anchor.siblings('label')[0]).attr('for', $radio.attr('id'));
           $label.attr('for', $radio.attr('id'));
-          $radio.hide();
-          $anchor.hide();
         },
         
         convertToAnchor: function ($el, classes) {

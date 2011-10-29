@@ -101,6 +101,71 @@
       // Organizes options hierarchically
       this.element.find('option').each(function( i ) {
         
+        function createParent(optParentId) {
+          
+          var parent = {};
+          
+          //set parent in root node.
+          result[optParentId] = parent;
+          
+          parentIdElementMap[optParentId] = parent;
+          
+          return parent;
+        }
+        
+        function convertObjectToParent(obj) {
+          
+          function copyClasses(fromObj, toObj) {
+            
+            var classStr = $(fromObj).attr('class');
+            
+            if (classStr != undefined) {
+              
+              var elClasses = classStr.split(" ");
+              
+              for (i=0; i <  elClasses.length; i++) {
+                
+                var clazz = elClasses[i];
+                
+                if (clazz != nullId) {
+                  $(toObj).addClass(elClasses[i]);
+                }
+              }
+              
+            }
+          }
+          
+          parentElements[optParentId] = obj;
+          
+          parent = {};
+          copyClasses(obj, parent);
+          parentIdElementMap[optParentId] = parent;
+          
+          //set the object as an array inside its grandParent.
+          var grandParentId = getParentId(obj);
+          var grandParent = parentIdElementMap[grandParentId];
+          for (key in grandParent) {
+            if (grandParent[key] == obj) {
+              if (grandParentId == nullId) {
+                result[key] = parent;
+                delete grandParent[key];
+              } else {
+                grandParent[key] = parent;
+              }
+              break;
+            }
+          }
+          
+//          var elementsWithNoParent = parentIdElementMap[nullId];
+//          var obj = elementsWithNoParent[optParentId];
+//          if (obj != undefined) {
+//            result[optParentId] = obj;
+//            delete elementsWithNoParent[optParentId];
+//          }
+          
+          return parent;
+        }
+        
         // Generate random string for id's
         var chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz";
         var randomstring = '';
@@ -119,16 +184,25 @@
         }
         
         var optParentId = getParentId(this),
-        escInnerHTML = $(this).text(),
+        title = $(this).text(),
         parent = parentIdElementMap[optParentId];
         
-        
-        if (parentIdElementMap[escInnerHTML] instanceof Array) {//it is an existing node
-          parentElements[escInnerHTML] = this;
+        if (!(parentIdElementMap[title] == undefined 
+            || parentIdElementMap[title] instanceof HTMLOptionElement)) {//it is an existing node
+          parentElements[title] = this;
           
-          if (getParentId(this) != nullId && result[escInnerHTML]) {
-            parent.push(result[escInnerHTML]);
-            delete result[escInnerHTML];
+          if (getParentId(this) != nullId && result[title]) {
+            
+            if (parent == undefined) {
+              parent = createParent(optParentId);
+            } else if (parent instanceof HTMLOptionElement) {
+              parent = convertObjectToParent(parent);
+            }
+            
+            parent[title] = result[title];
+            delete result[title];
+            
+            parentIdElementMap[title] = this;
           }
           
           return;
@@ -136,49 +210,19 @@
         } else if(optParentId == nullId) { // belongs to root.
           parent = parentIdElementMap[nullId];
           if (parent == undefined) {
-            parent = [];
+            parent = {};
             parentIdElementMap[nullId] = parent;
           }
           
         } else if (parent == undefined) { // Parent is not yet registered.
-          
-          var elementsWithNoParent = parentIdElementMap[nullId];
-          
-          if(elementsWithNoParent != undefined) {
-            for (var i = 0; i < elementsWithNoParent.length; i++) {
-              if (elementsWithNoParent[i].innerHTML == optParentId) {
-                parentElements[optParentId] = elementsWithNoParent[i];
-                elementsWithNoParent.splice(i, 1);
-                break;
-              }
-            }
-          }
-          
-          parent = [];
-          result[optParentId] = parent;
-          parentIdElementMap[optParentId] = parent;
-        } else if (parent instanceof Array) { // parent is registered.
-          parentIdElementMap[escInnerHTML] = this;
-        } else { // Parent is an exiting option.
-          
-          var grandParent = parentIdElementMap[getParentId(parent)];
-          
-          var obj = parent;
-          parentElements[optParentId] = obj;
-          
-          parent = [];
-          parentIdElementMap[optParentId] = parent;
-          
-          for (var i = 0; i < grandParent.length; i++) {
-            if (grandParent[i] == obj) {
-              grandParent[i] = parent;
-              break;
-            }
-          }
+          parent = createParent(optParentId);
+        } else if (parent instanceof HTMLOptionElement) { // Parent is an exiting option.
+          parent = convertObjectToParent(parent);
         }
         
+        parentIdElementMap[title] = this;
         // add option to its parent.
-        parent.push(this);
+        parent[title] = this;
         
       });
       
@@ -193,30 +237,34 @@
         elementsWithNoParent = nullOptions.concat(elementsWithNoParent);
       }
       
-      function flat( arr ) {
+      function flat( arr, label ) {
         var array = [];
         var startOpt = document.createElement('OPTION');
         $(startOpt).attr('optcontainer', 'startOpt');
+        
+        if (label != undefined) {
+          startOpt.innerHTML = label;
+        }
         
         array.push(startOpt);
         
         // set root elements to top most.
         if (elementsWithNoParent != undefined) {
-          for(i=0; i <  elementsWithNoParent.length; i++) {
-            array.push(elementsWithNoParent[i]);
+          for (key in elementsWithNoParent) {
+            array.push(elementsWithNoParent[key]);
           }
-          elementsWithNoParent = undefined;
+          elementsWithNoParent = undefined; 
         }
         
         for (keyVar in arr) {
           var obj = arr[keyVar];
-          if (obj instanceof Array) {
-            array = array.concat(flat(obj));
-          } else {
+          if (obj instanceof HTMLOptionElement) {
             array.push(obj);
             if (startOpt.innerHTML == "") {
               startOpt.innerHTML = getParentId(obj);
             }
+          } else {
+            array = array.concat(flat(obj, keyVar));
           }
         }
         var endOpt = document.createElement('OPTION');
@@ -402,9 +450,7 @@
               par = par.parent();
             }
             
-            if(!self.instance.options.multiple) {
-              $(this).before($('<span style="float: left;">&nbsp;</span>'));
-            }
+            $(this).before($('<span style="float: left;">&nbsp;</span>'));
             
             $(this).css('margin-left',(-20 * i) + "px");
             

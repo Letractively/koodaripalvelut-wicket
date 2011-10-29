@@ -43,3 +43,5 @@ ul.triState li li { padding: 0 0 0 21px; }
 ul.triState a {border: thick;}
 ul.triState li{ background: url(noexpanded.png) 7px center no-repeat; }
 ul.triState li.title{ background: url(noexpanded.png) 7px 10px no-repeat; }
+
+.ui-multiselect-single .ui-multiselect-checkboxes a { position:absolute !important; top: auto !important; left:-9999px; }
