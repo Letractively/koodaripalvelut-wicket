@@ -137,7 +137,7 @@
           
           parentElements[optParentId] = obj;
           
-          parent = {};
+          var parent = {};
           copyClasses(obj, parent);
           parentIdElementMap[optParentId] = parent;
           
@@ -145,7 +145,10 @@
           var grandParentId = getParentId(obj);
           var grandParent = parentIdElementMap[grandParentId];
           for (key in grandParent) {
-            if (grandParent[key] == obj) {
+            if (grandParent instanceof HTMLOptionElement) {
+              grandParent = convertObjectToParent(grandParent);
+              grandParent[grandParentId] = parent;
+            } else if (grandParent[key] == obj) {
               if (grandParentId == nullId) {
                 result[key] = parent;
                 delete grandParent[key];
@@ -155,13 +158,6 @@
               break;
             }
           }
-          
-//          var elementsWithNoParent = parentIdElementMap[nullId];
-//          var obj = elementsWithNoParent[optParentId];
-//          if (obj != undefined) {
-//            result[optParentId] = obj;
-//            delete elementsWithNoParent[optParentId];
-//          }
           
           return parent;
         }
@@ -237,6 +233,7 @@
         elementsWithNoParent = nullOptions.concat(elementsWithNoParent);
       }
       
+      //TODO - Find a way to build items in this method.
       function flat( arr, label ) {
         var array = [];
         var startOpt = document.createElement('OPTION');

@@ -226,27 +226,43 @@ public class MultiSelectPage extends BasePage {
     return persons;
   }
 
-  private List<Person> createPersons(final Person person1) {
+  private List<Person> createPersons(final Person parent) {
 
     final List<Person> list = new ArrayList<Person>();
 
-    list.add(createPerson("First", person1));
+    list.add(createPerson("First", parent));
 
-    final Person person2 = createPerson("Second", person1);
+    final Person personSecond = createPerson("Second", parent);
+    list.add(personSecond);
 
-    list.add(createPerson("Third", person1));
+    list.add(createPerson("Third", parent));
 
-    final Person person3 = createPerson("Fourth", person1);
-    list.add(person3);
+    final Person personFourth = createPerson("Fourth", parent);
+    list.add(personFourth);
 
     for (final String name : Arrays.asList(new String[] { "I", "II" })) {
-      final Person pers1 = createPerson(name, person2);
-      final Person pers2 = createPerson(name, person3);
-      list.add(pers1);
-      list.add(pers2);
+      final Person personI = createPerson(name, personSecond);
+      final Person personII = createPerson(name, personFourth);
+      list.add(personI);
+      list.add(personII);
       for (final String name2 : Arrays.asList(new String[] { "1", "2" })) {
-        list.add(createPerson(name2, pers1));
-        list.add(createPerson(name2, pers2));
+        final Person person1 = createPerson(name2, personI);
+        final Person person2 = createPerson(name2, personII);
+        list.add(person1);
+        list.add(person2);
+        for (final String name3 : Arrays.asList(new String[] { "A", "B" })) {
+          final Person personA = createPerson(name3, person1);
+          final Person personB = createPerson(name3, person2);
+          list.add(personA);
+          list.add(personB);
+          for (final String name4 : Arrays
+              .asList(new String[] { "0001", "0010" })) {
+            final Person person0001 = createPerson(name4, personA);
+            final Person person0010 = createPerson(name4, personB);
+            list.add(person0001);
+            list.add(person0010);
+          }
+        }
       }
     }
     return list;
@@ -256,17 +272,17 @@ public class MultiSelectPage extends BasePage {
     return createPerson(name, null);
   }
 
-  private Person createPerson(final String name, final Person person1) {
+  private Person createPerson(final String name, final Person parent) {
 
     final Person person2 = new Person();
 
     String pName = "";
-    if (person1 != null) {
-      pName = person1.getName() + " - ";
+    if (parent != null) {
+      pName = parent.getName() + " - ";
     }
 
     person2.setName(pName + name);
-    person2.setParent(person1);
+    person2.setParent(parent);
 
     return person2;
   }
