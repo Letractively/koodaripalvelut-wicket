@@ -9,10 +9,11 @@ import java.util.Map;
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.AbstractChoice;
-import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
-import org.apache.wicket.util.template.PackagedTextTemplate;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.util.template.PackageTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
 
 /**
@@ -22,7 +23,7 @@ import org.apache.wicket.util.template.TextTemplate;
  * @author cencarnacion@kitsd.com
  * @author rhansen@kitsd.com
  */
-public class ChoiceSearchBoxBehavior extends AbstractBehavior {
+public class ChoiceSearchBoxBehavior extends Behavior {
 
   /**
    * The position enum lists possible positioning for the
@@ -54,6 +55,7 @@ public class ChoiceSearchBoxBehavior extends AbstractBehavior {
   public static final String PARAM_CLEAR_LABEL = "ChoiceSearchClearLabel";
   public static final String PARAM_SUFFIX = "suffix";
   public static final String PARAM_PREFIX = "prefix";
+  public static final String PARAM_SELECTED_INDEX = "selectedIndex";
 
   private static final long serialVersionUID = 1L;
   private static final String DEFAULT_SCRIPT_PREFIX = "search-box";
@@ -61,6 +63,7 @@ public class ChoiceSearchBoxBehavior extends AbstractBehavior {
   private static final String DEFAULT_AUTOREMOVE = "true";
   private static final String DEFAULT_SEARCH_LABEL = "Search";
   private static final String DEFAULT_CLEAR_LABEL = "Clear";
+  private static final String DEFAULT_SELECTED_INDEX = "-1";
 
   private Component component;
 
@@ -117,16 +120,16 @@ public class ChoiceSearchBoxBehavior extends AbstractBehavior {
    * @see AbstractBehavior#renderHead(IHeaderResponse)
    */
   @Override
-  public void renderHead(final IHeaderResponse response) {
+  public void renderHead(final Component component, final IHeaderResponse response) {
     final TextTemplate searchBoxJs =
-        new PackagedTextTemplate(ChoiceSearchBoxBehavior.class,
-            getScriptPrefix() + "-init.js");
+        new PackageTextTemplate(ChoiceSearchBoxBehavior.class,
+          getScriptPrefix() + "-init.js");
     final Map<String, Object> variables = new HashMap<String, Object>();
 
     setOptions(variables);
-    response.renderJavascriptReference(new JavascriptResourceReference(
+    response.renderJavaScriptReference(new JavaScriptResourceReference(
         ChoiceSearchBoxBehavior.class, getScriptPrefix() + ".js"));
-    response.renderOnDomReadyJavascript(searchBoxJs.asString(variables));
+    response.renderOnDomReadyJavaScript(searchBoxJs.asString(variables));
   }
 
   /**
@@ -157,6 +160,7 @@ public class ChoiceSearchBoxBehavior extends AbstractBehavior {
         DEFAULT_CLEAR_LABEL));
     params.put(PARAM_PREFIX, getPrefix());
     params.put(PARAM_SUFFIX, getSuffix());
+    params.put(PARAM_SELECTED_INDEX, DEFAULT_SELECTED_INDEX);
   }
 
   /**
@@ -175,7 +179,7 @@ public class ChoiceSearchBoxBehavior extends AbstractBehavior {
   private void asssertComponentType() throws WicketRuntimeException {
     if (!(component instanceof AbstractChoice<?, ?>)) {
       throw new WicketRuntimeException(
-          "This behavior only support instances of AbstractChoice components.");
+      "This behavior only support instances of AbstractChoice components.");
     }
   }
 
@@ -187,7 +191,7 @@ public class ChoiceSearchBoxBehavior extends AbstractBehavior {
   private void assertUniqueComponent() throws WicketRuntimeException {
     if (component != null) {
       throw new WicketRuntimeException(
-          "This behavior can be added to one component only.");
+      "This behavior can be added to one component only.");
     }
   }
 

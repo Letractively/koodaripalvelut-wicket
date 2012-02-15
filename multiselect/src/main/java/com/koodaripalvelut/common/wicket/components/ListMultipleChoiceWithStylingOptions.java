@@ -179,7 +179,7 @@ public class ListMultipleChoiceWithStylingOptions<T> extends ListMultipleChoice<
    * @see org.apache.wicket.markup.html.form.AbstractChoice#onComponentTagBody(org.apache.wicket.markup.MarkupStream, org.apache.wicket.markup.ComponentTag)
    */
   @Override
-  protected void onComponentTagBody(MarkupStream markupStream,
+  public void onComponentTagBody(MarkupStream markupStream,
       ComponentTag openTag) {
     previouslyAppendedOptGroupLabel = null;
     choices = getChoices().size();

@@ -189,6 +189,10 @@ public class MultiSelectPage extends BasePage {
           rv.setDefaultModel(model);
           target.addComponent(container);
         }
+
+        @Override
+        protected void onError(final AjaxRequestTarget target, final Form<?> form) {
+        }
       });
 
       choiceComp.add(new AjaxFormComponentUpdatingBehavior("onchange") {

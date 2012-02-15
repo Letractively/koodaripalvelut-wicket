@@ -6,11 +6,11 @@ import static com.koodaripalvelut.common.wicket.component.fullcalendar.FullCalen
 
 import java.util.Collection;
 
-import org.apache.wicket.Request;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.behavior.AbstractAjaxBehavior;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.target.basic.StringRequestTarget;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.handler.TextRequestHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +41,10 @@ public class CalendarFeedEvent extends AbstractAjaxBehavior {
     try {
       if (eventModel instanceof IEventFeedModel) {
         final Request request = RequestCycle.get().getRequest();
-        final Long start = Long.parseLong(request.getParameter(START_DATE));
-        final Long end = Long.parseLong(request.getParameter(END_DATE));
+        final Long start = Long.parseLong(request.getRequestParameters()
+            .getParameterValue(START_DATE).toString());
+        final Long end = Long.parseLong(request.getRequestParameters()
+            .getParameterValue(END_DATE).toString());
         ((IEventFeedModel) eventModel).setIntervalFilter(
             fromJavascriptTimestamp(start), fromJavascriptTimestamp(end));
       }
@@ -50,8 +52,8 @@ public class CalendarFeedEvent extends AbstractAjaxBehavior {
       LOG.error("error parsing event filter dates", nfe);
     }
 
-    RequestCycle.get().setRequestTarget(
-        new StringRequestTarget(GSON.toJson(eventModel.getObject(),
+    RequestCycle.get().scheduleRequestHandlerAfterCurrent(
+        new TextRequestHandler(GSON.toJson(eventModel.getObject(),
                                 EVENT_COLLECTION_TYPE)));
   }
 

@@ -1,13 +1,14 @@
 package com.koodaripalvelut.common.wicket.behavior;
 
-import org.apache.wicket.ResourceReference;
+import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.form.AbstractChoice;
 import org.apache.wicket.markup.html.form.ListMultipleChoice;
-import org.apache.wicket.util.string.JavascriptUtils;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.util.string.JavaScriptUtils;
 
 /**
  * Multi select behavior for wicket {@link ListMultipleChoice} component. Its
@@ -83,7 +84,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
    * @see org.apache.wicket.ajax.AbstractDefaultAjaxBehavior#renderHead(org.apache.wicket.markup.html.IHeaderResponse)
    */
   @Override
-  public void renderHead(final IHeaderResponse response) {
+  public void renderHead(final Component component, final IHeaderResponse response) {
     renderCSSReference(response, "jquery.multiselect.css");
 
     renderJavascriptReference(response, "jquery.multiselect.js");
@@ -100,19 +101,19 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
       // previous
       //    script = "$('#" + getComponent().getMarkupId() + "').mouseover(function() {$(this).multiselect('destroy');});"; // Replace previous
       //    JavascriptUtils.writeJavascript(response, script);
-      response.renderJavascript(script, null);
+      response.renderJavaScript(script, null);
     }
   }
 
   protected void renderJavascriptReference(final IHeaderResponse response,
       final String fileName) {
-    response.renderJavascriptReference(new ResourceReference(
+    response.renderJavaScriptReference(new PackageResourceReference(
         MultiSelectBehavior.class, fileName));
   }
 
   protected void renderCSSReference(final IHeaderResponse response,
       final String fileName) {
-    response.renderCSSReference(new ResourceReference(
+    response.renderCSSReference(new PackageResourceReference(
         MultiSelectBehavior.class, fileName));
   }
 
@@ -133,7 +134,7 @@ public class MultiSelectBehavior extends AbstractDefaultAjaxBehavior {
     }
     appendMethods(script);
     script.append(";");
-    JavascriptUtils.writeJavascript(getComponent().getResponse(), script.toString());
+    JavaScriptUtils.writeJavaScript(getComponent().getResponse(), script.toString());
     //    getComponent().getResponse().renderOnDomReadyJavascript(script);
   }
 

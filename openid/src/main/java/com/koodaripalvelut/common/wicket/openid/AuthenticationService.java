@@ -2,7 +2,7 @@ package com.koodaripalvelut.common.wicket.openid;
 
 import java.io.Serializable;
 
-import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.request.http.WebRequest;
 
 import com.koodaripalvelut.common.wicket.openid.info.Info;
 

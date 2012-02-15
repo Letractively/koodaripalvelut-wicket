@@ -1,13 +1,13 @@
 package com.koodaripalvelut.common.wicket.webtest;
 
-import org.apache.wicket.Request;
-import org.apache.wicket.Response;
 import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.HttpSessionStore;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.request.target.coding.IndexedParamUrlCodingStrategy;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.Response;
+import org.apache.wicket.session.HttpSessionStore;
 import org.apache.wicket.session.ISessionStore;
-import org.apache.wicket.util.lang.PackageName;
+import org.apache.wicket.util.IProvider;
+import org.apache.wicket.util.time.Duration;
 
 import com.koodaripalvelut.common.wicket.webtest.changedetector.ChangeDetectorPage;
 import com.koodaripalvelut.common.wicket.webtest.fullcalendar.FullCalendarPage;
@@ -29,21 +29,23 @@ public class WebApplicationTest extends WebApplication {
   @Override
   protected void init() {
     super.init();
-    getResourceSettings().setResourcePollFrequency(null);
-    getResourceSettings().setDefaultCacheDuration(3);
-    mount(new IndexedParamUrlCodingStrategy("searchBox", SearchBoxPage.class));
-    mount(new IndexedParamUrlCodingStrategy("changeDetector", ChangeDetectorPage.class));
-    mount(new IndexedParamUrlCodingStrategy("calendar", FullCalendarPage.class));
-    mount(new IndexedParamUrlCodingStrategy("dropable", DropablePage.class));
-    mount(new IndexedParamUrlCodingStrategy("nestedModalWindow", MultiModalPage.class));
-    mount(new IndexedParamUrlCodingStrategy("openID", InfoPage.class));
-    mount(new IndexedParamUrlCodingStrategy("multiSelect", MultiSelectPage.class));
-    mount(PATH, PackageName.forClass(ResultPage.class));
-  }
+    setSessionStoreProvider(new IProvider<ISessionStore>() {
 
-  @Override
-  protected ISessionStore newSessionStore() {
-    return new HttpSessionStore(this);
+      @Override
+      public ISessionStore get() {
+        return new HttpSessionStore();
+      }
+    });
+    getResourceSettings().setResourcePollFrequency(null);
+    getResourceSettings().setDefaultCacheDuration(Duration.seconds(3));
+    mountPage("searchBox", SearchBoxPage.class);
+    mountPage("changeDetector", ChangeDetectorPage.class);
+    mountPage("calendar", FullCalendarPage.class);
+    mountPage("dropable", DropablePage.class);
+    mountPage("nestedModalWindow", MultiModalPage.class);
+    mountPage("openID", InfoPage.class);
+    mountPage("multiSelect", MultiSelectPage.class);
+    mountPackage(PATH, ResultPage.class);
   }
 
   @Override

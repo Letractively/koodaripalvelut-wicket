@@ -32,7 +32,7 @@ function searchBoxCreateFix(html) {
 }
 
 searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
-		classPrefix, searchLabel, clearLabel, prefix, suffix) {
+		classPrefix, searchLabel, clearLabel, prefix, suffix, selectedIndex) {
 
 	var select = document.getElementById(selectId);
 	var allValues = searchBoxCloneObject(select.options);
@@ -51,15 +51,33 @@ searchBoxInit = function(selectId, regexFlags, autoremove, position, mode,
     var re = new RegExp(searchField.value, regexFlags);
     var i = 0;
     var updateValue = false;
+    var selectedExists = false;
     select.options.length = 0;
     for (var j = 0; j < allValues.length; j++) {
-      if (re.test(allValues[j].text)) {
+      var isSelected = allValues[j].selected == true;
+      if (re.test(allValues[j].text)) { 
         select.options[i++] = allValues[j];
       } else if (autoremove === 'true') {
-        if (allValues[j].selected == true)
+        if (isSelected)
           updateValue = true;
         allValues[j].selected = false;
+        isSelected = false;
       }
+        
+      if (isSelected) {
+        selectedExists = true;
+      }
+    }
+    
+    
+    if (select.options.length > selectedIndex
+        && !selectedExists
+        && selectedIndex >= 0 
+        && select.options[selectedIndex].selected == false) {
+      
+      select.options[selectedIndex].selected = true;
+      updateValue = true;
+      
     }
 
     // make sure the change is correctly associated and correctly notified

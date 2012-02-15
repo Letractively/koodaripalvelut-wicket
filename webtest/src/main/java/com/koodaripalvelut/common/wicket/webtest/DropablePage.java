@@ -5,8 +5,6 @@ import static org.apache.wicket.model.Model.of;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.PageParameters;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -18,6 +16,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 //import com.koodaripalvelut.common.wicket.dropable.Droppable;
 //import com.koodaripalvelut.common.wicket.dropable.MultiDraggable;
@@ -115,9 +114,13 @@ public class DropablePage extends BasePage {
       protected void onSubmit(final AjaxRequestTarget target, final Form<?> f) {
         final int size = dragList.size();
         dragList.add("Drag[" + size + "]");
-        target.addComponent(container);
+        target.add(container);
         DropablePage.this.info("Element #" + size + " added successfully..!");
         target.addChildren(getPage(), FeedbackPanel.class);
+      }
+
+      @Override
+      protected void onError(final AjaxRequestTarget target, final Form<?> form) {
       }
     }));
   }

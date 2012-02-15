@@ -9,14 +9,16 @@
  */
 package com.koodaripalvelut.common.wicket.openid.provider.openid;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
-import org.apache.wicket.PageParameters;
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
 import org.apache.wicket.WicketRuntimeException;
-import org.apache.wicket.request.target.basic.RedirectRequestTarget;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.handler.RedirectRequestHandler;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.lang.PropertyResolver;
 import org.openid4java.consumer.ConsumerException;
 import org.openid4java.consumer.ConsumerManager;
@@ -240,8 +242,7 @@ public class OpenIDProvider extends AbstractProvider<OpenIDProvider> {
    *         sure your Default profile is completely filled out.
    */
   public Info processReturn(final DiscoveryInformation discoveryInfo,
-      final ConsumerManager manager,
-      final ParameterList params) {
+      final ConsumerManager manager, final ParameterList params) {
     try {
       final VerificationResult verificationResult =
         manager.verify(returnUrl, params, discoveryInfo);
@@ -262,8 +263,12 @@ public class OpenIDProvider extends AbstractProvider<OpenIDProvider> {
   public Info processReturn(final DiscoveryInformation discoveryInfo,
       final ConsumerManager manager,
       final PageParameters params) {
-    return processReturn(discoveryInfo, manager, new ParameterList(
-        params));
+    final Map<String, String> map = new HashMap<String, String>();
+    for (final String key : params.getNamedKeys()) {
+      map.put(key, params.get(key).toString());
+    }
+
+    return processReturn(discoveryInfo, manager, new ParameterList(map));
   }
 
   private Info fillRegistrationModel(
@@ -308,8 +313,8 @@ public class OpenIDProvider extends AbstractProvider<OpenIDProvider> {
   public void startAuthentication(final String returnUrl) {
     this.returnUrl = returnUrl;
     final AuthRequest authReq = getOpenIDAuthRequest(returnUrl);
-    RequestCycle.get().setRequestTarget(
-        new RedirectRequestTarget(authReq.getDestinationUrl(true)));
+    RequestCycle.get().scheduleRequestHandlerAfterCurrent(
+        new RedirectRequestHandler(authReq.getDestinationUrl(true)));
     final AuthenticationSession session = (AuthenticationSession) Session.get();
     session.setAuthProvider(this);
   }

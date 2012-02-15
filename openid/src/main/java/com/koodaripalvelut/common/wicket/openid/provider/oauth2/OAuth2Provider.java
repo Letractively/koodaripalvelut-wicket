@@ -25,9 +25,9 @@ import net.smartam.leeloo.common.exception.OAuthProblemException;
 import net.smartam.leeloo.common.exception.OAuthSystemException;
 import net.smartam.leeloo.common.message.types.GrantType;
 
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
-import org.apache.wicket.request.target.basic.RedirectRequestTarget;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.handler.RedirectRequestHandler;
 import org.apache.wicket.util.lang.PropertyResolver;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -101,8 +101,7 @@ public class OAuth2Provider extends AbstractOAuthProvider<OAuth2Provider> {
         .setScope(scope)
         .buildQueryMessage();
 
-      RequestCycle.get().setRequestTarget(
-          new RedirectRequestTarget(request.getLocationUri()));
+      RequestCycle.get().scheduleRequestHandlerAfterCurrent(new RedirectRequestHandler(request.getLocationUri()));
 
       final AuthenticationSession session = (AuthenticationSession) Session.get();
       session.setAuthProvider(this);

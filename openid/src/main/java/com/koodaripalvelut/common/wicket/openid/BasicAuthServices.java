@@ -1,10 +1,13 @@
 package com.koodaripalvelut.common.wicket.openid;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.request.IRequestParameters;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.util.string.StringValue;
 import org.codehaus.jettison.json.JSONException;
 import org.openid4java.consumer.ConsumerManager;
 import org.openid4java.discovery.DiscoveryInformation;
@@ -34,8 +37,15 @@ public enum BasicAuthServices implements AuthenticationService {
         provider.getDiscoveryInformation();
       final ConsumerManager manager = OpenIDProvider.getConsumerManager();
 
-      final Map<String, String[]> map = request.getParameterMap();
-      map.put("openid.ax.mode", new String[] { "fetch_response" });
+      final Map<String, StringValue> map = new HashMap<String, StringValue>();
+      
+      final IRequestParameters reqParms = request.getRequestParameters();
+      
+      for (final String key : reqParms.getParameterNames()) {
+        map.put(key, reqParms.getParameterValue(key));
+      }
+      
+      map.put("openid.ax.mode", StringValue.valueOf("fetch_response"));
 
       final ParameterList params = new ParameterList(map);
 
@@ -75,7 +85,7 @@ public enum BasicAuthServices implements AuthenticationService {
     @Override
     public Info loadInfo(final WebRequest req,
         final AuthenticationSession session) {
-      final HttpServletRequest request = req.getHttpServletRequest();
+      final HttpServletRequest request = (HttpServletRequest) req.getContainerRequest();
       final OAuth2Provider provider = (OAuth2Provider) session.getAuthProvider();
       Info info = null;
       String accessToken = null;

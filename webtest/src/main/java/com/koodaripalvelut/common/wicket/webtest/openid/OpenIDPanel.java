@@ -13,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -22,6 +24,8 @@ import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.markup.repeater.data.ListDataProvider;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.RequestUtils;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
 
 import com.koodaripalvelut.common.wicket.openid.AuthenticationProvider;
 import com.koodaripalvelut.common.wicket.openid.info.Info;
@@ -267,7 +271,9 @@ public class OpenIDPanel extends Panel {
   protected String getReturnUrl() {
     final String pg =
         WebApplicationTest.PATH + "/" + ResultPage.class.getSimpleName();
-    return RequestUtils.toAbsolutePath(pg);
+    final HttpServletRequest req =
+        (HttpServletRequest) ((WebRequest) RequestCycle.get().getRequest()).getContainerRequest();
+    return RequestUtils.toAbsolutePath(req.getRequestURL().toString(), pg);
   }
 
 }

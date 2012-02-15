@@ -1,5 +1,6 @@
 package com.koodaripalvelut.common.wicket.behavior;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.IHeaderResponse;
 
 /**
@@ -11,14 +12,14 @@ public class TristateMultiSelectBehavior extends MultiSelectBehavior {
   private static final long serialVersionUID = 1L;
 
   @Override
-  public void renderHead(final IHeaderResponse response) {
+  public void renderHead(final Component component, final IHeaderResponse response) {
     renderJavascriptReference(response, "jquery.tristate.js");
     renderJavascriptReference(response, "jquery.tristateMultiselect.js");
     if (isFiltering()) {
       renderJavascriptReference(response, "jquery.tristateMultiselect.filter.js");
     }
     renderCSSReference(response, "jquery.tristate.css");
-    super.renderHead(response);
+    super.renderHead(component, response);
   }
 
   @Override

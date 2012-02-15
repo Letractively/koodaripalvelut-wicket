@@ -1,1 +1,1 @@
-changeDetectorInit("${formId}", "${message}", ${whiteList}, ${blackList});
+changeDetectorInit("${formId}", "${message}", ${whiteList}, ${blackList}, ${disabledList}, ${formComponents});

@@ -16,7 +16,7 @@ import java.util.StringTokenizer;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
-import org.apache.wicket.protocol.http.WebRequest;
+import org.apache.wicket.request.http.WebRequest;
 
 import com.koodaripalvelut.common.wicket.openid.AuthenticationProvider;
 import com.koodaripalvelut.common.wicket.openid.AuthenticationSession;

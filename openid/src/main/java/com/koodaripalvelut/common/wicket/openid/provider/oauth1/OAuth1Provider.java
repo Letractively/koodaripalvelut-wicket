@@ -11,10 +11,10 @@ package com.koodaripalvelut.common.wicket.openid.provider.oauth1;
 
 import java.util.Properties;
 
-import org.apache.wicket.RequestCycle;
 import org.apache.wicket.Session;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.request.target.basic.RedirectRequestTarget;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.http.handler.RedirectRequestHandler;
 import org.apache.wicket.util.lang.PropertyResolver;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
@@ -97,14 +97,14 @@ public class OAuth1Provider extends AbstractOAuthProvider<OAuth1Provider> {
     this.service = service;
     this.requestToken = requestToken;
 
-    RequestCycle.get().setRequestTarget(
-        new RedirectRequestTarget(getEndpoint() + token));
+    RequestCycle.get().scheduleRequestHandlerAfterCurrent(
+        new RedirectRequestHandler(getEndpoint() + token));
 
     session.setAuthProvider(this);
   }
 
   public Verifier oauth1Verifier(final WebRequest request) {
-    final String verif = request.getParameter("oauth_verifier");
+    final String verif = request.getRequestParameters().getParameterValue("oauth_verifier").toString();
     final Verifier verifier = new Verifier(verif);
     return verifier;
   }

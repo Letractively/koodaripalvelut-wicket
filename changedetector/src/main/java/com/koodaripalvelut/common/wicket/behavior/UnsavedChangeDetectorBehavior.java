@@ -9,20 +9,23 @@ import java.util.Map;
 import org.apache.wicket.Component;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.WicketAjaxReference;
-import org.apache.wicket.behavior.AbstractBehavior;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.WicketEventReference;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.resources.JavascriptResourceReference;
-import org.apache.wicket.util.template.PackagedTextTemplate;
+import org.apache.wicket.markup.html.form.FormComponent;
+import org.apache.wicket.request.resource.JavaScriptResourceReference;
+import org.apache.wicket.util.template.PackageTextTemplate;
 import org.apache.wicket.util.template.TextTemplate;
+import org.apache.wicket.util.visit.IVisit;
+import org.apache.wicket.util.visit.IVisitor;
 
 /**
  * The UnsavedChangeDetectorBehavior class when added to a form, notifies the
  * user if she or he is about to leave unsaved data in the form.
  * @author cencarnacion@kitsd.com
  */
-public class UnsavedChangeDetectorBehavior extends AbstractBehavior {
+public class UnsavedChangeDetectorBehavior extends Behavior {
 
   private static final String DEFAULT_SCRIPT_PREFIX = "change-detector";
 
@@ -40,6 +43,10 @@ public class UnsavedChangeDetectorBehavior extends AbstractBehavior {
   private final List<ListMember> whiteList = new ArrayList<ListMember>();
 
   private final List<ListMember> blackList = new ArrayList<ListMember>();
+
+  private final List<ListMember> disabledList = new ArrayList<ListMember>();
+
+  private final List<ListMember> formComponents = new ArrayList<ListMember>();
 
   private static class ListMember implements Serializable {
 
@@ -77,6 +84,24 @@ public class UnsavedChangeDetectorBehavior extends AbstractBehavior {
     blackList.add(new ListMember(component));
   }
 
+  public void addToDissabledList(final Component component) {
+    component.setOutputMarkupId(true);
+    disabledList.add(new ListMember(component));
+  }
+
+  public void addAllComponents() {
+
+    final IVisitor<FormComponent<?>, Void> visitor = new IVisitor<FormComponent<?>, Void>() {
+
+      @Override
+      public void component(final FormComponent<?> comp, final IVisit<Void> visit) {
+        formComponents.add(new ListMember(comp));
+      }
+    };
+
+    ((Form<?>) component).visitFormComponents(visitor);
+  }
+
   /**
    * @see org.apache.wicket.behavior.AbstractBehavior#bind(org.apache.wicket.Component)
    */
@@ -92,21 +117,21 @@ public class UnsavedChangeDetectorBehavior extends AbstractBehavior {
    * @see org.apache.wicket.behavior.AbstractBehavior#renderHead(org.apache.wicket.markup.html.IHeaderResponse)
    */
   @Override
-  public void renderHead(final IHeaderResponse response) {
+  public void renderHead(final Component component, final IHeaderResponse response) {
 
-    response.renderJavascriptReference(WicketEventReference.INSTANCE);
-    response.renderJavascriptReference(WicketAjaxReference.INSTANCE);
+    response.renderJavaScriptReference(WicketEventReference.INSTANCE);
+    response.renderJavaScriptReference(WicketAjaxReference.INSTANCE);
 
     final TextTemplate searchBoxJs =
-        new PackagedTextTemplate(UnsavedChangeDetectorBehavior.class,
+        new PackageTextTemplate(UnsavedChangeDetectorBehavior.class,
             getScriptPrefix() + "-init.js");
 
     final Map<String, Object> variables = new HashMap<String, Object>();
 
     setOptions(variables);
-    response.renderJavascriptReference(new JavascriptResourceReference(
+    response.renderJavaScriptReference(new JavaScriptResourceReference(
         UnsavedChangeDetectorBehavior.class, getScriptPrefix() + ".js"));
-    response.renderOnDomReadyJavascript(searchBoxJs.asString(variables));
+    response.renderOnDomReadyJavaScript(searchBoxJs.asString(variables));
   }
 
   /**
@@ -118,6 +143,8 @@ public class UnsavedChangeDetectorBehavior extends AbstractBehavior {
     params.put(PARAM_MESSAGE, getMessage());
     params.put("whiteList", whiteList);
     params.put("blackList", blackList);
+    params.put("disabledList", disabledList);
+    params.put("formComponents", formComponents);
   }
 
   /**

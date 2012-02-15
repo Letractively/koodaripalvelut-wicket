@@ -16,20 +16,22 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.wicket.Component;
-import org.apache.wicket.RequestCycle;
-import org.apache.wicket.ResourceReference;
 import org.apache.wicket.WicketRuntimeException;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.IHeaderResponse;
 import org.apache.wicket.markup.html.internal.HtmlHeaderContainer;
-import org.apache.wicket.markup.html.resources.CompressedResourceReference;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.protocol.http.WebRequest;
-import org.apache.wicket.protocol.http.WebResponse;
-import org.apache.wicket.util.template.PackagedTextTemplate;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebRequest;
+import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.resource.ResourceReference;
+import org.apache.wicket.util.template.PackageTextTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,18 +70,20 @@ public class FullCalendar extends Component
   private static final long serialVersionUID = 1L;
   private static final Logger LOG = LoggerFactory.getLogger(FullCalendar.class);
 
+  // TODO - what to use instead of CompressedResourceReference??
+
   private static ResourceReference JS_JQUERY =
-    new CompressedResourceReference(FullCalendar.class, "jquery/jquery.js");
+    new PackageResourceReference(FullCalendar.class, "jquery/jquery.js");
   private static ResourceReference JS_JQUERY_JSON =
-    new CompressedResourceReference(FullCalendar.class, "jquery/jquery-json.js");
+    new PackageResourceReference(FullCalendar.class, "jquery/jquery-json.js");
   private static ResourceReference JS_JQUERY_UI =
-    new CompressedResourceReference(FullCalendar.class, "jquery/jquery-ui-custom.js");
+    new PackageResourceReference(FullCalendar.class, "jquery/jquery-ui-custom.js");
   private static ResourceReference JS_FULLCAL =
-    new CompressedResourceReference(FullCalendar.class, "fullcalendar.min.js");
+    new PackageResourceReference(FullCalendar.class, "fullcalendar.min.js");
   private static ResourceReference JS_FULLCAL_DBG =
-    new CompressedResourceReference(FullCalendar.class, "fullcalendar.js");
+    new PackageResourceReference(FullCalendar.class, "fullcalendar.js");
   private static ResourceReference FULLCAL_CSS =
-    new CompressedResourceReference(FullCalendar.class, "fullcalendar.css");
+    new PackageResourceReference(FullCalendar.class, "fullcalendar.css");
 
   // AJAX methods
   private static final String AJAX_REMOVE_EVENT_SOURCE_METHOD = "'removeEventSource'";
@@ -196,8 +200,9 @@ public class FullCalendar extends Component
       JsonElement req;
       try {
         req =
-            PARSER.parse(((WebRequest) RequestCycle.get().getRequest())
-                .getHttpServletRequest().getReader());
+            PARSER.parse(((HttpServletRequest)
+                ((WebRequest) RequestCycle.get().getRequest())
+                    .getContainerRequest()).getReader());
         LOG.debug("parsed: {}", req);
       } catch (final JsonParseException e) {
         LOG.error("Could not parse json request", e);
@@ -213,9 +218,9 @@ public class FullCalendar extends Component
       if (!feedback.has(FEEDBACK_FOR)) {
         throw new WicketRuntimeException("json request has no feedbackFor");
       }
-      if (!onEvent(target, feedback)) {
-        ((WebResponse) RequestCycle.get().getResponse())
-        .getHttpServletResponse().setStatus(SC_CONFLICT);
+      if (!FullCalendar.this.onEvent(target, feedback)) {
+        ((WebResponse) RequestCycle.get().getResponse()
+            .getContainerResponse()).setStatus(SC_CONFLICT);
       }
     }
 
@@ -432,7 +437,7 @@ public class FullCalendar extends Component
     for (int i = 1; i < params.length; i++) {
       sb.append(',').append(params[i]);
     }
-    target.appendJavascript(sb.append(");").toString());
+    target.appendJavaScript(sb.append(");").toString());
     return this;
   }
 
@@ -447,23 +452,23 @@ public class FullCalendar extends Component
     setOptions(initParams);
 
     if (includeJQuery()) {
-      headerResponse.renderJavascriptReference(JS_JQUERY, "jquery");
+      headerResponse.renderJavaScriptReference(JS_JQUERY, "jquery");
     }
     if (includeJQueryJSON()) {
-      headerResponse.renderJavascriptReference(JS_JQUERY_JSON, "jquery.json");
+      headerResponse.renderJavaScriptReference(JS_JQUERY_JSON, "jquery.json");
     }
     if (includeJQueryUI()) {
-      headerResponse.renderJavascriptReference(JS_JQUERY_UI, "jquery.ui");
+      headerResponse.renderJavaScriptReference(JS_JQUERY_UI, "jquery.ui");
     }
     if (getApplication().getDebugSettings().isAjaxDebugModeEnabled()) {
-      headerResponse.renderJavascriptReference(JS_FULLCAL_DBG, "fullcalendar");
+      headerResponse.renderJavaScriptReference(JS_FULLCAL_DBG, "fullcalendar");
     } else {
-      headerResponse.renderJavascriptReference(JS_FULLCAL, "fullcalendar");
+      headerResponse.renderJavaScriptReference(JS_FULLCAL, "fullcalendar");
     }
 
     headerResponse.renderCSSReference(FULLCAL_CSS);
-    headerResponse.renderOnDomReadyJavascript(
-        new PackagedTextTemplate(FullCalendar.class, "calendar-init.js").asString(initParams));
+    headerResponse.renderOnDomReadyJavaScript(
+        new PackageTextTemplate(FullCalendar.class, "calendar-init.js").asString(initParams));
 
     super.renderHead(container);
   }
@@ -472,8 +477,8 @@ public class FullCalendar extends Component
    * @see org.apache.wicket.Component#onRender(MarkupStream)
    */
   @Override
-  protected void onRender(final MarkupStream markupStream) {
-    renderComponent(markupStream);
+  protected void onRender() {
+    internalRenderComponent();
   }
 
   /** Override this method to set your own options for the fullcalendar construction

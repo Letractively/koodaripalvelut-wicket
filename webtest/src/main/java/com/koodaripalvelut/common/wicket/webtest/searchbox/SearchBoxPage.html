@@ -7,7 +7,37 @@
 <body>
 <wicket:extend>
     <h2>Search Box</h2>
-
+    <div class="box">
+      <form wicket:id="personFrom">
+      <table>
+        <tr>
+          <td valign="top"><select wicket:id="person" style="width: 100px"/></td>
+          <td valign="top" align="right"><select wicket:id="children" style="width: 100px"/></td>
+          <td valign="top" align="right"><select wicket:id="grandChildren" style="width: 100px"/></td>
+        </tr>
+      </table>
+        
+        
+        
+      </form>
+    </div>
+    
+        <div class="box">
+      <form wicket:id="personFrom-flicker">
+      <table>
+        <tr>
+          <td valign="top"><select wicket:id="person-flicker" style="width: 100px"/></td>
+          <td valign="top" align="right"><select wicket:id="children-flicker" style="width: 100px"/></td>
+          <td valign="top" align="right"><select wicket:id="grandChildren-flicker" style="width: 100px"/></td>
+        </tr>
+      </table>
+        
+        
+        
+      </form>
+    </div>
+    
+children
     <h3>AutoComplete with caching behavior</h3>
     <p>
         This component is the Wicket Autocomplete component with cache behavior added.
