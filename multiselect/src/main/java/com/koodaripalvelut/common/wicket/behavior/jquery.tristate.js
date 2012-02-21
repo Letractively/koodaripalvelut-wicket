@@ -34,54 +34,6 @@
 
       var triState = {
         init: function () {
-          // Add proxy checkbox for each heading
-          obj.find(opts.heading).each(function() {
-            var $this = $(this),
-            stateAnchor = $('<a href="#" class="checkbox tristate-node">Heading</a>');
-            $this.parent().addClass("node-li");
-            $this.before(stateAnchor);
-            if($this.children().length > 0) {
-              var optionItem = $this.children()[0],
-              anchor = triState.convertToAnchor($(optionItem), 'node-item-checkbox'),
-              radio = triState.convertToRadio($(optionItem)),
-              span = $('<span class="tristate-node-element"></span> ');
-              stringAnchorItem = $('<div>').append(anchor).remove().html(),
-              stringRadioItem = $('<div>').append(radio).remove().html();
-              
-              $this.before(span.append(radio).append(anchor));
-              
-              $this.wrap('<label class="ui-corner-all tristateMultiselect-label tristate-node"></label>');
-              
-              this.innerHTML = $(optionItem).attr('title');
-              
-              if(opts.multiple){
-                triState.bindLabel(stateAnchor);
-              } else {
-                stateAnchor.hide();
-                anchor.hide();
-                triState.bindLabel(radio, radio.parent().siblings('label'));
-              }
-            } else {
-              $this.wrap('<label class="node-checkbox ui-corner-all tristateMultiselect-label tristate-node' + ($this.html() == "" ? ' ui-multiselect-empty-label' : '') + '"></label>');
-              if(opts.multiple) {
-                triState.bindLabel(stateAnchor);
-              } else {
-                stateAnchor.hide();
-              }
-              
-              if ($this.parent().parent('li').parent('ul').hasClass('triState')) {
-                $this.parent().parent('li').css('background', 'none').addClass('tristate-root').children('a, label').addClass('tristate-root').hide();
-                $this.parent().hide();
-              }
-            }
-          });
-          
-          var $inputs = obj.find('input[type="checkbox"]');
-          for (var i=0, y=$inputs.length; i<y; i++) {
-            // hide the input fields
-            triState.hideInput($($inputs[i]));
-          }
-          
           // Initialize proxy links
           triState.updateProxyStates();
           
@@ -189,56 +141,6 @@
             triState.setAncestors($($inputs[i]), true);
             $inputs.removeAttr('checked');
           }
-        },
-        
-        hideInput: function ($el) {
-          var $anchor = triState.convertToAnchor($el);
-          var $radio = triState.convertToRadio($el);
-          $el.before($radio).before($anchor);
-          
-          if(!opts.multiple) {
-            triState.hideInputs($($anchor.siblings('label')[0]), $anchor, $radio);
-          } else {
-            triState.bindLabel($anchor);
-          }
-          if (!opts.showOriginalInputs) { $el.hide(); }
-        },
-        
-        hideInputs: function($label, $anchor, $radio) {
-          $radio.attr('id', 'radio-' + $anchor.attr('id'));
-          $($anchor.siblings('label')[0]).attr('for', $radio.attr('id'));
-          $label.attr('for', $radio.attr('id'));
-        },
-        
-        convertToAnchor: function ($el, classes) {
-          var sName = $el.attr('name'),
-          id = $el.attr('id'),
-          title = $el.attr('title').replace(/\"/gi, "&quot;"),
-          value = $el.attr('value'),
-          optid = $el.attr('optid'),
-          isSelected = $el.attr('checked'),
-          $newCheckbox = $('<a id="anchor-'+ id +'" href="#" class="checkbox element '+ (isSelected ? "checked " : "") + (classes ?  classes : "")+'" title="'+title+'" optionvalue="'+ value +'" optid="'+optid+'">'+sName+'</a>');
-          $newCheckbox.data("name", sName);
-          return $newCheckbox;
-        },
-        
-        convertToRadio: function($el) {
-          var checkboxId = $el.attr('id');
-          
-          return $('<input type="radio" class="checkbox radiobutton" checkbox="' + checkboxId + '" style="float: left;"/>')
-        },
-        
-        
-        bindLabel: function($target, $label) {
-          
-          if ($label == undefined) {
-            $label = $($target.siblings('label')[0]).attr('for', '');
-          }
-          
-          $label.bind('click', function() {
-            $target.trigger('click');
-          });
-          
         },
         
         setAncestors: function ($el, bChecked) {

@@ -87,7 +87,6 @@
         
         this._trigger( "filter", e, $.map(cache, function(v,i){
           if( v.search(regex) !== -1 ){
-            rows.eq(i).show();
             
             function showParents ($el) {
               var $parentList = $el.parent('li').parent('ul');
@@ -98,6 +97,11 @@
                 showParents($ancestorInput);
               }
             }
+            
+            var row = rows.eq(i);
+            
+            row.siblings("label").show();
+            row.show();
             
             $input = $(inputs.get(i));
             

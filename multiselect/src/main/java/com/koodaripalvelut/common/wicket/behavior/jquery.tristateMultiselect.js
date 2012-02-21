@@ -8,6 +8,7 @@
     
     options: {
       labelClass: 'tristateMultiselect-label',
+      showMissingParent: false
     },
 
     _create : function() {
@@ -98,66 +99,23 @@
         }
       }
       
+      var optionss = this.element.find('option');
+      
       // Organizes options hierarchically
+      var emptyElements = {};
       this.element.find('option').each(function( i ) {
         
         function createParent(optParentId) {
           
           var parent = {};
           
+          parent["itself"] = undefined;
+          parent["array"] = {};
+          
           //set parent in root node.
           result[optParentId] = parent;
           
           parentIdElementMap[optParentId] = parent;
-          
-          return parent;
-        }
-        
-        function convertObjectToParent(obj) {
-          
-          function copyClasses(fromObj, toObj) {
-            
-            var classStr = $(fromObj).attr('class');
-            
-            if (classStr != undefined) {
-              
-              var elClasses = classStr.split(" ");
-              
-              for (i=0; i <  elClasses.length; i++) {
-                
-                var clazz = elClasses[i];
-                
-                if (clazz != nullId) {
-                  $(toObj).addClass(elClasses[i]);
-                }
-              }
-              
-            }
-          }
-          
-          parentElements[optParentId] = obj;
-          
-          var parent = {};
-          copyClasses(obj, parent);
-          parentIdElementMap[optParentId] = parent;
-          
-          //set the object as an array inside its grandParent.
-          var grandParentId = getParentId(obj);
-          var grandParent = parentIdElementMap[grandParentId];
-          for (key in grandParent) {
-            if (grandParent instanceof HTMLOptionElement) {
-              grandParent = convertObjectToParent(grandParent);
-              grandParent[grandParentId] = parent;
-            } else if (grandParent[key] == obj) {
-              if (grandParentId == nullId) {
-                result[key] = parent;
-                delete grandParent[key];
-              } else {
-                grandParent[key] = parent;
-              }
-              break;
-            }
-          }
           
           return parent;
         }
@@ -181,178 +139,183 @@
         
         var optParentId = getParentId(this),
         title = $(this).text(),
-        parent = parentIdElementMap[optParentId];
+        parent = parentIdElementMap[optParentId]
+        obj = {};
+        obj["itself"] = this;
+        obj["array"] = {};
         
-        if (!(parentIdElementMap[title] == undefined 
-            || parentIdElementMap[title] instanceof HTMLOptionElement)) {//it is an existing node
-          parentElements[title] = this;
-          
-          if (getParentId(this) != nullId && result[title]) {
-            
-            if (parent == undefined) {
-              parent = createParent(optParentId);
-            } else if (parent instanceof HTMLOptionElement) {
-              parent = convertObjectToParent(parent);
-            }
-            
-            parent[title] = result[title];
-            delete result[title];
-            
-            parentIdElementMap[title] = this;
-          }
-          
+        if (parentIdElementMap[title]) {//it is an existing node
+          var element = parentIdElementMap[title];
+          obj["array"] = element["array"];
+          delete parentIdElementMap[title];
+          delete result[title];
+        } 
+        
+        if(title == "") { //Empty value
+          emptyElements[this.value] = obj;
           return;
           
-        } else if(optParentId == nullId) { // belongs to root.
-          parent = parentIdElementMap[nullId];
-          if (parent == undefined) {
-            parent = {};
-            parentIdElementMap[nullId] = parent;
-          }
-          
+        } else if (optParentId == nullId) { // belongs to root.
+          result[title] = obj;
+          parentIdElementMap[title] = obj;
+          return;
         } else if (parent == undefined) { // Parent is not yet registered.
           parent = createParent(optParentId);
-        } else if (parent instanceof HTMLOptionElement) { // Parent is an exiting option.
-          parent = convertObjectToParent(parent);
         }
         
-        parentIdElementMap[title] = this;
+        parentIdElementMap[title] = obj;
         // add option to its parent.
-        parent[title] = this;
+        var parentArray = parent["array"]
+        parentArray[title] = obj;
         
       });
       
-      var elementsWithNoParent = parentIdElementMap[nullId];
-      
-      if(elementsWithNoParent == undefined) {
-        elementsWithNoParent = [];
-      }
-      
-      if(nullOptions.length > 0) {
-        // set null values top most.
-        elementsWithNoParent = nullOptions.concat(elementsWithNoParent);
-      }
-      
-      //TODO - Find a way to build items in this method.
-      function flat( arr, label ) {
-        var array = [];
-        var startOpt = document.createElement('OPTION');
-        $(startOpt).attr('optcontainer', 'startOpt');
-        
-        if (label != undefined) {
-          startOpt.innerHTML = label;
-        }
-        
-        array.push(startOpt);
-        
-        // set root elements to top most.
-        if (elementsWithNoParent != undefined) {
-          for (key in elementsWithNoParent) {
-            array.push(elementsWithNoParent[key]);
-          }
-          elementsWithNoParent = undefined; 
-        }
-        
-        for (keyVar in arr) {
-          var obj = arr[keyVar];
-          if (obj instanceof HTMLOptionElement) {
-            array.push(obj);
-            if (startOpt.innerHTML == "") {
-              startOpt.innerHTML = getParentId(obj);
-            }
-          } else {
-            array = array.concat(flat(obj, keyVar));
-          }
-        }
-        var endOpt = document.createElement('OPTION');
-        $(endOpt).attr('optcontainer', 'endOpt');
-        array.push(endOpt);
-        return array;
-      }
-      
-      var flatResult = flat(result);
-      
-      $(flatResult).filter(function(){return ($(this).attr('optcontainer')  == 'startOpt')}).each(function(){
-        var parentElement = parentElements[this.innerHTML];
-        if (parentElement != undefined) {
-          $(parentElement).attr({
-            optcontainer: 'startOpt', 
-            isItem: true, 
-            selected: parentElement.selected, 
-            disabled: parentElement.disabled});
-          flatResult[jQuery.inArray( this, flatResult )] = parentElement;
-        }
-      });
-      
-      // build items
-      $(flatResult).each(function( i ){
-        var $this = $(this), 
-          parent = this.parentNode,
-          title = this.innerHTML,
-          value = this.value,
-          inputID = 'ui-multiselect-'+id+'-option-'+i, 
-          isDisabled = this.disabled,
-          isSelected = this.selected,
-          optid = $(this).attr('id'),
+      function build(arr, level, emptyElement) {
+        var i = 0;
+        var mmm = arr;
+        $.each(arr, function(title, v) {
+          var obj = v["itself"],
+          array = v["array"],
+          $this = $(obj), 
+          parent = obj == undefined ? undefined : obj.parentNode,
+          value =  obj == undefined ? undefined : obj.value,
+          inputID = 'ui-multiselect-'+id+'-option-'+ (i++), 
+          isDisabled = obj == undefined ? undefined : obj.disabled,
+          isSelected = obj == undefined ? undefined : obj.selected,
+          optid = $this.attr('id'),
           labelClasses = ['ui-corner-all'],
-          className = this.label,
+          className = obj == undefined ? undefined : obj.label,
           optcontainer = $this.attr('optcontainer'),
           optLabel;
-        
-        function convertToInput() {
-          var escTitle = title.replace(/\"/gi, "&quot;");
-          var buf = '<input id="'+ inputID +'" type="checkbox" value="'+value+'" title="'+escTitle+'" optid="'+optid+'"';
           
-          // pre-selected?
-          if( isSelected ){
-            buf += ' checked="checked"';
-            buf += ' aria-selected="true"';
+          var escTitle = emptyElement ? "" : title.replace(/\"/gi, "&quot;");
+          
+          function createIsSelectedAttr() {
+            var buf = "";
+            if ( isSelected ) {
+              buf += ' checked="checked"';
+              buf += ' aria-selected="true" ';
+            }
+            return buf;
           }
           
-          // disabled?
-          if( isDisabled ){
-            buf += ' disabled="disabled"' ;
-            buf += ' aria-disabled="true"';
+          function createIsDisabledAttr() {
+            var buf = "";
+            if ( isDisabled ) {
+              buf += ' disabled="disabled"' ;
+              buf += ' aria-disabled="true" ';
+            }
+            return buf;
           }
-          buf += ' />';
-          return buf;
-        }
+          
+          function convertToAnchor(classes) {
+            var buf = '<a id="anchor-'+ inputID +'"';
+            buf += ' href="#" ';
+            buf += ' class="checkbox element '+ (isSelected ? 'checked ' : '') + (classes ?  classes : '')+'"';
+            buf += ' title="'+escTitle+'"';
+            buf += ' optionvalue="'+ value +'"';
+            buf += createIsSelectedAttr();
+            buf += createIsDisabledAttr();
+            buf += ' ></a>';
+            return buf;
+          }
+          
+          function convertToRadio() {
+            var buf = '<input id="radio-' + inputID + '"';
+            buf += ' type="radio"';
+            buf += ' class="checkbox radiobutton"'; 
+            buf += ' checkbox="' + inputID +'"';
+            buf += ' style="float: left;"';
+            buf += createIsSelectedAttr();
+            buf += createIsDisabledAttr();
+            buf += ' /a>';
+            return buf;
+          }
+          
+          function createLabel(classes, isANode) {
+            //this span fixes single selection weird behavior.
+            var buf = '<span class="tristate-node" style="float: left;">&nbsp;</span>'; 
+            buf += '<label class="ui-corner-all ' + o.labelClass + ' ' + classes +'"';
+            buf += ' for = "' + (o.multiple ? 'anchor-' : 'radio-') + inputID +'"';
+            buf += ' style= "margin-left: ' + (-18.5 * level + (isANode ? 2 : 0))  + 'px;"';
+            buf += ' level = ' + level + '>';
+            return buf;
+          }
+          
+          function isEmpty(obj) {
+            for (key in obj) {
+                return false;
+            }
+            return true;
+          };
+          
+          if (!o.showMissingParent && obj == undefined) {
+            build(array, level);
+          } else if (isEmpty(array)) {
+            html.push('<li class="' + (isDisabled ? 'ui-multiselect-disabled' : 'normal-li') + '">');
+            
+            html.push(convertToRadio())
+            html.push(convertToAnchor());
+            
+            html.push(createLabel( escTitle == "" ? ' ui-multiselect-empty-label' : ''));
+            html.push('<span class="heading">' + escTitle + '</span></label>');
+            
+          } else {
+            this.nodeCount++;
+            var isAItem = obj != undefined;
+            html.push('<li class="title node-li">');
+            html.push('<a href="#" class="checkbox tristate-node">Heading</a>');
+            
+            if(isAItem) {
+              html.push('<span class="tristate-node-element">');
+              html.push(convertToRadio())
+              html.push(convertToAnchor("node-item-checkbox"));
+              html.push('</span> ');
+            }
+            
+            var classes = ' tristateMultiselect-label tristate-node '
+            if(isAItem) {
+              html.push(createLabel(classes, true));
+            } else {
+              html.push(createLabel(classes + $this.html() == "" ? ' ui-multiselect-empty-label' : ''));
+            }
+            html.push('<span class="heading">' + escTitle + '</span>');
+            html.push('</label><ul> ');
+            build(array, level + 1);
+            html.push('</ul></li>');
+            
+          }
+        });
+      };
       
-        if( isDisabled ){
-          labelClasses.push('ui-state-disabled');
-        }
-
-        // browsers automatically select the first option
-        // by default with single selects
-        if( isSelected && !o.multiple ){
-          labelClasses.push('ui-state-active');
-        }
-        
-        if ( optcontainer == "startOpt" )  {
-          this.nodeCount++;
-          title;
-          if($(this).attr('isItem')) {
-            title = convertToInput();
-          }
-          html.push('<li class="title"><span class="heading">' + title + '</span><ul>');
-        } else if ( optcontainer == "endOpt" ) {
-          html.push('</ul></li>');
-        } else {
-          html.push('<li class="' + (isDisabled ? 'ui-multiselect-disabled' : '') + '">');
-          
-          html.push(convertToInput());
-          
-          // add the title and close everything off
-          html.push('<label href="#" for="' + inputID + '" class="ui-corner-all ' + o.labelClass + (title == "" ? ' ui-multiselect-empty-label' : '')+ '"><span>' + title + '</span></label></li>');
-          
-        }
-      });
+      //builds empty values first.
+      build(emptyElements, 1, true);
+      build(result, 1);
       
       // insert into the DOM
       checkboxContainer.html( html.join('') );
 
       // cache some moar useful elements
       this.labels = menu.find('label');
+      
+      this.labels.each(function() {
+        var $this = $(this);
+        var targetId = $this.attr('for');
+        var $target;
+        
+        if ($this.hasClass('tristate-node')) {
+          $target = $($this.siblings('span')[0]).find('#' + targetId);
+        } else {
+          $target = $this.siblings('#' + targetId);
+        }
+        
+        $this.attr('for', '');
+        
+        
+        $this.bind('click', function() {
+          $target.trigger('click');
+        });
+      });
       
       // set widths
       this._setButtonWidth();
@@ -437,21 +400,6 @@
           $('.'+ self.instance.options.labelClass).removeClass('ui-state-hover');
           if (!(!self.instance.options.multiple && $(this).hasClass('node-checkbox'))) {
             $(this).addClass('ui-state-hover').find('input').focus();
-          }
-          
-          if ($(this).attr('level') == undefined) {
-            var i =0;
-            par = $(this).parent();
-            while(!par.is(".ui-multiselect-checkboxes")) {
-              if(par.is('ul')) i++;
-              par = par.parent();
-            }
-            
-            $(this).before($('<span style="float: left;">&nbsp;</span>'));
-            
-            $(this).css('margin-left',(-20 * i) + "px");
-            
-            $(this).attr('level', i);
           }
         }
       })
