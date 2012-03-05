@@ -3,7 +3,6 @@ package com.koodaripalvelut.common.wicket.webtest.searchbox;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -143,8 +142,12 @@ public class SearchBoxPage extends BasePage {
     final WebMarkupContainer nestingParent =
       new WebMarkupContainer("nestingParent");
 
-    final IModel<? extends Collection<String>> choiceModel =
-      (IModel<? extends Collection<String>>) Model.ofList(nestedSelections);
+    final IModel<ArrayList<String>> choiceModel = new Model<ArrayList<String>>() {
+      @Override
+      public ArrayList<String> getObject() {
+        return (ArrayList<String>) nestedSelections;
+      }
+    };
 
     final ListMultipleChoice<String> nestingChild =
       new ListMultipleChoice<String>("nestingChild", choiceModel, LIST);

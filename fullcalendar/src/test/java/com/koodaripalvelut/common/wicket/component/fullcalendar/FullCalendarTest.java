@@ -17,6 +17,9 @@ import com.google.gson.JsonParseException;
 public class FullCalendarTest {
 
   public static final class TestPage extends WebPage {
+    public TestPage() {
+
+    }
     {add(new FullCalendar("calendar"));}
   }
 
