@@ -99,8 +99,6 @@
         }
       }
       
-      var optionss = this.element.find('option');
-      
       // Organizes options hierarchically
       var emptyElements = {};
       this.element.find('option').each(function( i ) {
