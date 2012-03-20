@@ -28,7 +28,7 @@
 	</parent>
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>tinymce</artifactId>
-	<version>1.4.17_tustor-SNAPSHOT</version>
+	<version>1.4.17-3.5b2-SNAPSHOT</version>
 	<name>TinyMCE</name>
 	<description>
 		Adds support for WYSIWYG editing (using TinyMce) to Wicket
