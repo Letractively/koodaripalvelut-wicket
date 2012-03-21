@@ -24,11 +24,11 @@
 	<parent>
 		<artifactId>parent</artifactId>
 		<groupId>com.koodaripalvelut.wicket.common</groupId>
-		<version>1.2-SNAPSHOT</version>
+		<version>1.2</version>
 	</parent>
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>tinymce</artifactId>
-	<version>1.4.17-3.5b2-1-SNAPSHOT</version>
+	<version>1.4.17-3.5b2-1</version>
 	<name>TinyMCE</name>
 	<description>
 		Adds support for WYSIWYG editing (using TinyMce) to Wicket

@@ -4,7 +4,7 @@
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.2</version>
 
 	<name>Koodari Palvelut Parent POM</name>
 	<description>Koodari Palvelut Parent POM</description>
@@ -67,9 +67,9 @@
 	</properties>
 
 	<scm>
-		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</developerConnection>
-		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk</url>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.2</connection>
+		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/parent-1.2</developerConnection>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/tags/parent-1.2</url>
 	</scm>
 
   <repositories>
