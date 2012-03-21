@@ -68,8 +68,8 @@
 
 	<scm>
 		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</connection>
-    <developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</developerConnection>
-    <url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk</url>
+		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</developerConnection>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk</url>
 	</scm>
 
   <repositories>
