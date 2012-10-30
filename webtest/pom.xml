@@ -15,7 +15,7 @@
 
 	<properties>
 		<slf4j.version>1.6.1</slf4j.version>
-		<gae.version>1.5.0.1</gae.version>
+		<gae.version>1.7.2</gae.version>
 	</properties>
 
 	<dependencies>
@@ -79,7 +79,7 @@
 			<plugin>
 				<groupId>net.kindleit</groupId>
 				<artifactId>maven-gae-plugin</artifactId>
-				<version>0.8.2</version>
+				<version>0.9.5-SNAPSHOT</version>
 				<configuration>
 					<serverId>appengine.google.com</serverId>
 					<scanIntervalSeconds>0</scanIntervalSeconds>
