@@ -21,11 +21,7 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	
-	<parent>
-		<artifactId>parent</artifactId>
-		<groupId>com.koodaripalvelut.wicket.common</groupId>
-		<version>1.3-SNAPSHOT</version>
-	</parent>
+
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>tinymce</artifactId>
 	<version>1.4.17-3.5b2-1-SNAPSHOT</version>
@@ -34,11 +30,55 @@
 		Adds support for WYSIWYG editing (using TinyMce) to Wicket
 	</description>
 	
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/issues/list</url>
+	</issueManagement>
+
+	<properties>
+	  <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<junit.version>4.8.2</junit.version>
+		<wicket.version>1.4.15</wicket.version>
+	</properties>
+
+	<scm>
+		<connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/trunk</developerConnection>
+		<url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/trunk</url>
+	</scm>
+
+  <repositories>
+      <repository>
+        <id>koodaripalvelut-wicket-repo</id>
+        <name>Koodaripalvelut Wicket Repository</name>
+        <url>http://koodaripalvelut-wicket.googlecode.com/svn/repository/</url>
+        <releases><enabled>true</enabled></releases>
+        <snapshots><enabled>true</enabled></snapshots>
+      </repository>
+      <repository>
+	      <id>gson</id>
+	      <url>http://google-gson.googlecode.com/svn/mavenrepo</url>
+	      <releases><enabled>true</enabled></releases>
+	      <snapshots><enabled>true</enabled></snapshots>
+    </repository>
+  </repositories>
+
+  <distributionManagement>
+    <downloadUrl>http://code.google.com/p/koodaripalvelut-wicket/downloads/list</downloadUrl>
+    <repository>
+      <id>koodaripalvelut-wicket-deploy</id>
+      <uniqueVersion>false</uniqueVersion>
+      <url>svn:https://koodaripalvelut-wicket.googlecode.com/svn/repository</url>
+    </repository>
+  </distributionManagement>
+	
+	
 		<dependencies>
 		<dependency>
 			<groupId>org.apache.wicket</groupId>
 			<artifactId>wicket-extensions</artifactId>
-			<version>${wicket.version}</version>
+			<version>1.4.15</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-io</groupId>
@@ -66,6 +106,19 @@
 		    <version>6.0.16</version>
 		    <scope>provided</scope>
 		</dependency>
+			<!-- Testing -->
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>
+	    <dependency>
+		    <groupId>ch.qos.logback</groupId>
+		    <artifactId>logback-classic</artifactId>
+		    <version>0.9.18</version>
+		    <scope>test</scope>
+	    </dependency>
 	</dependencies>
 
 </project>
