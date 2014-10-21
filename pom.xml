@@ -43,14 +43,6 @@
 	</developers>
 
   <modules>
-    <module>changedetector</module>
-    <module>components</module>
-    <module>dropable</module>
-    <module>fullcalendar</module>
-    <module>openid</module>
-    <module>searchbox</module>
-	<module>webtest</module>
-    <module>multiselect</module>
 	<module>tinymce</module>
   </modules>
 
