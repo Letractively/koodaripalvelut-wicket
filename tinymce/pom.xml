@@ -30,7 +30,7 @@
 
 	<groupId>com.koodaripalvelut.wicket.common</groupId>
 	<artifactId>tinymce</artifactId>
-	<version>1.4.17-4.5b2-3-SNAPSHOT</version>
+	<version>1.4.17-4.5b2-2</version>
 	<name>TinyMCE</name>
 	<description>
 		Adds support for WYSIWYG editing (using TinyMce) to Wicket
@@ -71,4 +71,10 @@
 		    <scope>provided</scope>
 		</dependency>
 	</dependencies>
+
+  <scm>
+    <connection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/tinymce-1.4.17-4.5b2-2</connection>
+    <developerConnection>scm:svn:https://koodaripalvelut-wicket.googlecode.com/svn/tags/tinymce-1.4.17-4.5b2-2</developerConnection>
+    <url>http://code.google.com/p/koodaripalvelut-wicket/source/browse/#svn/tags/tinymce-1.4.17-4.5b2-2</url>
+  </scm>
 </project>
